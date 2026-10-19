@@ -44,155 +44,345 @@
   <!-- Toast Notification -->
   <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- NAVIGATION BAR -->
-  <header class="sticky top-0 z-40 bg-white/95 dark:bg-[#111625]/95 border-b border-slate-200 dark:border-slate-800 backdrop-blur-md">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-      
-      <!-- Brand Logo & Name -->
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center text-slate-950 font-black shadow-sm">
-          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M14 6l7 14H3l5-10 3 6 3-10z" opacity="0.85"/>
-            <path d="M12 2l4 8h-8l4-8z"/>
-          </svg>
-        </div>
-        <div>
-          <h1 class="font-extrabold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white leading-tight">
-            Everest Annapurna Deposter
-          </h1>
-          <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block">
-            Tour Capacity &bull; Shared Group Seats &bull; Driver Deposting
-          </p>
-        </div>
-      </div>
-
-      <!-- Right Actions: Cloud Sync, Auth, Role Switcher, New Departure & Theme -->
-      <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end">
-        
-        <!-- Cloud Real-time Status Button -->
-        <button id="cloudStatusBtn" onclick="openCloudConfigModal()" class="px-2.5 py-1.5 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1.5 shadow-xs" title="Supabase Cloud & Real-time Settings">
-          <span id="cloudStatusDot" class="w-2 h-2 rounded-full bg-slate-400"></span>
-          <span id="cloudStatusText" class="hidden sm:inline text-slate-700 dark:text-slate-300">Local Mode</span>
-        </button>
-
-        <!-- Auth Header Area (Sign In button or User Chip) -->
-        <div id="authHeaderArea">
-          <button id="openAuthBtn" onclick="openAuthModal()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:opacity-90 transition flex items-center gap-1.5 shadow-xs">
-            <span>🔑</span>
-            <span>Sign In</span>
-          </button>
+  <!-- ========================================== -->
+  <!-- HOME & LOGIN LANDING PAGE                   -->
+  <!-- ========================================== -->
+  <div id="homeLoginView" class="min-h-screen flex flex-col justify-between bg-gradient-to-b from-slate-900 via-[#0b0f19] to-slate-950 text-white selection:bg-amber-500 selection:text-slate-950">
+    
+    <!-- Top Landing Header -->
+    <header class="border-b border-white/10 px-4 sm:px-8 py-4 backdrop-blur-md bg-slate-900/60 sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-amber-500/20">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M14 6l7 14H3l5-10 3 6 3-10z" opacity="0.85"/>
+              <path d="M12 2l4 8h-8l4-8z"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="font-extrabold text-base sm:text-lg tracking-tight leading-tight">
+              Everest Annapurna Deposter
+            </h1>
+            <p class="text-[11px] text-amber-400 font-medium">
+              Himalayan Tour Dispatch &amp; Capacity Network • Nepal
+            </p>
+          </div>
         </div>
 
-        <!-- Role Switcher (Admin vs Staff) -->
-        <div class="flex items-center bg-slate-200/70 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-300/60 dark:border-slate-700/60">
-          <button id="roleBtnAdmin" onclick="setRole('admin')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
-            <span>👑</span>
-            <span class="hidden sm:inline">Admin</span>
-          </button>
-          <button id="roleBtnStaff" onclick="setRole('staff')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
-            <span>📋</span>
-            <span class="hidden sm:inline">Staff</span>
-          </button>
-        </div>
-
-        <!-- New Departure Button (Admin only can open, Staff sees disabled with note) -->
-        <button id="topNewDepBtn" onclick="handleNewDepartureClick()" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm transition active:scale-95">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-          <span class="hidden md:inline">New Departure</span>
-          <span class="md:hidden">New</span>
-        </button>
-
-        <!-- Theme Toggle -->
-        <button onclick="toggleTheme()" class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition" title="Toggle Dark/Light Mode">
-          <svg id="themeSun" class="w-4 h-4 hidden dark:block text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path stroke-linecap="round" d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-          <svg id="themeMoon" class="w-4 h-4 block dark:hidden text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-        </button>
-
-      </div>
-    </div>
-  </header>
-
-  <!-- ROLE PERMISSION STATUS BAR -->
-  <div id="roleBanner" class="px-4 py-2 border-b text-xs font-semibold flex items-center justify-between"></div>
-
-  <!-- MAIN CONTAINER -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-7">
-
-    <!-- HOMEPAGE SECTION 1: PACKAGES & REMAINING SEATS SUMMARY (LIVE OVERVIEW) -->
-    <section class="space-y-3">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h2 class="text-base font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-            <span>Packages &amp; Available Seats</span>
-            <span class="text-xs font-normal text-slate-500 dark:text-slate-400">• Click "+ Add Customer" to book directly</span>
-          </h2>
-        </div>
         <div class="flex items-center gap-2.5">
-          <div class="text-xs font-bold text-amber-600 dark:text-amber-400" id="packagesLiveCount"></div>
-          <button id="adminManagePackagesBtn" onclick="handleManagePackagesClick()" class="px-2.5 py-1.5 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition flex items-center gap-1.5 shadow-xs" title="Manage & Edit Package Names (Admin)">
-            <span>⚙️ Edit Packages</span>
+          <button onclick="openCloudConfigModal()" class="px-3 py-1.5 rounded-xl text-xs font-semibold border border-white/10 hover:bg-white/5 transition flex items-center gap-2 cursor-pointer">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-slate-300 hidden sm:inline">Supabase Live Cloud</span>
+          </button>
+          <button onclick="toggleTheme()" class="p-2 rounded-xl border border-white/10 hover:bg-white/5 text-slate-300 cursor-pointer" title="Toggle Theme">
+            🌓
           </button>
         </div>
       </div>
+    </header>
 
-      <!-- Package Cards Grid -->
-      <div id="packagesOverviewGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
-    </section>
-
-    <!-- HOMEPAGE SECTION 2: MAIN VIEW TABS (ALL DEPARTURES & CALENDAR) -->
-    <section class="space-y-4">
-      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
-        <div class="flex items-center gap-2">
-          <button id="viewTabListBtn" onclick="switchView('list')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs">
-            Departures List
-          </button>
-          <button id="viewTabCalendarBtn" onclick="switchView('calendar')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
-            Month Calendar
-          </button>
+    <!-- Hero Content & Login Center -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-14 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center flex-1 w-full">
+      
+      <!-- Left Column: Branding, Live Route Preview & Stats -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 shadow-xs">
+          <span>🏔️</span>
+          <span>Inter-Agency Shared Tour Operating System</span>
         </div>
 
-        <!-- Filters (Route & Vehicle) -->
-        <div class="flex items-center gap-2 flex-wrap">
-          <select id="filterPackageSelect" onchange="setFilterPackage(this.value)" class="text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 font-semibold text-slate-700 dark:text-slate-200">
-            <option value="all">All Packages</option>
-          </select>
-          <select id="filterVehicleSelect" onchange="setFilterVehicle(this.value)" class="text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 font-semibold text-slate-700 dark:text-slate-200">
-            <option value="all">All Vehicles (Scorpio + EV)</option>
-            <option value="scorpio">Scorpio Jeep (7–8 Pax)</option>
-            <option value="ev_van">EV Van (9–14 Pax)</option>
-          </select>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight">
+          Fill Every Seat.<br />
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-300 to-amber-200">
+            Dispatch Every Driver.
+          </span>
+        </h2>
+
+        <p class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl">
+          The collaborative booking portal for Kathmandu &amp; Pokhara travel agencies. Share Scorpio 4x4 &amp; EV Van capacities across Upper Mustang, Ghandruk, Ama Yangri, Dhorpatan, and Rara Lake with guaranteed rotational seating and instant WhatsApp driver manifests.
+        </p>
+
+        <!-- Stats Bar -->
+        <div class="grid grid-cols-3 gap-3 sm:gap-4 max-w-lg pt-1">
+          <div class="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
+            <div class="text-2xl sm:text-3xl font-black text-amber-400">8</div>
+            <div class="text-[11px] font-medium text-slate-400 mt-1">Himalayan Routes</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
+            <div class="text-2xl sm:text-3xl font-black text-emerald-400">100%</div>
+            <div class="text-[11px] font-medium text-slate-400 mt-1">Fair Seat Rotation</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
+            <div class="text-2xl sm:text-3xl font-black text-sky-400">Live</div>
+            <div class="text-[11px] font-medium text-slate-400 mt-1">Supabase Realtime</div>
+          </div>
         </div>
+
+        <!-- Live Routes Status Preview -->
+        <div class="p-5 rounded-3xl bg-white/5 border border-white/10 space-y-3 max-w-xl">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-extrabold text-amber-400 flex items-center gap-1.5">
+              <span>📅 Upcoming Departures (Kartik 5 &amp; 6)</span>
+            </span>
+            <span class="text-[11px] text-slate-400 font-semibold">Live Seats Remaining</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs" id="loginRoutePreview">
+            <!-- Dynamically populated by renderHomeRoutePreviews() -->
+          </div>
+        </div>
+
       </div>
 
-      <!-- SUBVIEW A: DEPARTURES STREAM / CARDS -->
-      <div id="subviewList" class="space-y-3">
-        <div id="departuresListContainer" class="space-y-3"></div>
-      </div>
+      <!-- Right Column: Interactive Login & Registration Card -->
+      <div class="lg:col-span-5 w-full max-w-md mx-auto lg:max-w-none">
+        <div class="bg-white/10 dark:bg-[#111625]/95 backdrop-blur-xl border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5">
+          
+          <div class="border-b border-white/10 pb-4">
+            <h3 class="text-xl font-extrabold text-white flex items-center gap-2">
+              <span>Agency Portal Access</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">Secure</span>
+            </h3>
+            <p class="text-xs text-slate-300 mt-1">Sign in with your team credentials or enter instantly</p>
+          </div>
 
-      <!-- SUBVIEW B: CALENDAR VIEW -->
-      <div id="subviewCalendar" class="hidden bg-white dark:bg-[#111625] rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-xs space-y-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <button onclick="changeCalMonth(-1)" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300" title="Previous Month">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+          <!-- Tab Switcher: Sign In vs Register -->
+          <div class="flex bg-black/40 p-1 rounded-xl text-xs font-bold border border-white/10">
+            <button id="hlTabSignIn" onclick="switchHomeAuthMode('signin')" class="w-1/2 py-2 rounded-lg bg-amber-500 text-slate-950 shadow-xs transition cursor-pointer font-bold">
+              Sign In
             </button>
-            <h3 id="calMonthTitle" class="font-extrabold text-sm sm:text-base min-w-[150px] text-center"></h3>
-            <button onclick="changeCalMonth(1)" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300" title="Next Month">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            <button id="hlTabSignUp" onclick="switchHomeAuthMode('signup')" class="w-1/2 py-2 rounded-lg text-slate-400 hover:text-white transition cursor-pointer font-bold">
+              Register Agency
             </button>
           </div>
-          <span class="text-xs text-slate-500">Shared departures across all agencies</span>
-        </div>
 
-        <div class="grid grid-cols-7 text-center text-[11px] font-bold text-slate-400 py-2 border-b border-slate-100 dark:border-slate-800">
-          <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+          <!-- Login Form -->
+          <form id="homeLoginForm" onsubmit="handleHomeAuthSubmit(event)" class="space-y-3.5">
+            
+            <div id="hlNameGroup" class="hidden">
+              <label class="block text-xs font-bold text-slate-200 mb-1">Your Full Name <span class="text-rose-400">*</span></label>
+              <input id="hlName" type="text" placeholder="e.g. Bikash Shrestha" class="w-full text-xs font-semibold rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+            </div>
+
+            <div id="hlAgencyGroup" class="hidden">
+              <label class="block text-xs font-bold text-slate-200 mb-1">Your Agency / Travel Desk Name <span class="text-rose-400">*</span></label>
+              <input id="hlAgency" type="text" placeholder="e.g. Everest Agency / Annapurna Tours" class="w-full text-xs font-semibold rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+            </div>
+
+            <div id="hlRoleGroup" class="hidden">
+              <label class="block text-xs font-bold text-slate-200 mb-1">Access Role</label>
+              <select id="hlRole" class="w-full text-xs font-semibold rounded-xl border border-white/15 bg-slate-900 px-3 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
+                <option value="staff">📋 Agency Counter Staff (Add bookings &amp; manifests)</option>
+                <option value="admin">👑 Tour Dispatcher / Admin (Assign drivers, schedule departures)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-200 mb-1">Email Address <span class="text-rose-400">*</span></label>
+              <input id="hlEmail" type="email" required placeholder="name@agency.com" class="w-full text-xs font-semibold rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-200 mb-1">Password <span class="text-rose-400">*</span></label>
+              <input id="hlPassword" type="password" required placeholder="••••••••" class="w-full text-xs font-semibold rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+            </div>
+
+            <div id="hlFeedback" class="hidden text-xs font-semibold p-2.5 rounded-xl border"></div>
+
+            <button id="hlSubmitBtn" type="submit" class="w-full py-3 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-lg shadow-amber-500/25 transition cursor-pointer active:scale-98">
+              Sign In to Dashboard →
+            </button>
+          </form>
+
+          <!-- Quick Access / Instant Entry Buttons -->
+          <div class="pt-4 border-t border-white/10 space-y-2.5">
+            <div class="text-center text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              Instant 1-Click Access (No Password Needed)
+            </div>
+            <div class="grid grid-cols-2 gap-2.5">
+              <button onclick="quickEnterDashboard('admin')" type="button" class="p-2.5 rounded-xl text-xs font-bold bg-amber-500/15 hover:bg-amber-500 text-amber-300 hover:text-slate-950 border border-amber-500/30 transition flex items-center justify-center gap-1.5 cursor-pointer">
+                <span>👑 Dispatch Admin</span>
+              </button>
+              <button onclick="quickEnterDashboard('staff')" type="button" class="p-2.5 rounded-xl text-xs font-bold bg-sky-500/15 hover:bg-sky-500 text-sky-300 hover:text-white border border-sky-500/30 transition flex items-center justify-center gap-1.5 cursor-pointer">
+                <span>📋 Agency Staff</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="text-center pt-1">
+            <button onclick="quickEnterDashboard('guest')" type="button" class="text-xs text-slate-400 hover:text-amber-300 underline font-semibold cursor-pointer">
+              Browse Departures as Guest →
+            </button>
+          </div>
+
         </div>
-        <div id="calendarGrid" class="grid grid-cols-7 divide-x divide-y divide-slate-100 dark:divide-slate-800/80"></div>
       </div>
 
-    </section>
+    </div>
 
-  </main>
+    <!-- Landing Footer -->
+    <footer class="border-t border-white/10 px-4 py-4 text-center text-xs text-slate-500">
+      Everest Annapurna Deposter &bull; Himalayan Tour Capacity &amp; Booking Network &bull; Kathmandu &amp; Pokhara, Nepal
+    </footer>
+
+  </div>
+
+  <!-- ========================================== -->
+  <!-- DASHBOARD APPLICATION VIEW                 -->
+  <!-- ========================================== -->
+  <div id="dashboardAppView" class="hidden">
+
+    <!-- NAVIGATION BAR -->
+    <header class="sticky top-0 z-40 bg-white/95 dark:bg-[#111625]/95 border-b border-slate-200 dark:border-slate-800 backdrop-blur-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+        
+        <!-- Brand Logo & Name -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center text-slate-950 font-black shadow-sm">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M14 6l7 14H3l5-10 3 6 3-10z" opacity="0.85"/>
+              <path d="M12 2l4 8h-8l4-8z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="font-extrabold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white leading-tight">
+                Everest Annapurna Deposter
+              </h1>
+              <button onclick="showHomeLoginView()" class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-amber-900/40 text-amber-700 dark:text-amber-400 border border-slate-200 dark:border-slate-700 transition flex items-center gap-1 cursor-pointer" title="Return to Portal Login / Home">
+                <span>🏠 Home</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block">
+              Tour Capacity &bull; Shared Group Seats &bull; Driver Deposting
+            </p>
+          </div>
+        </div>
+
+        <!-- Right Actions: Cloud Sync, Auth, Role Switcher, New Departure & Theme -->
+        <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end">
+          
+          <!-- Cloud Real-time Status Button -->
+          <button id="cloudStatusBtn" onclick="openCloudConfigModal()" class="px-2.5 py-1.5 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1.5 shadow-xs cursor-pointer" title="Supabase Cloud & Real-time Settings">
+            <span id="cloudStatusDot" class="w-2 h-2 rounded-full bg-slate-400"></span>
+            <span id="cloudStatusText" class="hidden sm:inline text-slate-700 dark:text-slate-300">Local Mode</span>
+          </button>
+
+          <!-- Auth Header Area (Sign In button or User Chip) -->
+          <div id="authHeaderArea"></div>
+
+          <!-- Role Switcher (Admin vs Staff) -->
+          <div class="flex items-center bg-slate-200/70 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-300/60 dark:border-slate-700/60">
+            <button id="roleBtnAdmin" onclick="setRole('admin')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+              <span>👑</span>
+              <span class="hidden sm:inline">Admin</span>
+            </button>
+            <button id="roleBtnStaff" onclick="setRole('staff')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer">
+              <span>📋</span>
+              <span class="hidden sm:inline">Staff</span>
+            </button>
+          </div>
+
+          <!-- New Departure Button (Admin only can open, Staff sees disabled with note) -->
+          <button id="topNewDepBtn" onclick="handleNewDepartureClick()" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm transition active:scale-95 cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            <span class="hidden md:inline">New Departure</span>
+            <span class="md:hidden">New</span>
+          </button>
+
+          <!-- Theme Toggle -->
+          <button onclick="toggleTheme()" class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer" title="Toggle Dark/Light Mode">
+            <svg id="themeSun" class="w-4 h-4 hidden dark:block text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path stroke-linecap="round" d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            <svg id="themeMoon" class="w-4 h-4 block dark:hidden text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+          </button>
+
+        </div>
+      </div>
+    </header>
+
+    <!-- ROLE PERMISSION STATUS BAR -->
+    <div id="roleBanner" class="px-4 py-2 border-b text-xs font-semibold flex items-center justify-between"></div>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-7">
+
+      <!-- HOMEPAGE SECTION 1: PACKAGES & REMAINING SEATS SUMMARY (LIVE OVERVIEW) -->
+      <section class="space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+              <span>Packages &amp; Available Seats</span>
+              <span class="text-xs font-normal text-slate-500 dark:text-slate-400">• Click "+ Add Customer" to book directly</span>
+            </h2>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <div class="text-xs font-bold text-amber-600 dark:text-amber-400" id="packagesLiveCount"></div>
+            <button id="adminManagePackagesBtn" onclick="handleManagePackagesClick()" class="px-2.5 py-1.5 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition flex items-center gap-1.5 shadow-xs cursor-pointer" title="Manage & Edit Package Names (Admin)">
+              <span>⚙️ Edit Packages</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Package Cards Grid -->
+        <div id="packagesOverviewGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+      </section>
+
+      <!-- HOMEPAGE SECTION 2: MAIN VIEW TABS (ALL DEPARTURES & CALENDAR) -->
+      <section class="space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div class="flex items-center gap-2">
+            <button id="viewTabListBtn" onclick="switchView('list')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs cursor-pointer">
+              Departures List
+            </button>
+            <button id="viewTabCalendarBtn" onclick="switchView('calendar')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer">
+              Month Calendar
+            </button>
+          </div>
+
+          <!-- Filters (Route & Vehicle) -->
+          <div class="flex items-center gap-2 flex-wrap">
+            <select id="filterPackageSelect" onchange="setFilterPackage(this.value)" class="text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 font-semibold text-slate-700 dark:text-slate-200">
+              <option value="all">All Packages</option>
+            </select>
+            <select id="filterVehicleSelect" onchange="setFilterVehicle(this.value)" class="text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 font-semibold text-slate-700 dark:text-slate-200">
+              <option value="all">All Vehicles (Scorpio + EV)</option>
+              <option value="scorpio">Scorpio Jeep (7–8 Pax)</option>
+              <option value="ev_van">EV Van (9–14 Pax)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- SUBVIEW A: DEPARTURES STREAM / CARDS -->
+        <div id="subviewList" class="space-y-3">
+          <div id="departuresListContainer" class="space-y-3"></div>
+        </div>
+
+        <!-- SUBVIEW B: CALENDAR VIEW -->
+        <div id="subviewCalendar" class="hidden bg-white dark:bg-[#111625] rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-xs space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <button onclick="changeCalMonth(-1)" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300" title="Previous Month">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+              </button>
+              <h3 id="calMonthTitle" class="font-extrabold text-sm sm:text-base min-w-[150px] text-center"></h3>
+              <button onclick="changeCalMonth(1)" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300" title="Next Month">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+            <span class="text-xs text-slate-500">Shared departures across all agencies</span>
+          </div>
+
+          <div class="grid grid-cols-7 text-center text-[11px] font-bold text-slate-400 py-2 border-b border-slate-100 dark:border-slate-800">
+            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+          </div>
+          <div id="calendarGrid" class="grid grid-cols-7 divide-x divide-y divide-slate-100 dark:divide-slate-800/80"></div>
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
 
   <!-- ========================================== -->
   <!-- MODAL 1: NEW DEPARTURE (ADMIN ONLY)        -->
@@ -965,7 +1155,8 @@
 
     const _now = new Date();
     const DEFAULT_STATE = {
-      role: 'admin', // 'admin' | 'staff'
+      isLoggedIn: false,
+      role: 'staff', // 'admin' | 'staff'
       activeView: 'list', // 'list' | 'calendar'
       filterPackage: 'all',
       filterVehicle: 'all',
@@ -2338,15 +2529,233 @@
 
     async function handleSignOut() {
       if (supabaseClient) {
-        await supabaseClient.auth.signOut();
+        try {
+          await supabaseClient.auth.signOut();
+        } catch (e) {}
       }
       currentUser = null;
+      state.isLoggedIn = false;
       state.role = 'staff'; // fallback to staff
       saveState();
       renderRoleUI();
       renderAuthHeader();
-      renderAll();
+      showHomeLoginView();
       showToast('Signed out successfully.');
+    }
+
+    // ==========================================
+    // HOME & LOGIN LANDING PAGE CONTROLLER
+    // ==========================================
+    let homeAuthMode = 'signin'; // 'signin' | 'signup'
+
+    function switchHomeAuthMode(mode) {
+      homeAuthMode = mode;
+      const isSignUp = mode === 'signup';
+      const tabIn = document.getElementById('hlTabSignIn');
+      const tabUp = document.getElementById('hlTabSignUp');
+      const nameGroup = document.getElementById('hlNameGroup');
+      const agencyGroup = document.getElementById('hlAgencyGroup');
+      const roleGroup = document.getElementById('hlRoleGroup');
+      const submitBtn = document.getElementById('hlSubmitBtn');
+      const nameInput = document.getElementById('hlName');
+      const agencyInput = document.getElementById('hlAgency');
+      const fb = document.getElementById('hlFeedback');
+      if (fb) fb.className = 'hidden text-xs font-semibold p-2.5 rounded-xl border';
+
+      if (isSignUp) {
+        if (tabUp) tabUp.className = 'w-1/2 py-2 rounded-lg bg-amber-500 text-slate-950 shadow-xs transition cursor-pointer font-bold';
+        if (tabIn) tabIn.className = 'w-1/2 py-2 rounded-lg text-slate-400 hover:text-white transition cursor-pointer font-bold';
+        if (nameGroup) nameGroup.classList.remove('hidden');
+        if (agencyGroup) agencyGroup.classList.remove('hidden');
+        if (roleGroup) roleGroup.classList.remove('hidden');
+        if (nameInput) nameInput.required = true;
+        if (agencyInput) agencyInput.required = true;
+        if (submitBtn) submitBtn.textContent = 'Register Agency & Enter Dashboard →';
+      } else {
+        if (tabIn) tabIn.className = 'w-1/2 py-2 rounded-lg bg-amber-500 text-slate-950 shadow-xs transition cursor-pointer font-bold';
+        if (tabUp) tabUp.className = 'w-1/2 py-2 rounded-lg text-slate-400 hover:text-white transition cursor-pointer font-bold';
+        if (nameGroup) nameGroup.classList.add('hidden');
+        if (agencyGroup) agencyGroup.classList.add('hidden');
+        if (roleGroup) roleGroup.classList.add('hidden');
+        if (nameInput) nameInput.required = false;
+        if (agencyInput) agencyInput.required = false;
+        if (submitBtn) submitBtn.textContent = 'Sign In to Dashboard →';
+      }
+    }
+
+    async function handleHomeAuthSubmit(e) {
+      e.preventDefault();
+      const fb = document.getElementById('hlFeedback');
+      const submitBtn = document.getElementById('hlSubmitBtn');
+      const origText = submitBtn ? submitBtn.textContent : 'Submit';
+      if (fb) fb.className = 'hidden text-xs font-semibold p-2.5 rounded-xl border';
+
+      const email = document.getElementById('hlEmail').value.trim();
+      const password = document.getElementById('hlPassword').value;
+      const isSignUp = homeAuthMode === 'signup';
+      const name = isSignUp ? document.getElementById('hlName').value.trim() : '';
+      const agency = isSignUp ? document.getElementById('hlAgency').value.trim() : '';
+      const role = isSignUp ? document.getElementById('hlRole').value : (email.toLowerCase().includes('admin') ? 'admin' : 'staff');
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Authenticating...';
+      }
+
+      try {
+        if (supabaseClient) {
+          if (isSignUp) {
+            const { data, error } = await supabaseClient.auth.signUp({
+              email,
+              password,
+              options: {
+                data: {
+                  name: name || email.split('@')[0],
+                  agency: agency || 'Direct Agency',
+                  role: role
+                }
+              }
+            });
+            if (error) throw error;
+            if (data.session && data.user) {
+              setCurrentUser(data.user);
+              state.userAgency = agency || 'Direct Agency';
+              saveState();
+              showDashboardView();
+              showToast(`Welcome ${name || email}! Agency: ${agency || 'Registered'}`);
+              return;
+            } else {
+              fb.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-emerald-500/10 border-emerald-500/30 text-emerald-300 block';
+              fb.textContent = 'Agency registered! If confirmation is required, check your email. You can also sign in directly or use 1-click access below.';
+              return;
+            }
+          } else {
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+              email,
+              password
+            });
+            if (error) throw error;
+            if (data && data.user) {
+              setCurrentUser(data.user);
+              showDashboardView();
+              showToast(`Welcome back, ${data.user.email}!`);
+              return;
+            }
+          }
+        } else {
+          // Local offline fallback simulation
+          currentUser = {
+            id: 'local-user-' + Date.now(),
+            email: email,
+            user_metadata: {
+              name: name || email.split('@')[0],
+              agency: agency || 'Direct Agency',
+              role: role
+            }
+          };
+          state.role = role;
+          state.userAgency = agency || 'Direct Agency';
+          saveState();
+          showDashboardView();
+          showToast(`Signed in (Local Mode) as ${role.toUpperCase()}`);
+        }
+      } catch (err) {
+        if (fb) {
+          fb.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-rose-500/20 border-rose-500/40 text-rose-300 block';
+          fb.textContent = err.message || 'Authentication error. Please check your credentials.';
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = origText;
+        }
+      }
+    }
+
+    function quickEnterDashboard(role) {
+      if (role === 'admin') {
+        state.role = 'admin';
+        currentUser = currentUser || {
+          email: 'dispatcher@everest.np',
+          user_metadata: { name: 'Lead Dispatcher', role: 'admin', agency: 'Central Operations' }
+        };
+        showToast('Entering as 👑 Dispatch Admin');
+      } else if (role === 'staff') {
+        state.role = 'staff';
+        currentUser = currentUser || {
+          email: 'counter@travelagency.np',
+          user_metadata: { name: 'Counter Staff', role: 'staff', agency: 'Partner Agency' }
+        };
+        showToast('Entering as 📋 Agency Staff');
+      } else {
+        // guest
+        state.role = 'staff';
+        currentUser = null;
+        showToast('Entering as Guest (Viewer)');
+      }
+      saveState();
+      showDashboardView();
+    }
+
+    function showHomeLoginView() {
+      const homeView = document.getElementById('homeLoginView');
+      const dashView = document.getElementById('dashboardAppView');
+      if (homeView) homeView.classList.remove('hidden');
+      if (dashView) dashView.classList.add('hidden');
+      state.isLoggedIn = false;
+      saveState();
+      renderHomeRoutePreviews();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showDashboardView() {
+      const homeView = document.getElementById('homeLoginView');
+      const dashView = document.getElementById('dashboardAppView');
+      if (homeView) homeView.classList.add('hidden');
+      if (dashView) dashView.classList.remove('hidden');
+      state.isLoggedIn = true;
+      saveState();
+      renderAll();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderHomeRoutePreviews() {
+      const container = document.getElementById('loginRoutePreview');
+      if (!container) return;
+
+      const deps = (state.departures || []).slice(0, 4);
+      if (deps.length === 0) {
+        container.innerHTML = `<div class="col-span-2 text-center text-slate-400 py-3">No active departures found.</div>`;
+        return;
+      }
+
+      container.innerHTML = deps.map(dep => {
+        const pkg = getPackage(dep.packageId);
+        const booked = getBookedPax(dep);
+        const cap = Number(dep.capacity);
+        const remaining = Math.max(0, cap - booked);
+        const isFull = remaining === 0;
+        const pct = Math.min(100, Math.round((booked / cap) * 100));
+        const vehicleLabel = dep.vehicleType === 'ev_van' ? '⚡ EV Van' : '🚙 Scorpio';
+
+        return `
+          <div onclick="quickEnterDashboard('staff')" class="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-500/40 transition cursor-pointer group space-y-2">
+            <div class="flex items-center justify-between gap-1">
+              <span class="font-bold text-white text-xs truncate group-hover:text-amber-300 transition">${escapeHtml(pkg.name)}</span>
+              <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${isFull ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'}">
+                ${isFull ? 'FULL' : `${remaining} left`}
+              </span>
+            </div>
+            <div class="flex items-center justify-between text-[11px] text-slate-400">
+              <span>${dep.nepaliDate || dep.date}</span>
+              <span>${vehicleLabel}</span>
+            </div>
+            <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+              <div class="h-full ${isFull ? 'bg-rose-500' : 'bg-amber-400'} rounded-full" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     // ==========================================
@@ -2455,7 +2864,12 @@
 
     window.onload = function () {
       initSupabase();
-      renderAll();
+      renderHomeRoutePreviews();
+      if (state.isLoggedIn) {
+        showDashboardView();
+      } else {
+        showHomeLoginView();
+      }
     };
   </script>
 </body>
