@@ -1,0 +1,2178 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Everest Annapurna Deposter</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.3);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-900 dark:bg-[#0b0f19] dark:text-slate-100 min-h-screen antialiased transition-colors duration-150">
+
+  <!-- Toast Notification -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- NAVIGATION BAR -->
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-[#111625]/95 border-b border-slate-200 dark:border-slate-800 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo & Name -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center text-slate-950 font-black shadow-sm">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14 6l7 14H3l5-10 3 6 3-10z" opacity="0.85"/>
+            <path d="M12 2l4 8h-8l4-8z"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="font-extrabold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white leading-tight">
+            Everest Annapurna Deposter
+          </h1>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block">
+            Tour Capacity &bull; Shared Group Seats &bull; Driver Deposting
+          </p>
+        </div>
+      </div>
+
+      <!-- Right Actions: Cloud Sync, Auth, Role Switcher, New Departure & Theme -->
+      <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end">
+        
+        <!-- Cloud Real-time Status Button -->
+        <button id="cloudStatusBtn" onclick="openCloudConfigModal()" class="px-2.5 py-1.5 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1.5 shadow-xs" title="Supabase Cloud & Real-time Settings">
+          <span id="cloudStatusDot" class="w-2 h-2 rounded-full bg-slate-400"></span>
+          <span id="cloudStatusText" class="hidden sm:inline text-slate-700 dark:text-slate-300">Local Mode</span>
+        </button>
+
+        <!-- Auth Header Area (Sign In button or User Chip) -->
+        <div id="authHeaderArea">
+          <button id="openAuthBtn" onclick="openAuthModal()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:opacity-90 transition flex items-center gap-1.5 shadow-xs">
+            <span>🔑</span>
+            <span>Sign In</span>
+          </button>
+        </div>
+
+        <!-- Role Switcher (Admin vs Staff) -->
+        <div class="flex items-center bg-slate-200/70 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-300/60 dark:border-slate-700/60">
+          <button id="roleBtnAdmin" onclick="setRole('admin')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+            <span>👑</span>
+            <span class="hidden sm:inline">Admin</span>
+          </button>
+          <button id="roleBtnStaff" onclick="setRole('staff')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+            <span>📋</span>
+            <span class="hidden sm:inline">Staff</span>
+          </button>
+        </div>
+
+        <!-- New Departure Button (Admin only can open, Staff sees disabled with note) -->
+        <button id="topNewDepBtn" onclick="handleNewDepartureClick()" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm transition active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          <span class="hidden md:inline">New Departure</span>
+          <span class="md:hidden">New</span>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button onclick="toggleTheme()" class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition" title="Toggle Dark/Light Mode">
+          <svg id="themeSun" class="w-4 h-4 hidden dark:block text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path stroke-linecap="round" d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg id="themeMoon" class="w-4 h-4 block dark:hidden text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ROLE PERMISSION STATUS BAR -->
+  <div id="roleBanner" class="px-4 py-2 border-b text-xs font-semibold flex items-center justify-between"></div>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-7">
+
+    <!-- HOMEPAGE SECTION 1: PACKAGES & REMAINING SEATS SUMMARY (LIVE OVERVIEW) -->
+    <section class="space-y-3">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 class="text-base font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+            <span>Packages &amp; Available Seats</span>
+            <span class="text-xs font-normal text-slate-500 dark:text-slate-400">• Click "+ Add Customer" to book directly</span>
+          </h2>
+        </div>
+        <div class="flex items-center gap-2.5">
+          <div class="text-xs font-bold text-amber-600 dark:text-amber-400" id="packagesLiveCount"></div>
+          <button id="adminManagePackagesBtn" onclick="handleManagePackagesClick()" class="px-2.5 py-1.5 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition flex items-center gap-1.5 shadow-xs" title="Manage & Edit Package Names (Admin)">
+            <span>⚙️ Edit Packages</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Package Cards Grid -->
+      <div id="packagesOverviewGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+    </section>
+
+    <!-- HOMEPAGE SECTION 2: MAIN VIEW TABS (ALL DEPARTURES & CALENDAR) -->
+    <section class="space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <button id="viewTabListBtn" onclick="switchView('list')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs">
+            Departures List
+          </button>
+          <button id="viewTabCalendarBtn" onclick="switchView('calendar')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+            Month Calendar
+          </button>
+        </div>
+
+        <!-- Filters (Route & Vehicle) -->
+        <div class="flex items-center gap-2 flex-wrap">
+          <select id="filterPackageSelect" onchange="setFilterPackage(this.value)" class="text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 font-semibold text-slate-700 dark:text-slate-200">
+            <option value="all">All Packages</option>
+          </select>
+          <select id="filterVehicleSelect" onchange="setFilterVehicle(this.value)" class="text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 font-semibold text-slate-700 dark:text-slate-200">
+            <option value="all">All Vehicles (Scorpio + EV)</option>
+            <option value="scorpio">Scorpio Jeep (7–8 Pax)</option>
+            <option value="ev_van">EV Van (9–14 Pax)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- SUBVIEW A: DEPARTURES STREAM / CARDS -->
+      <div id="subviewList" class="space-y-3">
+        <div id="departuresListContainer" class="space-y-3"></div>
+      </div>
+
+      <!-- SUBVIEW B: CALENDAR VIEW -->
+      <div id="subviewCalendar" class="hidden bg-white dark:bg-[#111625] rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-xs space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <button onclick="changeCalMonth(-1)" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300" title="Previous Month">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <h3 id="calMonthTitle" class="font-extrabold text-sm sm:text-base min-w-[150px] text-center"></h3>
+            <button onclick="changeCalMonth(1)" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300" title="Next Month">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+          <span class="text-xs text-slate-500">Shared departures across all agencies</span>
+        </div>
+
+        <div class="grid grid-cols-7 text-center text-[11px] font-bold text-slate-400 py-2 border-b border-slate-100 dark:border-slate-800">
+          <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+        </div>
+        <div id="calendarGrid" class="grid grid-cols-7 divide-x divide-y divide-slate-100 dark:divide-slate-800/80"></div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODAL 1: NEW DEPARTURE (ADMIN ONLY)        -->
+  <!-- ========================================== -->
+  <div id="newDepartureModal" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 my-8">
+      
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div>
+          <h3 class="font-extrabold text-base text-slate-900 dark:text-white">Create New Tour Departure</h3>
+          <p class="text-xs text-amber-600 dark:text-amber-400 font-semibold">Shared Group Tour &bull; Open for all agencies to fill</p>
+        </div>
+        <button onclick="closeNewDepartureModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="newDepartureForm" onsubmit="saveNewDepartureForm(event)" class="space-y-4">
+        
+        <!-- Row 1: Packages & Departure Date -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold mb-1">Package <span class="text-rose-500">*</span></label>
+            <select id="ndPackageId" onchange="handleNewDepPackageChange(this.value)" required class="w-full text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">Departure Date <span class="text-rose-500">*</span></label>
+            <input id="ndDate" type="date" required class="w-full text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+          </div>
+        </div>
+
+        <!-- Row 2: Vehicle Type & Capacity -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold mb-1">Vehicle Type <span class="text-rose-500">*</span></label>
+            <select id="ndVehicleType" onchange="handleNewDepVehicleChange(this.value)" class="w-full text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5">
+              <option value="scorpio">Scorpio Jeep (7–8 Pax)</option>
+              <option value="ev_van">EV Van (9–14 Pax)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">Total Capacity <span class="text-rose-500">*</span></label>
+            <input id="ndCapacity" type="number" min="7" max="8" value="8" required class="w-full text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5" />
+            <p id="ndCapHint" class="text-[10px] text-slate-400 mt-0.5">Scorpio allows 7 or 8 max seats</p>
+          </div>
+        </div>
+
+        <!-- Initial Customer Details (Optional on create, or attach first booking) -->
+        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/80 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span>👤 First Customer / Guest (Optional)</span>
+            </span>
+            <span class="text-[10px] text-slate-400">Can leave blank if no booking yet</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-semibold mb-1">Customer Name</label>
+              <input id="ndCustName" type="text" placeholder="e.g. Aarav Sharma" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold mb-1">Phone Number</label>
+              <input id="ndCustPhone" type="text" placeholder="e.g. 9841234567" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 font-mono" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-semibold mb-1">Number of People</label>
+              <input id="ndCustPax" type="number" min="1" max="8" placeholder="e.g. 4" class="w-full text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold mb-1">Remaining Amount (NPR)</label>
+              <input id="ndCustRemaining" type="number" min="0" step="100" placeholder="0" class="w-full text-xs font-bold text-amber-600 dark:text-amber-400 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Driver Assignment Option (Admin only) -->
+        <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-amber-900 dark:text-amber-300 flex items-center gap-1.5">
+              <span>👨‍✈️ Assign Driver (Admin Only)</span>
+            </span>
+            <span class="text-[10px] text-amber-700 dark:text-amber-400 font-semibold">Driver Name required to assign</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold mb-1">Driver Name</label>
+              <input id="ndDriverName" type="text" placeholder="e.g. Pasang Sherpa" class="w-full text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold mb-1">Driver Phone</label>
+              <input id="ndDriverPhone" type="text" placeholder="e.g. 9841223344" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 font-mono" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold mb-1">Vehicle Number Plate</label>
+            <input id="ndVehiclePlate" type="text" placeholder="e.g. BA 2 CHA 4521" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 font-mono uppercase" />
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+          <button type="button" onclick="closeNewDepartureModal()" class="px-4 py-2.5 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700">Cancel</button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm">Save Departure</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 2: ADD CUSTOMER ONLY (STAFF & ADMIN) -->
+  <!-- ========================================== -->
+  <div id="addCustomerModal" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div>
+          <h3 id="acModalTitle" class="font-extrabold text-base text-slate-900 dark:text-white">Add Customer Details</h3>
+          <p id="acModalSubtitle" class="text-xs text-amber-600 dark:text-amber-400 font-semibold"></p>
+        </div>
+        <button onclick="closeAddCustomerModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="addCustomerForm" onsubmit="saveCustomerForm(event)" class="space-y-3.5">
+        <input type="hidden" id="acDepartureId" />
+        <input type="hidden" id="acBookingId" />
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold mb-1">Customer Name <span class="text-rose-500">*</span></label>
+            <input id="acCustName" type="text" required placeholder="e.g. Ramesh Thapa" class="w-full text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">Phone Number <span class="text-rose-500">*</span></label>
+            <input id="acCustPhone" type="text" required placeholder="e.g. 9841234567" class="w-full text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 font-mono" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold mb-1">Number of People <span id="acPaxHint" class="text-slate-400 font-normal"></span> <span class="text-rose-500">*</span></label>
+            <input id="acCustPax" type="number" min="1" max="14" required class="w-full text-xs font-extrabold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">Remaining Amount (NPR) <span class="text-rose-500">*</span></label>
+            <input id="acCustRemaining" type="number" min="0" step="100" required placeholder="0" class="w-full text-xs font-extrabold text-amber-600 dark:text-amber-400 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold mb-1">Pickup Location / Agency Note</label>
+          <input id="acCustPickup" type="text" placeholder="e.g. Sorhakhutte Chowk / Thamel (Agency 2)" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5" />
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
+          <button type="button" onclick="closeAddCustomerModal()" class="px-4 py-2.5 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700">Cancel</button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm">Save Customer</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 3: ASSIGN DRIVER (ADMIN ONLY)        -->
+  <!-- ========================================== -->
+  <div id="assignDriverModal" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-xs">👑</span>
+          <div>
+            <h3 class="font-extrabold text-base text-slate-900 dark:text-white">Assign Driver (Admin)</h3>
+            <p id="adModalSub" class="text-xs text-amber-600 dark:text-amber-400 font-semibold"></p>
+          </div>
+        </div>
+        <button onclick="closeAssignDriverModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="assignDriverForm" onsubmit="saveDriverAssignment(event)" class="space-y-3.5">
+        <input type="hidden" id="adDepartureId" />
+
+        <!-- Quick Driver Selection -->
+        <div>
+          <label class="block text-[11px] font-bold text-slate-500 mb-1">Quick Select Himalayan Driver</label>
+          <div class="flex flex-wrap gap-1.5" id="adDriverQuickList"></div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold mb-1">Driver Name <span class="text-rose-500">* (Required)</span></label>
+          <input id="adDriverName" type="text" required placeholder="e.g. Pasang Sherpa" class="w-full text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold mb-1">Driver Phone</label>
+            <input id="adDriverPhone" type="text" placeholder="e.g. 9841223344" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 font-mono" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1">Vehicle Plate No.</label>
+            <input id="adVehiclePlate" type="text" placeholder="e.g. BA 2 CHA 4521" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 font-mono uppercase" />
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-800 gap-2">
+          <button type="button" onclick="clearDriverAssignment()" id="adClearBtn" class="px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-500/10 border border-rose-500/30 hidden">
+            Remove Driver
+          </button>
+          <div class="flex items-center gap-2 ml-auto">
+            <button type="button" onclick="closeAssignDriverModal()" class="px-4 py-2.5 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700">Cancel</button>
+            <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm">Save &amp; Depost Driver</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 4: WHATSAPP MANIFEST & PASSENGERS    -->
+  <!-- ========================================== -->
+  <div id="manifestModal" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+      
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div>
+          <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
+            <span>WhatsApp Driver Manifest</span>
+            <span class="text-xs px-2 py-0.5 rounded-full font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">Ready</span>
+          </h3>
+          <p class="text-xs text-slate-500">Includes all guest groups, pickup spots &amp; remaining cash</p>
+        </div>
+        <button onclick="closeManifestModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <textarea id="manifestTextarea" readonly rows="12" class="w-full font-mono text-xs p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none select-all"></textarea>
+
+      <div class="flex items-center justify-between gap-2">
+        <span class="text-[11px] text-slate-400">Rotational Seating (No Seat Numbers)</span>
+        <div class="flex items-center gap-2">
+          <button onclick="closeManifestModal()" class="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700">Close</button>
+          <button onclick="copyManifestText()" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            <span>Copy for Driver WhatsApp</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 5: MANAGE / EDIT PACKAGES (ADMIN)    -->
+  <!-- ========================================== -->
+  <div id="managePackagesModal" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
+      
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-xs">⚙️</span>
+          <div>
+            <h3 class="font-extrabold text-base text-slate-900 dark:text-white">Manage &amp; Edit Tour Packages</h3>
+            <p class="text-xs text-slate-500">Edit package names, default vehicles, or add new tour packages</p>
+          </div>
+        </div>
+        <button onclick="closeManagePackagesModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Packages List in Modal -->
+      <div class="overflow-y-auto space-y-3 pr-1 flex-1 custom-scrollbar" id="packagesManagerList">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Add New Package Form -->
+      <div class="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
+        <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300">+ Add New Himalayan Package</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+          <input id="newPkgName" type="text" placeholder="Package Name (e.g. Langtang Valley Jeep)" class="sm:col-span-6 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 font-semibold" />
+          <select id="newPkgVehicle" onchange="handleNewPkgVehicleChange(this.value)" class="sm:col-span-3 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2 py-2">
+            <option value="scorpio">Scorpio (8 Pax)</option>
+            <option value="ev_van">EV Van (12 Pax)</option>
+          </select>
+          <input id="newPkgCapacity" type="number" min="1" max="25" value="8" class="sm:col-span-3 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2 py-2 font-mono" placeholder="Seats" />
+        </div>
+        <div class="flex justify-end gap-2 pt-1">
+          <button onclick="addNewPackageFromManager()" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-xs">
+            + Add Package
+          </button>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-800">
+        <button onclick="resetDefaultPackages()" class="text-xs text-rose-500 hover:underline">Reset to Default Packages</button>
+        <button onclick="closeManagePackagesModal()" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-slate-900 dark:bg-white text-white dark:text-slate-900">
+          Done
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 6: STAFF & ADMIN SIGN IN / REGISTER  -->
+  <!-- ========================================== -->
+  <div id="authModal" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-xs">🔑</span>
+          <div>
+            <h3 class="font-extrabold text-base text-slate-900 dark:text-white" id="authModalTitle">Team Sign In</h3>
+            <p class="text-xs text-slate-500">Sign in to your agency account &amp; sync bookings</p>
+          </div>
+        </div>
+        <button onclick="closeAuthModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Auth Tabs: Sign In vs Sign Up -->
+      <div class="flex items-center bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl text-xs font-bold">
+        <button id="authTabSignInBtn" onclick="switchAuthMode('signin')" class="w-1/2 py-1.5 rounded-lg bg-white dark:bg-[#111625] text-slate-900 dark:text-white shadow-xs transition">
+          Sign In
+        </button>
+        <button id="authTabSignUpBtn" onclick="switchAuthMode('signup')" class="w-1/2 py-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white transition">
+          Register Staff
+        </button>
+      </div>
+
+      <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-3.5">
+        <div id="authNameField" class="hidden">
+          <label class="block text-xs font-bold mb-1">Your Full Name</label>
+          <input id="authName" type="text" placeholder="e.g. Ramesh Shrestha" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold mb-1">Email Address <span class="text-rose-500">*</span></label>
+          <input id="authEmail" type="email" required placeholder="staff@agency.com" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold mb-1">Password <span class="text-rose-500">*</span></label>
+          <input id="authPassword" type="password" required placeholder="••••••••" minlength="6" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+        </div>
+
+        <div id="authRoleField" class="hidden">
+          <label class="block text-xs font-bold mb-1">Role To Register</label>
+          <select id="authRole" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 font-bold">
+            <option value="staff" selected>📋 Staff (Booking &amp; Customer entry only)</option>
+            <option value="admin">👑 Admin (Full control &amp; Driver deposting)</option>
+          </select>
+        </div>
+
+        <div id="authFeedback" class="hidden text-xs font-semibold p-2.5 rounded-xl border"></div>
+
+        <div class="pt-2">
+          <button id="authSubmitBtn" type="submit" class="w-full py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm transition active:scale-95">
+            Sign In to Dashboard
+          </button>
+        </div>
+      </form>
+
+      <!-- Quick Link to Cloud Settings -->
+      <div class="pt-3 border-t border-slate-200 dark:border-slate-800 text-center">
+        <p class="text-[11px] text-slate-400">
+          Supabase Cloud Real-time: <button onclick="closeAuthModal(); openCloudConfigModal();" class="text-amber-600 dark:text-amber-400 font-bold underline">Connect / Settings</button>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 7: SUPABASE REALTIME CLOUD SETTINGS  -->
+  <!-- ========================================== -->
+  <div id="cloudConfigModal" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
+      
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-xs">⚡</span>
+          <div>
+            <h3 class="font-extrabold text-base text-slate-900 dark:text-white">Supabase Cloud &amp; Real-time</h3>
+            <p class="text-xs text-slate-500">Enable live instant sync across all agency phones &amp; laptops</p>
+          </div>
+        </div>
+        <button onclick="closeCloudConfigModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="space-y-3 flex-1 overflow-y-auto pr-1 custom-scrollbar">
+        <div>
+          <label class="block text-xs font-bold mb-1">Supabase Project URL</label>
+          <input id="cfgSupabaseUrl" type="url" value="https://mxvawuawegujcehjypcm.supabase.co" placeholder="https://mxvawuawegujcehjypcm.supabase.co" class="w-full text-xs font-mono rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold mb-1">Supabase Anon Public API Key <span class="text-rose-500">*</span></label>
+          <input id="cfgSupabaseAnonKey" type="password" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14dmF3dWF3ZWd1amNlaGp5cGNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MjI0MTEsImV4cCI6MjEwNzk5ODQxMX0.i1Du68gVsd3TaNla0MHmCRk040D0ccvJML4uaVsclmk" placeholder="eyJhbGciOiJIUzI1NiIsIn..." class="w-full text-xs font-mono rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+        </div>
+
+        <div id="cloudConnectionFeedback" class="text-xs font-semibold p-2.5 rounded-xl border hidden"></div>
+
+        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-300 space-y-1.5">
+          <p class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+            <span>🚀</span>
+            <span>How to Connect in 2 Minutes:</span>
+          </p>
+          <p>1. Open your project <a href="https://supabase.com/dashboard/project/mxvawuawegujcehjypcm/settings/api" target="_blank" class="text-emerald-600 dark:text-emerald-400 underline font-bold">API Settings</a>.</p>
+          <p>2. Copy your <strong>anon public API key</strong> into the box above.</p>
+          <p>3. In <a href="https://supabase.com/dashboard/project/mxvawuawegujcehjypcm/sql/new" target="_blank" class="text-amber-600 dark:text-amber-400 underline font-bold">SQL Editor</a>, paste the SQL from <code class="font-mono text-amber-600 dark:text-amber-400 font-bold">supabase_setup.sql</code> and click <strong>Run</strong>.</p>
+          <p>4. Click <strong>Connect &amp; Live Sync</strong> below. All devices will now sync live!</p>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-800 gap-2">
+        <button onclick="disconnectCloud()" type="button" class="text-xs text-rose-500 hover:underline">Disconnect Cloud</button>
+        <div class="flex items-center gap-2">
+          <button onclick="closeCloudConfigModal()" type="button" class="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700">Cancel</button>
+          <button onclick="saveCloudConfig()" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition">
+            Connect &amp; Live Sync
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- APPLICATION SCRIPT -->
+  <script>
+    // ==========================================
+    // DATA MODEL & STORAGE
+    // ==========================================
+    const STORAGE_KEY = 'everest_annapurna_deposter_v5';
+
+    // ==========================================
+    // SUPABASE CLOUD & AUTH CONFIGURATION
+    // ==========================================
+    const SUPABASE_CONFIG_KEY = 'everest_annapurna_supabase_cfg_v1';
+    const DEFAULT_SUPABASE_URL = 'https://mxvawuawegujcehjypcm.supabase.co';
+    const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14dmF3dWF3ZWd1amNlaGp5cGNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MjI0MTEsImV4cCI6MjEwNzk5ODQxMX0.i1Du68gVsd3TaNla0MHmCRk040D0ccvJML4uaVsclmk';
+    let supabaseClient = null;
+    let currentUser = null;
+    let realtimeChannel = null;
+
+    function getSupabaseConfig() {
+      try {
+        const raw = localStorage.getItem(SUPABASE_CONFIG_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          return {
+            url: parsed.url || DEFAULT_SUPABASE_URL,
+            anonKey: parsed.anonKey || DEFAULT_SUPABASE_ANON_KEY
+          };
+        }
+      } catch (e) {}
+      return { url: DEFAULT_SUPABASE_URL, anonKey: DEFAULT_SUPABASE_ANON_KEY };
+    }
+
+    function saveSupabaseConfig(url, anonKey) {
+      localStorage.setItem(SUPABASE_CONFIG_KEY, JSON.stringify({ url, anonKey }));
+    }
+
+    function initSupabase() {
+      const cfg = getSupabaseConfig();
+      if (window.supabase && cfg.url && cfg.anonKey) {
+        try {
+          supabaseClient = window.supabase.createClient(cfg.url, cfg.anonKey);
+          updateCloudStatusUI('connecting');
+
+          // Check current active session
+          supabaseClient.auth.getSession().then(({ data: { session } }) => {
+            if (session && session.user) {
+              setCurrentUser(session.user);
+            } else {
+              renderAuthHeader();
+            }
+          }).catch(() => renderAuthHeader());
+
+          // Listen for auth state changes (login, logout)
+          supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (session && session.user) {
+              setCurrentUser(session.user);
+            } else {
+              currentUser = null;
+              renderAuthHeader();
+            }
+          });
+
+          // Sync data from cloud & subscribe to live WebSockets
+          syncFromSupabase().then(() => {
+            subscribeRealtime();
+            updateCloudStatusUI('connected');
+          }).catch(err => {
+            console.warn('Supabase sync notice:', err);
+            updateCloudStatusUI('error');
+          });
+          return;
+        } catch (e) {
+          console.error('Supabase init error:', e);
+        }
+      }
+      updateCloudStatusUI('offline');
+      renderAuthHeader();
+    }
+
+    function setCurrentUser(user) {
+      currentUser = user;
+      const metaRole = user.user_metadata && user.user_metadata.role;
+      const emailRole = user.email && user.email.toLowerCase().includes('admin') ? 'admin' : 'staff';
+      const role = metaRole || emailRole;
+      state.role = role;
+      saveState();
+      renderRoleUI();
+      renderAuthHeader();
+      renderAll();
+    }
+
+    function updateCloudStatusUI(status) {
+      const dot = document.getElementById('cloudStatusDot');
+      const text = document.getElementById('cloudStatusText');
+      if (!dot || !text) return;
+
+      if (status === 'connected') {
+        dot.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-pulse';
+        text.className = 'hidden sm:inline text-emerald-600 dark:text-emerald-400 font-bold';
+        text.textContent = 'Live Cloud';
+      } else if (status === 'connecting') {
+        dot.className = 'w-2 h-2 rounded-full bg-amber-500 animate-ping';
+        text.className = 'hidden sm:inline text-amber-600 dark:text-amber-400 font-semibold';
+        text.textContent = 'Connecting...';
+      } else if (status === 'error') {
+        dot.className = 'w-2 h-2 rounded-full bg-rose-500';
+        text.className = 'hidden sm:inline text-rose-500 font-semibold';
+        text.textContent = 'Cloud Error';
+      } else {
+        dot.className = 'w-2 h-2 rounded-full bg-slate-400';
+        text.className = 'hidden sm:inline text-slate-500';
+        text.textContent = 'Local Mode';
+      }
+    }
+
+    function renderAuthHeader() {
+      const area = document.getElementById('authHeaderArea');
+      if (!area) return;
+
+      if (currentUser) {
+        const email = currentUser.email || 'Staff';
+        const name = (currentUser.user_metadata && currentUser.user_metadata.name) || email.split('@')[0];
+        const role = state.role || 'staff';
+        const roleBadge = role === 'admin' 
+          ? '<span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-amber-500 text-slate-950">👑 Admin</span>'
+          : '<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-sky-500/20 text-sky-600 dark:text-sky-300">📋 Staff</span>';
+
+        area.innerHTML = `
+          <div class="flex items-center gap-1.5 sm:gap-2 bg-slate-100 dark:bg-slate-800/80 px-2 py-1 rounded-xl border border-slate-300 dark:border-slate-700">
+            <div class="text-left text-xs leading-tight">
+              <div class="font-bold text-slate-900 dark:text-white max-w-[100px] sm:max-w-[130px] truncate">${escapeHtml(name)}</div>
+              <div class="text-[10px] text-slate-400 font-mono hidden sm:block truncate max-w-[130px]">${escapeHtml(email)}</div>
+            </div>
+            ${roleBadge}
+            <button onclick="handleSignOut()" class="text-[11px] font-bold text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 px-1 py-0.5 rounded hover:bg-rose-500/10 transition" title="Sign Out">
+              ✕
+            </button>
+          </div>
+        `;
+      } else {
+        area.innerHTML = `
+          <button id="openAuthBtn" onclick="openAuthModal()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:opacity-90 transition flex items-center gap-1.5 shadow-xs">
+            <span>🔑</span>
+            <span class="hidden sm:inline">Sign In</span>
+          </button>
+        `;
+      }
+    }
+
+    async function syncFromSupabase() {
+      if (!supabaseClient) return;
+
+      try {
+        const { data: pkgs, error: pkgErr } = await supabaseClient
+          .from('packages')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (!pkgErr && pkgs && pkgs.length > 0) {
+          state.packages = pkgs.map(p => ({
+            id: p.id,
+            name: p.name,
+            defaultVehicle: p.default_vehicle,
+            capacity: Number(p.capacity)
+          }));
+        }
+
+        const { data: deps, error: depErr } = await supabaseClient
+          .from('departures')
+          .select('*')
+          .order('date', { ascending: true });
+
+        const { data: custs, error: custErr } = await supabaseClient
+          .from('customers')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (!depErr && deps) {
+          state.departures = deps.map(d => {
+            const depCusts = (custs || []).filter(c => c.departure_id === d.id).map(c => ({
+              id: c.id,
+              name: c.name,
+              phone: c.phone,
+              pax: Number(c.pax),
+              remaining: Number(c.remaining),
+              note: c.note || '',
+              bookedBy: c.booked_by || ''
+            }));
+
+            return {
+              id: d.id,
+              packageId: d.package_id,
+              date: d.date,
+              nepaliDate: d.nepali_date || '',
+              vehicleType: d.vehicle_type || 'scorpio',
+              capacity: Number(d.capacity) || 8,
+              driverName: d.driver_name || '',
+              driverPhone: d.driver_phone || '',
+              vehiclePlate: d.vehicle_plate || '',
+              customers: depCusts
+            };
+          });
+        }
+
+        saveState();
+        renderAll();
+      } catch (err) {
+        console.warn('Supabase sync error:', err);
+      }
+    }
+
+    function subscribeRealtime() {
+      if (!supabaseClient) return;
+      if (realtimeChannel) {
+        supabaseClient.removeChannel(realtimeChannel);
+      }
+
+      realtimeChannel = supabaseClient
+        .channel('public_realtime_channel')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'departures' }, () => {
+          syncFromSupabase();
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'customers' }, () => {
+          syncFromSupabase();
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'packages' }, () => {
+          syncFromSupabase();
+        })
+        .subscribe();
+    }
+
+    const DEFAULT_PACKAGES = [
+      { id: 'pkg-1', name: 'Upper Mustang Overland (Jomsom – Lo Manthang)', defaultVehicle: 'scorpio', capacity: 8 },
+      { id: 'pkg-2', name: 'Annapurna Base Camp Gate (Pokhara – Ghandruk)', defaultVehicle: 'scorpio', capacity: 8 },
+      { id: 'pkg-3', name: 'Muktinath Pilgrimage & Kaligandaki Valley', defaultVehicle: 'ev_van', capacity: 12 },
+      { id: 'pkg-4', name: 'Everest Trailhead Jeep (Ktm – Salleri / Phaplu)', defaultVehicle: 'scorpio', capacity: 8 },
+      { id: 'pkg-5', name: 'Everest Flight Link (Ktm – Ramechhap Manthali)', defaultVehicle: 'scorpio', capacity: 8 }
+    ];
+
+    const DRIVER_ROSTER = [
+      { name: 'Pasang Sherpa', phone: '9841223344', plate: 'BA 2 CHA 4521' },
+      { name: 'Mingma Lama', phone: '9841778899', plate: 'GA 1 CHA 9012' },
+      { name: 'Dipak Tamang', phone: '9818556677', plate: 'PRO-3-01-002 EV' },
+      { name: 'Kumar Magar', phone: '9843344556', plate: 'BA 3 CHA 3319' },
+      { name: 'Santosh Bhujel', phone: '9808877665', plate: 'BA 1 PA 1180 EV' }
+    ];
+
+    const _now = new Date();
+    const DEFAULT_STATE = {
+      role: 'admin', // 'admin' | 'staff'
+      activeView: 'list', // 'list' | 'calendar'
+      filterPackage: 'all',
+      filterVehicle: 'all',
+      calendarYear: _now.getFullYear(),
+      calendarMonth: _now.getMonth(),
+      packages: DEFAULT_PACKAGES,
+      departures: [
+        {
+          id: 'dep-mustang-kartik5',
+          packageId: 'pkg-1',
+          date: '2026-10-22',
+          nepaliDate: 'Kartik 5 gatey',
+          vehicleType: 'scorpio',
+          capacity: 8,
+          driverName: '',
+          driverPhone: '',
+          vehiclePlate: '',
+          customers: [
+            {
+              id: 'c-ujwal-1',
+              name: 'Ujwal Baiju',
+              phone: '+977 984-3399734',
+              pax: 7,
+              remaining: 83500,
+              note: 'Kartik 5 departure'
+            }
+          ]
+        }
+      ]
+    };
+
+    let state = loadState();
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          return {
+            ...DEFAULT_STATE,
+            ...parsed,
+            packages: (parsed.packages && parsed.packages.length > 0) ? parsed.packages : DEFAULT_PACKAGES
+          };
+        }
+      } catch (e) {}
+      return JSON.parse(JSON.stringify(DEFAULT_STATE));
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    // ==========================================
+    // HELPERS
+    // ==========================================
+    function getPackages() {
+      return (state && state.packages && state.packages.length > 0) ? state.packages : DEFAULT_PACKAGES;
+    }
+
+    function getPackage(pkgId) {
+      return getPackages().find(p => p.id === pkgId) || { name: 'Custom Tour', capacity: 8, defaultVehicle: 'scorpio' };
+    }
+
+    function getBookedPax(dep) {
+      return (dep.customers || []).reduce((sum, c) => sum + Number(c.pax || 0), 0);
+    }
+
+    function getRemainingSeats(dep) {
+      return Math.max(0, Number(dep.capacity) - getBookedPax(dep));
+    }
+
+    function getTotalRemainingNPR(dep) {
+      return (dep.customers || []).reduce((sum, c) => sum + Number(c.remaining || 0), 0);
+    }
+
+    function formatNPR(amt) {
+      return 'NPR ' + Number(amt || 0).toLocaleString('en-IN');
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const [y, m, d] = dateStr.split('-').map(Number);
+      return new Date(y, m - 1, d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function showToast(msg, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const el = document.createElement('div');
+      const bg = type === 'error' ? 'bg-rose-600 text-white' : 'bg-slate-900 dark:bg-slate-800 text-amber-400 border border-amber-500/40';
+      el.className = `${bg} px-4 py-3 rounded-2xl shadow-xl text-xs font-bold flex items-center gap-2 transform transition-all`;
+      el.innerHTML = `<span>${type === 'error' ? '✕' : '✓'}</span><span>${msg}</span>`;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        setTimeout(() => el.remove(), 250);
+      }, 2800);
+    }
+
+    // ==========================================
+    // ROLE MANAGEMENT (ADMIN vs STAFF)
+    // ==========================================
+    function setRole(role) {
+      state.role = role;
+      saveState();
+      renderRoleUI();
+      renderAll();
+      showToast(role === 'admin' ? '👑 Admin Mode: Full access to departures & driver deposting' : '📋 Staff Mode: You can add customer details to any tour');
+    }
+
+    function renderRoleUI() {
+      const isAdmin = state.role === 'admin';
+      const btnAdmin = document.getElementById('roleBtnAdmin');
+      const btnStaff = document.getElementById('roleBtnStaff');
+      const banner = document.getElementById('roleBanner');
+      const topNewBtn = document.getElementById('topNewDepBtn');
+
+      if (isAdmin) {
+        btnAdmin.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-amber-500 text-slate-950 shadow-xs';
+        btnStaff.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+        banner.className = 'px-4 py-2 bg-amber-500/10 border-b border-amber-500/25 text-amber-900 dark:text-amber-300 text-xs font-semibold flex items-center justify-between';
+        banner.innerHTML = `
+          <div class="max-w-7xl mx-auto w-full flex items-center justify-between">
+            <span>👑 <strong>Admin Active:</strong> You can create departures, assign/depost drivers, and add customer details.</span>
+            <span class="text-[11px] opacity-75">All team members see shared group capacity</span>
+          </div>
+        `;
+        topNewBtn.classList.remove('opacity-50');
+      } else {
+        btnAdmin.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+        btnStaff.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-slate-900 dark:bg-slate-700 text-white shadow-xs';
+        banner.className = 'px-4 py-2 bg-sky-500/10 border-b border-sky-500/25 text-sky-900 dark:text-sky-300 text-xs font-semibold flex items-center justify-between';
+        banner.innerHTML = `
+          <div class="max-w-7xl mx-auto w-full flex items-center justify-between">
+            <span>📋 <strong>Staff Active:</strong> You can add customer details to any tour. Driver deposting and new departures are restricted to Admin.</span>
+            <button onclick="setRole('admin')" class="text-[11px] font-bold underline hover:text-sky-600">Switch to Admin</button>
+          </div>
+        `;
+        topNewBtn.classList.add('opacity-50');
+      }
+
+      const adminPkgBtn = document.getElementById('adminManagePackagesBtn');
+      if (adminPkgBtn) {
+        if (isAdmin) {
+          adminPkgBtn.classList.remove('opacity-50');
+          adminPkgBtn.title = 'Manage & Edit Tour Package Names (Admin)';
+        } else {
+          adminPkgBtn.classList.add('opacity-50');
+          adminPkgBtn.title = 'Package editing is restricted to Admin';
+        }
+      }
+    }
+
+    function handleNewDepartureClick() {
+      if (state.role !== 'admin') {
+        showToast('🔒 Only Admin can create new departures. Staff can add customer details to any package below.', 'error');
+        return;
+      }
+      openNewDepartureModal();
+    }
+
+    function handleManagePackagesClick() {
+      if (state.role !== 'admin') {
+        showToast('🔒 Only Admin can edit tour package names and capacities.', 'error');
+        return;
+      }
+      openManagePackagesModal();
+    }
+
+    // ==========================================
+    // HOMEPAGE: PACKAGES & REMAINING SEATS CARDS
+    // ==========================================
+    function renderPackagesOverview() {
+      const container = document.getElementById('packagesOverviewGrid');
+      const countEl = document.getElementById('packagesLiveCount');
+      const pkgs = getPackages();
+
+      countEl.textContent = `${pkgs.length} Himalayan Packages Active`;
+
+      container.innerHTML = pkgs.map(pkg => {
+        // Find upcoming departures for this package
+        const pkgDeps = state.departures
+          .filter(d => d.packageId === pkg.id)
+          .sort((a, b) => a.date.localeCompare(b.date));
+
+        const nextDep = pkgDeps[0];
+        let remainingText = '';
+        let statusBadge = '';
+        let targetDepId = '';
+
+        if (nextDep) {
+          targetDepId = nextDep.id;
+          const left = getRemainingSeats(nextDep);
+          const booked = getBookedPax(nextDep);
+          remainingText = `${left} seats remaining (${booked}/${nextDep.capacity} booked)`;
+
+          if (left <= 0) {
+            statusBadge = `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-500/15 text-rose-600 dark:text-rose-400">Full</span>`;
+          } else if (left <= 2) {
+            statusBadge = `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400">${left} Left</span>`;
+          } else {
+            statusBadge = `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">${left} Open</span>`;
+          }
+        } else {
+          remainingText = 'No active departure scheduled';
+          statusBadge = `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-200 dark:bg-slate-800 text-slate-500">Scheduled Soon</span>`;
+        }
+
+        return `
+          <div class="bg-white dark:bg-[#111625] rounded-2xl border border-slate-200 dark:border-slate-800 p-4 space-y-3 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="font-extrabold text-sm text-slate-900 dark:text-white leading-snug">${pkg.name}</h3>
+                ${statusBadge}
+              </div>
+
+              ${nextDep ? `
+                <div class="text-xs space-y-1">
+                  <div class="font-semibold text-amber-600 dark:text-amber-400">
+                    📅 Next: ${formatDate(nextDep.date)}${nextDep.nepaliDate ? ` • ${nextDep.nepaliDate}` : ''}
+                  </div>
+                  <div class="text-slate-600 dark:text-slate-300 font-medium">
+                    🚙 ${nextDep.vehicleType === 'scorpio' ? 'Scorpio Jeep' : 'EV Van'} &bull; <strong class="${getRemainingSeats(nextDep) > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'}">${remainingText}</strong>
+                  </div>
+                  <div class="text-[11px] text-slate-500">
+                    👨‍✈️ Driver: <strong class="text-slate-700 dark:text-slate-300">${nextDep.driverName || 'Not assigned'}</strong>
+                  </div>
+                </div>
+              ` : `
+                <div class="text-xs text-slate-500 py-1">
+                  Capacity: ${pkg.capacity} Pax (${pkg.defaultVehicle === 'scorpio' ? 'Scorpio Jeep' : 'EV Van'})
+                </div>
+              `}
+            </div>
+
+            <div class="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-2">
+              ${nextDep ? `
+                <button onclick="openAddCustomerModal('${targetDepId}')" ${getRemainingSeats(nextDep) <= 0 ? 'disabled' : ''} class="w-full py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${getRemainingSeats(nextDep) <= 0 ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed' : 'bg-amber-500 hover:bg-amber-400 text-slate-950 active:scale-95 shadow-xs'}">
+                  <span>+ Add Customer</span>
+                </button>
+              ` : `
+                <button onclick="${state.role === 'admin' ? `openNewDepForPackage('${pkg.id}')` : `showToast('Admin creates new tour departures', 'error')`}" class="w-full py-2 px-3 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                  ${state.role === 'admin' ? '+ Schedule Departure' : 'Awaiting Admin Departure'}
+                </button>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ==========================================
+    // DEPARTURES STREAM / LIST (CLEAN, BOLD)
+    // ==========================================
+    function renderDeparturesList() {
+      const container = document.getElementById('departuresListContainer');
+      const filtered = state.departures
+        .filter(d => state.filterPackage === 'all' || d.packageId === state.filterPackage)
+        .filter(d => state.filterVehicle === 'all' || d.vehicleType === state.filterVehicle)
+        .sort((a, b) => a.date.localeCompare(b.date));
+
+      if (filtered.length === 0) {
+        const isAdmin = state.role === 'admin';
+        container.innerHTML = `
+          <div class="p-10 text-center bg-white dark:bg-[#111625] rounded-3xl border border-dashed border-slate-300 dark:border-slate-800 space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto text-xl font-bold">
+              🏔️
+            </div>
+            <div>
+              <h4 class="font-extrabold text-sm text-slate-900 dark:text-white">No Tour Departures Scheduled Yet</h4>
+              <p class="text-xs text-slate-500 max-w-sm mx-auto mt-1">
+                ${isAdmin ? 'Click "+ New Departure" above or choose a package above to schedule your first tour.' : 'Staff can add customer bookings once an Admin schedules upcoming departures.'}
+              </p>
+            </div>
+            ${isAdmin ? `
+              <button onclick="openNewDepartureModal()" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition shadow-sm">
+                + Create First Departure
+              </button>
+            ` : ''}
+          </div>
+        `;
+        return;
+      }
+
+      const isAdmin = state.role === 'admin';
+
+      container.innerHTML = filtered.map(dep => {
+        const pkg = getPackage(dep.packageId);
+        const booked = getBookedPax(dep);
+        const left = getRemainingSeats(dep);
+        const totalRemNPR = getTotalRemainingNPR(dep);
+        const vLabel = dep.vehicleType === 'scorpio' ? 'Scorpio Jeep (7–8)' : 'EV Van (9–14)';
+
+        // Customer rows
+        const customerRows = (dep.customers || []).length === 0
+          ? `<div class="text-xs text-slate-400 italic py-2">No customers added yet. All ${dep.capacity} seats are open for bookings.</div>`
+          : dep.customers.map((c, idx) => `
+              <div class="flex items-center justify-between text-xs py-1.5 border-b border-slate-100 dark:border-slate-800/80 last:border-0">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-slate-700 dark:text-slate-200">${idx + 1}. ${c.name}</span>
+                  <span class="px-2 py-0.5 rounded-md font-bold text-[10px] bg-amber-500/15 text-amber-700 dark:text-amber-300">${c.pax} Pax</span>
+                  <span class="text-slate-500 font-mono text-[11px]">📞 ${c.phone}</span>
+                  ${c.note ? `<span class="text-slate-400 text-[11px] hidden sm:inline">&bull; 📍 ${c.note}</span>` : ''}
+                </div>
+                <div class="flex items-center gap-2.5">
+                  <span class="font-bold text-amber-600 dark:text-amber-400 font-mono">${formatNPR(c.remaining)}</span>
+                  <button onclick="deleteCustomer('${dep.id}', '${c.id}')" class="text-slate-400 hover:text-rose-500 text-xs font-bold" title="Remove customer">✕</button>
+                </div>
+              </div>
+            `).join('');
+
+        return `
+          <div class="bg-white dark:bg-[#111625] rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-xs space-y-4">
+            
+            <!-- Departure Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="font-extrabold text-base text-slate-900 dark:text-white">${pkg.name}</h3>
+                  <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${left > 0 ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/15 text-rose-600 border border-rose-500/30'}">
+                    ${left} / ${dep.capacity} Seats Available
+                  </span>
+                </div>
+                <div class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">
+                  📅 <strong class="text-amber-600 dark:text-amber-400">${formatDate(dep.date)}${dep.nepaliDate ? ` (${dep.nepaliDate})` : ''}</strong> &bull; 🚙 ${vLabel} &bull; Shared Group Tour (All agencies can book)
+                </div>
+              </div>
+
+              <!-- Driver Status & Actions -->
+              <div class="flex items-center gap-2 flex-wrap">
+                ${dep.driverName ? `
+                  <div class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-medium border border-slate-200 dark:border-slate-700 flex items-center gap-1.5">
+                    <span>👨‍✈️ Driver:</span>
+                    <strong class="text-slate-900 dark:text-white">${dep.driverName}</strong>
+                    ${dep.driverPhone ? `<span class="text-slate-400 font-mono text-[11px]">(${dep.driverPhone})</span>` : ''}
+                    ${dep.vehiclePlate ? `<span class="font-mono text-[11px] text-amber-600 dark:text-amber-400 font-bold">[${dep.vehiclePlate}]</span>` : ''}
+                  </div>
+                ` : `
+                  <span class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-amber-500/15 text-amber-700 dark:text-amber-300">
+                    ⚠️ Driver Unassigned
+                  </span>
+                `}
+
+                ${isAdmin ? `
+                  <button onclick="openAssignDriverModal('${dep.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    ${dep.driverName ? 'Edit Driver' : 'Assign Driver'}
+                  </button>
+                ` : `
+                  <span class="text-[11px] text-slate-400 italic px-2">Driver depost: Admin only</span>
+                `}
+
+                <button onclick="openManifestModal('${dep.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition flex items-center gap-1">
+                  <span>WhatsApp Manifest</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Customers Block -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between text-xs font-bold text-slate-500">
+                <span>Booked Customers (${(dep.customers || []).length} groups &bull; ${booked} pax total)</span>
+                <span>Driver Collect: <strong class="text-amber-600 dark:text-amber-400 font-mono">${formatNPR(totalRemNPR)}</strong></span>
+              </div>
+              <div class="bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
+                ${customerRows}
+              </div>
+            </div>
+
+            <!-- Footer: Add Customer Button (Available to both Admin and Staff) -->
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-[11px] text-slate-400 font-medium">
+                ${left > 0 ? `✓ ${left} more guest spots can be added by any team member` : 'Tour is full'}
+              </span>
+              <button onclick="openAddCustomerModal('${dep.id}')" ${left <= 0 ? 'disabled' : ''} class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${left <= 0 ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed' : 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-xs active:scale-95'}">
+                <span>+ Add Customer</span>
+              </button>
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ==========================================
+    // CALENDAR VIEW (MONTH GRID)
+    // ==========================================
+    function renderCalendar() {
+      const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      document.getElementById('calMonthTitle').textContent = `${monthNames[state.calendarMonth]} ${state.calendarYear}`;
+
+      const grid = document.getElementById('calendarGrid');
+      const firstDay = new Date(state.calendarYear, state.calendarMonth, 1).getDay();
+      const daysInMonth = new Date(state.calendarYear, state.calendarMonth + 1, 0).getDate();
+
+      let cells = '';
+      for (let i = 0; i < firstDay; i++) {
+        cells += `<div class="min-h-[75px] bg-slate-50/50 dark:bg-slate-900/30 p-1"></div>`;
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${state.calendarYear}-${String(state.calendarMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dayDeps = state.departures.filter(d => d.date === dateStr);
+
+        let pills = dayDeps.map(d => {
+          const pkg = getPackage(d.packageId);
+          const left = getRemainingSeats(d);
+          return `
+            <button onclick="openAddCustomerModal('${d.id}')" class="w-full text-left p-1 rounded-md text-[10px] font-bold border transition truncate block ${left > 0 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300' : 'bg-rose-500/10 border-rose-500/30 text-rose-600'}">
+              ${pkg.name.split(' ')[0]} (${left} free)
+            </button>
+          `;
+        }).join('');
+
+        cells += `
+          <div class="min-h-[78px] p-1.5 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+            <span class="text-xs font-bold text-slate-500">${day}</span>
+            <div class="space-y-1 mt-1">${pills}</div>
+          </div>
+        `;
+      }
+
+      grid.innerHTML = cells;
+    }
+
+    function changeCalMonth(delta) {
+      state.calendarMonth += delta;
+      if (state.calendarMonth > 11) {
+        state.calendarMonth = 0;
+        state.calendarYear++;
+      } else if (state.calendarMonth < 0) {
+        state.calendarMonth = 11;
+        state.calendarYear--;
+      }
+      renderCalendar();
+    }
+
+    // ==========================================
+    // SWITCH VIEWS & FILTERS
+    // ==========================================
+    function switchView(view) {
+      state.activeView = view;
+      const btnList = document.getElementById('viewTabListBtn');
+      const btnCal = document.getElementById('viewTabCalendarBtn');
+      const subList = document.getElementById('subviewList');
+      const subCal = document.getElementById('subviewCalendar');
+
+      if (view === 'list') {
+        btnList.className = 'px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs';
+        btnCal.className = 'px-3.5 py-1.5 rounded-xl text-xs font-semibold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+        subList.classList.remove('hidden');
+        subCal.classList.add('hidden');
+      } else {
+        btnCal.className = 'px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs';
+        btnList.className = 'px-3.5 py-1.5 rounded-xl text-xs font-semibold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+        subList.classList.add('hidden');
+        subCal.classList.remove('hidden');
+        renderCalendar();
+      }
+    }
+
+    function setFilterPackage(pkgId) {
+      state.filterPackage = pkgId;
+      renderDeparturesList();
+    }
+
+    function setFilterVehicle(vType) {
+      state.filterVehicle = vType;
+      renderDeparturesList();
+    }
+
+    // ==========================================
+    // MODAL: NEW DEPARTURE (ADMIN)
+    // ==========================================
+    function openNewDepartureModal(presetPackageId = null) {
+      const pkgs = getPackages();
+      document.getElementById('ndPackageId').innerHTML = pkgs.map(p => `
+        <option value="${p.id}">${p.name}</option>
+      `).join('');
+
+      const targetPkgId = presetPackageId || (pkgs[0] ? pkgs[0].id : null);
+      if (targetPkgId) {
+        document.getElementById('ndPackageId').value = targetPkgId;
+        handleNewDepPackageChange(targetPkgId);
+      } else {
+        document.getElementById('ndVehicleType').value = 'scorpio';
+        handleNewDepVehicleChange('scorpio');
+        document.getElementById('ndCapacity').value = 8;
+      }
+
+      const _today = new Date();
+      const _yyyy = _today.getFullYear();
+      const _mm = String(_today.getMonth() + 1).padStart(2, '0');
+      const _dd = String(_today.getDate()).padStart(2, '0');
+      document.getElementById('ndDate').value = `${_yyyy}-${_mm}-${_dd}`;
+      document.getElementById('ndCustName').value = '';
+      document.getElementById('ndCustPhone').value = '';
+      document.getElementById('ndCustPax').value = '';
+      document.getElementById('ndCustRemaining').value = '';
+      document.getElementById('ndDriverName').value = '';
+      document.getElementById('ndDriverPhone').value = '';
+      document.getElementById('ndVehiclePlate').value = '';
+
+      document.getElementById('newDepartureModal').classList.remove('hidden');
+    }
+
+    function handleNewDepPackageChange(pkgId) {
+      const pkg = getPackage(pkgId);
+      if (pkg) {
+        document.getElementById('ndVehicleType').value = pkg.defaultVehicle || 'scorpio';
+        handleNewDepVehicleChange(pkg.defaultVehicle || 'scorpio');
+        document.getElementById('ndCapacity').value = pkg.capacity || 8;
+      }
+    }
+
+    function openNewDepForPackage(pkgId) {
+      openNewDepartureModal(pkgId);
+    }
+
+    function closeNewDepartureModal() {
+      document.getElementById('newDepartureModal').classList.add('hidden');
+    }
+
+    function handleNewDepVehicleChange(vType) {
+      const capInput = document.getElementById('ndCapacity');
+      const hint = document.getElementById('ndCapHint');
+      if (vType === 'scorpio') {
+        capInput.min = 7;
+        capInput.max = 8;
+        capInput.value = 8;
+        hint.textContent = 'Scorpio allows 7 or 8 max seats';
+      } else {
+        capInput.min = 9;
+        capInput.max = 14;
+        capInput.value = 12;
+        hint.textContent = 'EV Van allows 9 to 14 seats';
+      }
+    }
+
+    function saveNewDepartureForm(e) {
+      e.preventDefault();
+      if (state.role !== 'admin') {
+        showToast('Only Admin can save new departures', 'error');
+        return;
+      }
+
+      const pkgId = document.getElementById('ndPackageId').value;
+      const date = document.getElementById('ndDate').value;
+      const vType = document.getElementById('ndVehicleType').value;
+      const cap = Number(document.getElementById('ndCapacity').value);
+
+      const custName = document.getElementById('ndCustName').value.trim();
+      const custPhone = document.getElementById('ndCustPhone').value.trim();
+      const custPax = Number(document.getElementById('ndCustPax').value || 0);
+      const custRemaining = Number(document.getElementById('ndCustRemaining').value || 0);
+
+      const driverName = document.getElementById('ndDriverName').value.trim();
+      const driverPhone = document.getElementById('ndDriverPhone').value.trim();
+      const vehiclePlate = document.getElementById('ndVehiclePlate').value.trim().toUpperCase();
+
+      const newDep = {
+        id: 'dep-' + Date.now(),
+        packageId: pkgId,
+        date: date,
+        vehicleType: vType,
+        capacity: cap,
+        driverName: driverName,
+        driverPhone: driverPhone,
+        vehiclePlate: vehiclePlate,
+        customers: []
+      };
+
+      if (custName && custPax > 0) {
+        newDep.customers.push({
+          id: 'c-' + Date.now(),
+          name: custName,
+          phone: custPhone || '98XXXXXXXX',
+          pax: custPax,
+          remaining: custRemaining,
+          note: 'Direct booking'
+        });
+      }
+
+      state.departures.push(newDep);
+      saveState();
+
+      if (supabaseClient) {
+        supabaseClient.from('departures').upsert({
+          id: newDep.id,
+          package_id: newDep.packageId,
+          date: newDep.date,
+          nepali_date: newDep.nepaliDate || '',
+          vehicle_type: newDep.vehicleType,
+          capacity: newDep.capacity,
+          driver_name: newDep.driverName || '',
+          driver_phone: newDep.driverPhone || '',
+          vehicle_plate: newDep.vehiclePlate || ''
+        }).then(() => {
+          if (newDep.customers && newDep.customers.length > 0) {
+            const c = newDep.customers[0];
+            supabaseClient.from('customers').upsert({
+              id: c.id,
+              departure_id: newDep.id,
+              name: c.name,
+              phone: c.phone,
+              pax: c.pax,
+              remaining: c.remaining,
+              note: c.note || '',
+              booked_by: (currentUser && currentUser.email) || 'Admin'
+            });
+          }
+        }).catch(err => console.warn('Supabase departure upsert error:', err));
+      }
+
+      closeNewDepartureModal();
+      renderAll();
+      showToast('Created new shared tour departure!');
+    }
+
+    // ==========================================
+    // MODAL: ADD CUSTOMER DETAILS (STAFF & ADMIN)
+    // ==========================================
+    function openAddCustomerModal(depId) {
+      const dep = state.departures.find(d => d.id === depId);
+      if (!dep) return;
+
+      const left = getRemainingSeats(dep);
+      if (left <= 0) {
+        showToast('This departure is completely full', 'error');
+        return;
+      }
+
+      const pkg = getPackage(dep.packageId);
+      document.getElementById('acDepartureId').value = dep.id;
+      document.getElementById('acModalSubtitle').textContent = `${pkg.name} &bull; ${formatDate(dep.date)} (${left} seats left)`;
+      document.getElementById('acCustName').value = '';
+      document.getElementById('acCustPhone').value = '';
+      document.getElementById('acCustPax').max = left;
+      document.getElementById('acCustPax').value = Math.min(2, left);
+      document.getElementById('acPaxHint').textContent = `(Max ${left} available)`;
+      document.getElementById('acCustRemaining').value = '';
+      document.getElementById('acCustPickup').value = '';
+
+      document.getElementById('addCustomerModal').classList.remove('hidden');
+    }
+
+    function closeAddCustomerModal() {
+      document.getElementById('addCustomerModal').classList.add('hidden');
+    }
+
+    function saveCustomerForm(e) {
+      e.preventDefault();
+      const depId = document.getElementById('acDepartureId').value;
+      const dep = state.departures.find(d => d.id === depId);
+      if (!dep) return;
+
+      const pax = Number(document.getElementById('acCustPax').value);
+      const booked = getBookedPax(dep);
+      if (booked + pax > dep.capacity) {
+        showToast(`Cannot exceed capacity of ${dep.capacity}! Only ${dep.capacity - booked} spots left.`, 'error');
+        return;
+      }
+
+      const newCustomer = {
+        id: 'c-' + Date.now(),
+        name: document.getElementById('acCustName').value.trim(),
+        phone: document.getElementById('acCustPhone').value.trim(),
+        pax: pax,
+        remaining: Number(document.getElementById('acCustRemaining').value || 0),
+        note: document.getElementById('acCustPickup').value.trim()
+      };
+
+      dep.customers.push(newCustomer);
+      saveState();
+
+      if (supabaseClient) {
+        supabaseClient.from('customers').upsert({
+          id: newCustomer.id,
+          departure_id: dep.id,
+          name: newCustomer.name,
+          phone: newCustomer.phone,
+          pax: newCustomer.pax,
+          remaining: newCustomer.remaining,
+          note: newCustomer.note || '',
+          booked_by: (currentUser && currentUser.email) || (state.role === 'admin' ? 'Admin' : 'Staff')
+        }).catch(err => console.warn('Supabase customer upsert error:', err));
+      }
+
+      closeAddCustomerModal();
+      renderAll();
+      showToast(`Added ${newCustomer.name} (${newCustomer.pax} pax) to shared tour!`);
+    }
+
+    function deleteCustomer(depId, custId) {
+      const dep = state.departures.find(d => d.id === depId);
+      if (!dep) return;
+      if (confirm('Remove this customer group and reopen seats?')) {
+        dep.customers = dep.customers.filter(c => c.id !== custId);
+        saveState();
+
+        if (supabaseClient) {
+          supabaseClient.from('customers').delete().eq('id', custId).catch(err => console.warn('Supabase customer delete error:', err));
+        }
+
+        renderAll();
+        showToast('Customer removed. Seats reopened.');
+      }
+    }
+
+    // ==========================================
+    // MODAL: ASSIGN DRIVER (ADMIN ONLY)
+    // ==========================================
+    function openAssignDriverModal(depId) {
+      if (state.role !== 'admin') {
+        showToast('🔒 Only Admin can depost and assign drivers', 'error');
+        return;
+      }
+
+      const dep = state.departures.find(d => d.id === depId);
+      if (!dep) return;
+
+      const pkg = getPackage(dep.packageId);
+      document.getElementById('adDepartureId').value = dep.id;
+      document.getElementById('adModalSub').textContent = `${pkg.name} &bull; ${formatDate(dep.date)}`;
+      document.getElementById('adDriverName').value = dep.driverName || '';
+      document.getElementById('adDriverPhone').value = dep.driverPhone || '';
+      document.getElementById('adVehiclePlate').value = dep.vehiclePlate || '';
+
+      // Quick driver presets
+      const quickContainer = document.getElementById('adDriverQuickList');
+      quickContainer.innerHTML = DRIVER_ROSTER.map(d => `
+        <button type="button" onclick="selectQuickDriver('${d.name}', '${d.phone}', '${d.plate}')" class="px-2 py-1 rounded-lg text-[11px] font-bold bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-amber-900/40 border border-slate-200 dark:border-slate-700">
+          ${d.name}
+        </button>
+      `).join('');
+
+      const clearBtn = document.getElementById('adClearBtn');
+      if (dep.driverName) clearBtn.classList.remove('hidden');
+      else clearBtn.classList.add('hidden');
+
+      document.getElementById('assignDriverModal').classList.remove('hidden');
+    }
+
+    function selectQuickDriver(name, phone, plate) {
+      document.getElementById('adDriverName').value = name;
+      document.getElementById('adDriverPhone').value = phone;
+      document.getElementById('adVehiclePlate').value = plate;
+    }
+
+    function closeAssignDriverModal() {
+      document.getElementById('assignDriverModal').classList.add('hidden');
+    }
+
+    function saveDriverAssignment(e) {
+      e.preventDefault();
+      if (state.role !== 'admin') {
+        showToast('Only Admin can assign drivers', 'error');
+        return;
+      }
+
+      const depId = document.getElementById('adDepartureId').value;
+      const dep = state.departures.find(d => d.id === depId);
+      if (!dep) return;
+
+      const dName = document.getElementById('adDriverName').value.trim();
+      if (!dName) {
+        showToast('Driver Name is required!', 'error');
+        return;
+      }
+
+      dep.driverName = dName;
+      dep.driverPhone = document.getElementById('adDriverPhone').value.trim();
+      dep.vehiclePlate = document.getElementById('adVehiclePlate').value.trim().toUpperCase();
+
+      saveState();
+
+      if (supabaseClient) {
+        supabaseClient.from('departures').update({
+          driver_name: dep.driverName,
+          driver_phone: dep.driverPhone,
+          vehicle_plate: dep.vehiclePlate
+        }).eq('id', dep.id).catch(err => console.warn('Supabase driver update error:', err));
+      }
+
+      closeAssignDriverModal();
+      renderAll();
+      showToast(`Driver ${dName} deposted and assigned successfully!`);
+    }
+
+    function clearDriverAssignment() {
+      if (state.role !== 'admin') return;
+      const depId = document.getElementById('adDepartureId').value;
+      const dep = state.departures.find(d => d.id === depId);
+      if (!dep) return;
+
+      if (confirm('Remove driver from this departure?')) {
+        dep.driverName = '';
+        dep.driverPhone = '';
+        dep.vehiclePlate = '';
+        saveState();
+
+        if (supabaseClient) {
+          supabaseClient.from('departures').update({
+            driver_name: '',
+            driver_phone: '',
+            vehicle_plate: ''
+          }).eq('id', dep.id).catch(err => console.warn('Supabase driver clear error:', err));
+        }
+
+        closeAssignDriverModal();
+        renderAll();
+        showToast('Driver removed. Tour is unassigned.');
+      }
+    }
+
+    // ==========================================
+    // WHATSAPP MANIFEST
+    // ==========================================
+    function buildManifest(dep) {
+      const pkg = getPackage(dep.packageId);
+      const booked = getBookedPax(dep);
+      const totalRemaining = getTotalRemainingNPR(dep);
+      const vLabel = dep.vehicleType === 'scorpio' ? 'Scorpio Jeep 4x4' : 'EV Van';
+
+      let text = [];
+      text.push(`🏔️ *EVEREST ANNAPURNA DEPOSTER*`);
+      text.push(`🚐 *OFFICIAL TOUR DRIVER MANIFEST*`);
+      text.push(`----------------------------------`);
+      text.push(`📍 *Package:* ${pkg.name}`);
+      text.push(`📅 *Date:* ${formatDate(dep.date)}${dep.nepaliDate ? ` (${dep.nepaliDate})` : ''}`);
+      text.push(`🚙 *Vehicle:* ${vLabel} (${booked}/${dep.capacity} Pax)`);
+      text.push(`👨‍✈️ *Driver:* ${dep.driverName ? '*' + dep.driverName + '*' : 'Pending'}`);
+      if (dep.driverPhone) text.push(`📞 *Driver Phone:* ${dep.driverPhone}`);
+      if (dep.vehiclePlate) text.push(`🔢 *Number Plate:* ${dep.vehiclePlate}`);
+      text.push(`🔄 *Seating Rule:* Rotational Seating (Fair Seat Rotation)`);
+      text.push(`----------------------------------`);
+      text.push(`👥 *PASSENGERS & CASH TO COLLECT:*`);
+
+      if (!dep.customers || dep.customers.length === 0) {
+        text.push(`• No passenger groups added.`);
+      } else {
+        dep.customers.forEach((c, idx) => {
+          text.push(`${idx + 1}. *${c.name}* (${c.pax} Pax) • 📞 ${c.phone}`);
+          if (c.note) text.push(`   📍 Pickup: ${c.note}`);
+          text.push(`   💰 *Driver Collect:* ${formatNPR(c.remaining)}`);
+        });
+      }
+
+      text.push(`----------------------------------`);
+      text.push(`✅ *Total Passengers:* ${booked} Pax`);
+      text.push(`💵 *TOTAL CASH FOR DRIVER TO COLLECT:* *${formatNPR(totalRemaining)}*`);
+      text.push(`----------------------------------`);
+      text.push(`*Safe travels with Everest Annapurna Deposter*`);
+
+      return text.join('\n');
+    }
+
+    function openManifestModal(depId) {
+      const dep = state.departures.find(d => d.id === depId);
+      if (!dep) return;
+      document.getElementById('manifestTextarea').value = buildManifest(dep);
+      document.getElementById('manifestModal').classList.remove('hidden');
+    }
+
+    function closeManifestModal() {
+      document.getElementById('manifestModal').classList.add('hidden');
+    }
+
+    function copyManifestText() {
+      const ta = document.getElementById('manifestTextarea');
+      ta.select();
+      navigator.clipboard.writeText(ta.value).then(() => {
+        showToast('Manifest copied for WhatsApp!');
+      }).catch(() => {
+        document.execCommand('copy');
+        showToast('Manifest copied for WhatsApp!');
+      });
+    }
+
+    // ==========================================
+    // MODAL 5: MANAGE & EDIT PACKAGES (ADMIN)
+    // ==========================================
+    function openManagePackagesModal() {
+      if (state.role !== 'admin') {
+        showToast('🔒 Only Admin can edit tour package names and capacities.', 'error');
+        return;
+      }
+      renderPackagesManagerList();
+      document.getElementById('managePackagesModal').classList.remove('hidden');
+    }
+
+    function closeManagePackagesModal() {
+      document.getElementById('managePackagesModal').classList.add('hidden');
+    }
+
+    function handleNewPkgVehicleChange(vType) {
+      const capInput = document.getElementById('newPkgCapacity');
+      if (vType === 'scorpio') {
+        capInput.value = 8;
+      } else if (vType === 'ev_van') {
+        capInput.value = 12;
+      }
+    }
+
+    function renderPackagesManagerList() {
+      const container = document.getElementById('packagesManagerList');
+      const pkgs = getPackages();
+
+      if (pkgs.length === 0) {
+        container.innerHTML = '<div class="text-xs text-slate-500 py-4 text-center">No packages defined. Add one below.</div>';
+        return;
+      }
+
+      container.innerHTML = pkgs.map((pkg, idx) => `
+        <div class="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 space-y-2.5">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">Package #${idx + 1}</span>
+            <div class="flex items-center gap-1.5">
+              <button onclick="savePackageEdit('${pkg.id}')" class="px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-xs transition flex items-center gap-1">
+                <span>Save</span>
+              </button>
+              ${pkgs.length > 1 ? `
+                <button onclick="deletePackage('${pkg.id}')" class="p-1 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition" title="Delete Package">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+              ` : ''}
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-500 mb-1">Package Name</label>
+            <input id="pkgName-${pkg.id}" type="text" value="${escapeHtml(pkg.name)}" class="w-full text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-500 mb-1">Default Vehicle</label>
+              <select id="pkgVehicle-${pkg.id}" onchange="document.getElementById('pkgCap-${pkg.id}').value = this.value === 'scorpio' ? 8 : 12" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 font-medium">
+                <option value="scorpio" ${pkg.defaultVehicle === 'scorpio' ? 'selected' : ''}>Scorpio Jeep (8)</option>
+                <option value="ev_van" ${pkg.defaultVehicle === 'ev_van' ? 'selected' : ''}>EV Van (12)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-500 mb-1">Default Capacity</label>
+              <input id="pkgCap-${pkg.id}" type="number" min="1" max="30" value="${pkg.capacity}" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 font-mono" />
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function savePackageEdit(pkgId) {
+      if (state.role !== 'admin') return;
+      const pkg = getPackages().find(p => p.id === pkgId);
+      if (!pkg) return;
+
+      const newName = document.getElementById(`pkgName-${pkgId}`).value.trim();
+      const newVehicle = document.getElementById(`pkgVehicle-${pkgId}`).value;
+      const newCap = Number(document.getElementById(`pkgCap-${pkgId}`).value) || 8;
+
+      if (!newName) {
+        showToast('Package name cannot be empty', 'error');
+        return;
+      }
+
+      pkg.name = newName;
+      pkg.defaultVehicle = newVehicle;
+      pkg.capacity = newCap;
+
+      saveState();
+
+      if (supabaseClient) {
+        supabaseClient.from('packages').upsert({
+          id: pkg.id,
+          name: pkg.name,
+          default_vehicle: pkg.defaultVehicle,
+          capacity: pkg.capacity
+        }).catch(err => console.warn('Supabase package update error:', err));
+      }
+
+      renderAll();
+      showToast(`Package updated: "${newName}"`);
+    }
+
+    function addNewPackageFromManager() {
+      if (state.role !== 'admin') return;
+      const nameInput = document.getElementById('newPkgName');
+      const vSelect = document.getElementById('newPkgVehicle');
+      const capInput = document.getElementById('newPkgCapacity');
+
+      const name = nameInput.value.trim();
+      if (!name) {
+        showToast('Please enter a package name', 'error');
+        return;
+      }
+
+      const vehicle = vSelect.value;
+      const cap = Number(capInput.value) || (vehicle === 'scorpio' ? 8 : 12);
+      const newId = 'pkg-' + Date.now();
+
+      if (!state.packages) state.packages = [...DEFAULT_PACKAGES];
+      state.packages.push({
+        id: newId,
+        name: name,
+        defaultVehicle: vehicle,
+        capacity: cap
+      });
+
+      nameInput.value = '';
+      capInput.value = vehicle === 'scorpio' ? 8 : 12;
+
+      saveState();
+
+      if (supabaseClient) {
+        supabaseClient.from('packages').upsert({
+          id: newId,
+          name: name,
+          default_vehicle: vehicle,
+          capacity: cap
+        }).catch(err => console.warn('Supabase package insert error:', err));
+      }
+
+      renderPackagesManagerList();
+      renderAll();
+      showToast(`Added package: "${name}"`);
+    }
+
+    function deletePackage(pkgId) {
+      if (state.role !== 'admin') return;
+      const pkgs = getPackages();
+      if (pkgs.length <= 1) {
+        showToast('At least one package is required', 'error');
+        return;
+      }
+
+      const pkg = pkgs.find(p => p.id === pkgId);
+      const pkgName = pkg ? pkg.name : 'package';
+
+      if (confirm(`Are you sure you want to delete "${pkgName}"?`)) {
+        state.packages = pkgs.filter(p => p.id !== pkgId);
+        saveState();
+
+        if (supabaseClient) {
+          supabaseClient.from('packages').delete().eq('id', pkgId).catch(err => console.warn('Supabase package delete error:', err));
+        }
+
+        renderPackagesManagerList();
+        renderAll();
+        showToast(`Deleted "${pkgName}"`);
+      }
+    }
+
+    function resetDefaultPackages() {
+      if (state.role !== 'admin') return;
+      if (confirm('Reset all packages to default Himalayan routes?')) {
+        state.packages = JSON.parse(JSON.stringify(DEFAULT_PACKAGES));
+        saveState();
+        renderPackagesManagerList();
+        renderAll();
+        showToast('Reset packages to default');
+      }
+    }
+
+    // ==========================================
+    // MODAL 6: AUTHENTICATION CONTROLLER
+    // ==========================================
+    let authMode = 'signin'; // 'signin' | 'signup'
+
+    function openAuthModal() {
+      const fb = document.getElementById('authFeedback');
+      if (fb) fb.className = 'hidden text-xs font-semibold p-2.5 rounded-xl border';
+      const form = document.getElementById('authForm');
+      if (form) form.reset();
+      switchAuthMode('signin');
+      document.getElementById('authModal').classList.remove('hidden');
+    }
+
+    function closeAuthModal() {
+      document.getElementById('authModal').classList.add('hidden');
+    }
+
+    function switchAuthMode(mode) {
+      authMode = mode;
+      const isSignUp = mode === 'signup';
+      const titleEl = document.getElementById('authModalTitle');
+      const submitBtn = document.getElementById('authSubmitBtn');
+      const tabIn = document.getElementById('authTabSignInBtn');
+      const tabUp = document.getElementById('authTabSignUpBtn');
+      const nameField = document.getElementById('authNameField');
+      const roleField = document.getElementById('authRoleField');
+
+      if (titleEl) titleEl.textContent = isSignUp ? 'Register Team Member' : 'Team Sign In';
+      if (submitBtn) submitBtn.textContent = isSignUp ? 'Create Agency Account' : 'Sign In to Dashboard';
+
+      if (isSignUp) {
+        if (tabUp) tabUp.className = 'w-1/2 py-1.5 rounded-lg bg-white dark:bg-[#111625] text-slate-900 dark:text-white shadow-xs transition';
+        if (tabIn) tabIn.className = 'w-1/2 py-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white transition';
+        if (nameField) nameField.classList.remove('hidden');
+        if (roleField) roleField.classList.remove('hidden');
+      } else {
+        if (tabIn) tabIn.className = 'w-1/2 py-1.5 rounded-lg bg-white dark:bg-[#111625] text-slate-900 dark:text-white shadow-xs transition';
+        if (tabUp) tabUp.className = 'w-1/2 py-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white transition';
+        if (nameField) nameField.classList.add('hidden');
+        if (roleField) roleField.classList.add('hidden');
+      }
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const feedback = document.getElementById('authFeedback');
+      feedback.className = 'hidden text-xs font-semibold p-2.5 rounded-xl border';
+
+      if (!supabaseClient) {
+        feedback.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400 block';
+        feedback.innerHTML = '⚠️ Supabase is not connected yet. Click <strong>"Connect / Settings"</strong> below to paste your Supabase Project URL and Anon Key first.';
+        return;
+      }
+
+      const email = document.getElementById('authEmail').value.trim();
+      const password = document.getElementById('authPassword').value;
+      const submitBtn = document.getElementById('authSubmitBtn');
+      const origBtnText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Processing...';
+
+      try {
+        if (authMode === 'signup') {
+          const name = document.getElementById('authName').value.trim();
+          const role = document.getElementById('authRole').value;
+          const { data, error } = await supabaseClient.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                name: name || email.split('@')[0],
+                role: role
+              }
+            }
+          });
+          if (error) throw error;
+
+          feedback.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 block';
+          feedback.textContent = 'Account created successfully! If email confirmation is enabled in Supabase, verify your email; otherwise you are now signed in.';
+          if (data.session) {
+            closeAuthModal();
+            showToast(`Welcome ${name || email}! Signed in as ${role.toUpperCase()}`);
+          }
+        } else {
+          const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+          });
+          if (error) throw error;
+
+          closeAuthModal();
+          showToast(`Welcome back, ${data.user.email}!`);
+        }
+      } catch (err) {
+        feedback.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-rose-500/10 border-rose-500/30 text-rose-500 block';
+        feedback.textContent = err.message || 'Authentication error. Please check your credentials.';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = origBtnText;
+      }
+    }
+
+    async function handleSignOut() {
+      if (supabaseClient) {
+        await supabaseClient.auth.signOut();
+      }
+      currentUser = null;
+      state.role = 'staff'; // fallback to staff
+      saveState();
+      renderRoleUI();
+      renderAuthHeader();
+      renderAll();
+      showToast('Signed out successfully.');
+    }
+
+    // ==========================================
+    // MODAL 7: CLOUD & REAL-TIME CONTROLLER
+    // ==========================================
+    function openCloudConfigModal() {
+      const cfg = getSupabaseConfig();
+      document.getElementById('cfgSupabaseUrl').value = cfg.url || '';
+      document.getElementById('cfgSupabaseAnonKey').value = cfg.anonKey || '';
+      const fb = document.getElementById('cloudConnectionFeedback');
+      fb.className = 'hidden text-xs font-semibold p-2.5 rounded-xl border';
+      document.getElementById('cloudConfigModal').classList.remove('hidden');
+    }
+
+    function closeCloudConfigModal() {
+      document.getElementById('cloudConfigModal').classList.add('hidden');
+    }
+
+    async function saveCloudConfig() {
+      const url = document.getElementById('cfgSupabaseUrl').value.trim();
+      const anonKey = document.getElementById('cfgSupabaseAnonKey').value.trim();
+      const fb = document.getElementById('cloudConnectionFeedback');
+
+      if (!url || !anonKey) {
+        fb.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-rose-500/10 border-rose-500/30 text-rose-500 block';
+        fb.textContent = 'Please provide both your Supabase Project URL and Anon Public Key.';
+        return;
+      }
+
+      fb.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400 block';
+      fb.textContent = 'Testing connection & initializing tables...';
+
+      try {
+        saveSupabaseConfig(url, anonKey);
+        initSupabase();
+
+        // Verify connection by reading packages or departures
+        if (supabaseClient) {
+          const { data, error } = await supabaseClient.from('packages').select('id').limit(1);
+          if (error) {
+            throw new Error('Supabase connected but table query failed: ' + error.message + ' (Did you run supabase_setup.sql in your Supabase SQL Editor?)');
+          }
+        }
+
+        fb.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 block';
+        fb.textContent = 'Connected successfully! Real-time live sync is active.';
+        setTimeout(() => {
+          closeCloudConfigModal();
+          showToast('⚡ Live Supabase Cloud Sync active!');
+        }, 1000);
+      } catch (err) {
+        fb.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-rose-500/10 border-rose-500/30 text-rose-500 block';
+        fb.textContent = err.message || 'Connection failed. Please check your Supabase credentials.';
+      }
+    }
+
+    function disconnectCloud() {
+      if (confirm('Disconnect from Supabase Cloud? The app will operate in local offline mode.')) {
+        localStorage.removeItem(SUPABASE_CONFIG_KEY);
+        if (supabaseClient && realtimeChannel) {
+          supabaseClient.removeChannel(realtimeChannel);
+        }
+        supabaseClient = null;
+        currentUser = null;
+        updateCloudStatusUI('offline');
+        renderAuthHeader();
+        closeCloudConfigModal();
+        showToast('Switched to local offline mode.');
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    // ==========================================
+    // THEME & INITIALIZATION
+    // ==========================================
+    function toggleTheme() {
+      document.documentElement.classList.toggle('dark');
+    }
+
+    function initFilterDropdowns() {
+      const select = document.getElementById('filterPackageSelect');
+      const currentVal = state.filterPackage;
+      select.innerHTML = `<option value="all">All Packages</option>` + getPackages().map(p => `
+        <option value="${p.id}" ${p.id === currentVal ? 'selected' : ''}>${p.name}</option>
+      `).join('');
+    }
+
+    function renderAll() {
+      renderRoleUI();
+      initFilterDropdowns();
+      renderPackagesOverview();
+      renderDeparturesList();
+      if (state.activeView === 'calendar') {
+        renderCalendar();
+      }
+    }
+
+    window.onload = function () {
+      initSupabase();
+      renderAll();
+    };
+  </script>
+</body>
+</html>
