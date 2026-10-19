@@ -40,11 +40,13 @@ create table if not exists public.customers (
   name text not null,
   phone text not null,
   pax int not null default 1,
+  agency_name text default '',
   remaining numeric not null default 0,
   note text default '',
   booked_by text default '',
   created_at timestamptz default now()
 );
+alter table public.customers add column if not exists agency_name text default '';
 
 -- 5. Enable Realtime Replication for instant multi-device sync
 alter publication supabase_realtime add table public.packages;
@@ -105,20 +107,21 @@ on conflict (id) do update set
   vehicle_type = excluded.vehicle_type,
   capacity = excluded.capacity;
 
--- 9. Seed Passenger Bookings
-insert into public.customers (id, departure_id, name, phone, pax, remaining, note, booked_by) values
-  ('c-ujwal-1', 'dep-mustang-kartik5', 'Ujwal Baiju', '+977 984-3399734', 7, 83500, 'Kartik 5 departure', 'Counter Staff'),
-  ('c-hema-1', 'dep-ghandruk-kartik6', 'Hema Bhatta', '9868119376', 3, 7500, 'Satdobato • 1500 rec / 9000 pkg', 'Counter Staff'),
-  ('c-rubishna-1', 'dep-ghandruk-kartik6', 'Rubishna Ranjit & Prajwol Gupt Ranjit', '9841228980 / 9861667312', 2, 0, 'Manjushree Temple', 'Counter Staff'),
-  ('c-kumar-1', 'dep-amayan-kartik6', 'Kumar Poudel', '9851089299', 9, 44500, 'Samakhusi & Dhapasi • 3 Room', 'Counter Staff'),
-  ('c-monika-1', 'dep-mustang-kartik6', 'Monika Tamang', '9860581443', 3, 11500, 'Budhanilkantha & Samakhusi • 4000 rec / 15500 pkg', 'Counter Staff'),
-  ('c-bishesh-1', 'dep-dhorpatan-kartik6', 'Bishesh Parajuli', '9865511916 / +977 970-8539671', 1, 9500, 'Bhrikutimandap • 3N/4D • 4000 rec / 13500 pkg', 'Counter Staff'),
-  ('c-sarmila-1', 'dep-rara-kartik6', 'Sarmila Shrestha', '9803699927', 3, 2650, 'Gokarna (2) & Medicity (1) • 23850 rec / 26500 pkg', 'Counter Staff')
+-- 9. Seed Passenger Bookings (with Agency Names)
+insert into public.customers (id, departure_id, name, phone, pax, agency_name, remaining, note, booked_by) values
+  ('c-ujwal-1', 'dep-mustang-kartik5', 'Ujwal Baiju', '+977 984-3399734', 7, 'Everest Agency', 83500, 'Kartik 5 departure', 'Everest Agency'),
+  ('c-hema-1', 'dep-ghandruk-kartik6', 'Hema Bhatta', '9868119376', 3, 'Satdobato Agency', 7500, 'Satdobato • 1500 rec / 9000 pkg', 'Satdobato Agency'),
+  ('c-rubishna-1', 'dep-ghandruk-kartik6', 'Rubishna Ranjit & Prajwol Gupt Ranjit', '9841228980 / 9861667312', 2, 'Manjushree Agency', 0, 'Manjushree Temple', 'Manjushree Agency'),
+  ('c-kumar-1', 'dep-amayan-kartik6', 'Kumar Poudel', '9851089299', 9, 'Samakhusi Travels', 44500, 'Samakhusi & Dhapasi • 3 Room', 'Samakhusi Travels'),
+  ('c-monika-1', 'dep-mustang-kartik6', 'Monika Tamang', '9860581443', 3, 'Budhanilkantha Agency', 11500, 'Budhanilkantha & Samakhusi • 4000 rec / 15500 pkg', 'Budhanilkantha Agency'),
+  ('c-bishesh-1', 'dep-dhorpatan-kartik6', 'Bishesh Parajuli', '9865511916 / +977 970-8539671', 1, 'Bhrikutimandap Desk', 9500, 'Bhrikutimandap • 3N/4D • 4000 rec / 13500 pkg', 'Bhrikutimandap Desk'),
+  ('c-sarmila-1', 'dep-rara-kartik6', 'Sarmila Shrestha', '9803699927', 3, 'Gokarna Travels', 2650, 'Gokarna (2) & Medicity (1) • 23850 rec / 26500 pkg', 'Gokarna Travels')
 on conflict (id) do update set
   departure_id = excluded.departure_id,
   name = excluded.name,
   phone = excluded.phone,
   pax = excluded.pax,
+  agency_name = excluded.agency_name,
   remaining = excluded.remaining,
   note = excluded.note,
   booked_by = excluded.booked_by;
