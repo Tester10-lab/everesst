@@ -637,12 +637,67 @@
     </div>
   </div>
 
+  <!-- ========================================== -->
+  <!-- MODAL 8: QUICK EDIT TOUR PACKAGE (ADMIN)   -->
+  <!-- ========================================== -->
+  <div id="editSinglePackageModal" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-xs">✏️</span>
+          <div>
+            <h3 class="font-extrabold text-base text-slate-900 dark:text-white">Edit Tour Package</h3>
+            <p class="text-xs text-slate-500">Update package name, vehicle and capacity</p>
+          </div>
+        </div>
+        <button onclick="closeEditSinglePackageModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="editSinglePackageForm" onsubmit="saveSinglePackageEdit(event)" class="space-y-3.5">
+        <input id="espPackageId" type="hidden" />
+
+        <div>
+          <label class="block text-xs font-bold mb-1">Package Name <span class="text-rose-500">*</span></label>
+          <input id="espPackageName" type="text" required class="w-full text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold mb-1">Default Vehicle</label>
+            <select id="espPackageVehicle" onchange="document.getElementById('espPackageCapacity').value = this.value === 'scorpio' ? 8 : 12" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 font-medium">
+              <option value="scorpio">Scorpio Jeep (8)</option>
+              <option value="ev_van">EV Van (12)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">Default Capacity</label>
+            <input id="espPackageCapacity" type="number" min="1" max="30" class="w-full text-xs font-mono font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5" />
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+          <button type="button" onclick="closeEditSinglePackageModal(); openManagePackagesModal();" class="text-xs text-slate-500 hover:text-amber-500 underline font-semibold">
+            All Packages Manager →
+          </button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="closeEditSinglePackageModal()" class="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700">Cancel</button>
+            <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm transition">
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- APPLICATION SCRIPT -->
   <script>
     // ==========================================
     // DATA MODEL & STORAGE
     // ==========================================
-    const STORAGE_KEY = 'everest_annapurna_deposter_v5';
+    const STORAGE_KEY = 'everest_annapurna_deposter_v6';
 
     // ==========================================
     // SUPABASE CLOUD & AUTH CONFIGURATION
@@ -869,10 +924,13 @@
 
     const DEFAULT_PACKAGES = [
       { id: 'pkg-1', name: 'Upper Mustang Overland (Jomsom – Lo Manthang)', defaultVehicle: 'scorpio', capacity: 8 },
-      { id: 'pkg-2', name: 'Annapurna Base Camp Gate (Pokhara – Ghandruk)', defaultVehicle: 'scorpio', capacity: 8 },
-      { id: 'pkg-3', name: 'Muktinath Pilgrimage & Kaligandaki Valley', defaultVehicle: 'ev_van', capacity: 12 },
-      { id: 'pkg-4', name: 'Everest Trailhead Jeep (Ktm – Salleri / Phaplu)', defaultVehicle: 'scorpio', capacity: 8 },
-      { id: 'pkg-5', name: 'Everest Flight Link (Ktm – Ramechhap Manthali)', defaultVehicle: 'scorpio', capacity: 8 }
+      { id: 'pkg-2', name: 'Ghandruk & Pokhara Tour (Annapurna Gate)', defaultVehicle: 'scorpio', capacity: 8 },
+      { id: 'pkg-3', name: 'Ama Yangri Trek', defaultVehicle: 'ev_van', capacity: 12 },
+      { id: 'pkg-4', name: 'Dhorpatan Tour Package', defaultVehicle: 'scorpio', capacity: 8 },
+      { id: 'pkg-5', name: 'Rara Lake Tour Package', defaultVehicle: 'scorpio', capacity: 8 },
+      { id: 'pkg-6', name: 'Muktinath Pilgrimage & Kaligandaki Valley', defaultVehicle: 'ev_van', capacity: 12 },
+      { id: 'pkg-7', name: 'Everest Trailhead Jeep (Ktm – Salleri / Phaplu)', defaultVehicle: 'scorpio', capacity: 8 },
+      { id: 'pkg-8', name: 'Everest Flight Link (Ktm – Ramechhap Manthali)', defaultVehicle: 'scorpio', capacity: 8 }
     ];
 
     const DRIVER_ROSTER = [
@@ -910,7 +968,127 @@
               phone: '+977 984-3399734',
               pax: 7,
               remaining: 83500,
-              note: 'Kartik 5 departure'
+              note: 'Kartik 5 departure',
+              bookedBy: 'Counter Staff'
+            }
+          ]
+        },
+        {
+          id: 'dep-ghandruk-kartik6',
+          packageId: 'pkg-2',
+          date: '2026-10-23',
+          nepaliDate: 'Kartik 6 gatey',
+          vehicleType: 'scorpio',
+          capacity: 8,
+          driverName: '',
+          driverPhone: '',
+          vehiclePlate: '',
+          customers: [
+            {
+              id: 'c-hema-1',
+              name: 'Hema Bhatta',
+              phone: '9868119376',
+              pax: 3,
+              remaining: 7500,
+              note: 'Satdobato • 1500 rec / 9000 pkg',
+              bookedBy: 'Counter Staff'
+            },
+            {
+              id: 'c-rubishna-1',
+              name: 'Rubishna Ranjit & Prajwol Gupt Ranjit',
+              phone: '9841228980 / 9861667312',
+              pax: 2,
+              remaining: 0,
+              note: 'Manjushree Temple',
+              bookedBy: 'Counter Staff'
+            }
+          ]
+        },
+        {
+          id: 'dep-amayan-kartik6',
+          packageId: 'pkg-3',
+          date: '2026-10-23',
+          nepaliDate: 'Kartik 6 gatey',
+          vehicleType: 'ev_van',
+          capacity: 12,
+          driverName: '',
+          driverPhone: '',
+          vehiclePlate: '',
+          customers: [
+            {
+              id: 'c-kumar-1',
+              name: 'Kumar Poudel',
+              phone: '9851089299',
+              pax: 9,
+              remaining: 44500,
+              note: 'Samakhusi & Dhapasi • 3 Room',
+              bookedBy: 'Counter Staff'
+            }
+          ]
+        },
+        {
+          id: 'dep-mustang-kartik6',
+          packageId: 'pkg-1',
+          date: '2026-10-23',
+          nepaliDate: 'Kartik 6 gatey',
+          vehicleType: 'scorpio',
+          capacity: 8,
+          driverName: '',
+          driverPhone: '',
+          vehiclePlate: '',
+          customers: [
+            {
+              id: 'c-monika-1',
+              name: 'Monika Tamang',
+              phone: '9860581443',
+              pax: 3,
+              remaining: 11500,
+              note: 'Budhanilkantha & Samakhusi • 4000 rec / 15500 pkg',
+              bookedBy: 'Counter Staff'
+            }
+          ]
+        },
+        {
+          id: 'dep-dhorpatan-kartik6',
+          packageId: 'pkg-4',
+          date: '2026-10-23',
+          nepaliDate: 'Kartik 6 gatey',
+          vehicleType: 'scorpio',
+          capacity: 8,
+          driverName: '',
+          driverPhone: '',
+          vehiclePlate: '',
+          customers: [
+            {
+              id: 'c-bishesh-1',
+              name: 'Bishesh Parajuli',
+              phone: '9865511916 / +977 970-8539671',
+              pax: 1,
+              remaining: 9500,
+              note: 'Bhrikutimandap • 3N/4D • 4000 rec / 13500 pkg',
+              bookedBy: 'Counter Staff'
+            }
+          ]
+        },
+        {
+          id: 'dep-rara-kartik6',
+          packageId: 'pkg-5',
+          date: '2026-10-23',
+          nepaliDate: 'Kartik 6 gatey',
+          vehicleType: 'scorpio',
+          capacity: 8,
+          driverName: '',
+          driverPhone: '',
+          vehiclePlate: '',
+          customers: [
+            {
+              id: 'c-sarmila-1',
+              name: 'Sarmila Shrestha',
+              phone: '9803699927',
+              pax: 3,
+              remaining: 2650,
+              note: 'Gokarna (2) & Medicity (1) • 23850 rec / 26500 pkg',
+              bookedBy: 'Counter Staff'
             }
           ]
         }
@@ -1099,7 +1277,14 @@
           <div class="bg-white dark:bg-[#111625] rounded-2xl border border-slate-200 dark:border-slate-800 p-4 space-y-3 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition flex flex-col justify-between">
             <div class="space-y-2">
               <div class="flex items-start justify-between gap-2">
-                <h3 class="font-extrabold text-sm text-slate-900 dark:text-white leading-snug">${pkg.name}</h3>
+                <div class="flex-1">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <h3 class="font-extrabold text-sm text-slate-900 dark:text-white leading-snug">${pkg.name}</h3>
+                    <button onclick="openEditSinglePackageModal('${pkg.id}')" class="px-2 py-0.5 rounded-lg text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition flex items-center gap-1 cursor-pointer" title="Edit Package Name & Capacity">
+                      <span>✏️ Edit</span>
+                    </button>
+                  </div>
+                </div>
                 ${statusBadge}
               </div>
 
@@ -1763,6 +1948,69 @@
         document.execCommand('copy');
         showToast('Manifest copied for WhatsApp!');
       });
+    }
+
+    // ==========================================
+    // MODAL 8: QUICK EDIT SINGLE PACKAGE
+    // ==========================================
+    function openEditSinglePackageModal(pkgId) {
+      if (state.role !== 'admin') {
+        showToast('🔒 Only Admin can edit tour package names and capacities. Switch to Admin mode in the top bar.', 'error');
+        return;
+      }
+      const pkg = getPackages().find(p => p.id === pkgId);
+      if (!pkg) return;
+
+      document.getElementById('espPackageId').value = pkg.id;
+      document.getElementById('espPackageName').value = pkg.name;
+      document.getElementById('espPackageVehicle').value = pkg.defaultVehicle || 'scorpio';
+      document.getElementById('espPackageCapacity').value = pkg.capacity || 8;
+
+      document.getElementById('editSinglePackageModal').classList.remove('hidden');
+    }
+
+    function closeEditSinglePackageModal() {
+      document.getElementById('editSinglePackageModal').classList.add('hidden');
+    }
+
+    function saveSinglePackageEdit(e) {
+      e.preventDefault();
+      if (state.role !== 'admin') {
+        showToast('Only Admin can edit packages', 'error');
+        return;
+      }
+
+      const pkgId = document.getElementById('espPackageId').value;
+      const pkg = getPackages().find(p => p.id === pkgId);
+      if (!pkg) return;
+
+      const newName = document.getElementById('espPackageName').value.trim();
+      const newVehicle = document.getElementById('espPackageVehicle').value;
+      const newCap = Number(document.getElementById('espPackageCapacity').value) || 8;
+
+      if (!newName) {
+        showToast('Package name cannot be empty', 'error');
+        return;
+      }
+
+      pkg.name = newName;
+      pkg.defaultVehicle = newVehicle;
+      pkg.capacity = newCap;
+
+      saveState();
+
+      if (supabaseClient) {
+        supabaseClient.from('packages').upsert({
+          id: pkg.id,
+          name: pkg.name,
+          default_vehicle: pkg.defaultVehicle,
+          capacity: pkg.capacity
+        }).catch(err => console.warn('Supabase package update error:', err));
+      }
+
+      closeEditSinglePackageModal();
+      renderAll();
+      showToast(`Package updated: "${newName}"`);
     }
 
     // ==========================================
