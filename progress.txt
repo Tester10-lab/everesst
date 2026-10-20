@@ -1,0 +1,89 @@
+# Everest Annapurna Deposter - Progress Tracker
+
+## Phase 1: Planning, PRD & Architecture
+- [x] Analyze existing codebase, state management, Supabase integration, and features
+- [x] Create PRD.md detailing design tokens, color palette, typography, roles, accessibility, and backend rules
+- [x] Establish progress.txt tracking file
+- [x] Status: COMPLETE
+
+## Phase 2: Design System & Core UI Build
+- [x] Implement warm paper color palette (#F4EFE6, #1B1A17, #B4570F, #A4361F only for owed money)
+- [x] Import and apply Google Fonts: Bricolage Grotesque (headings) & DM Sans (body)
+- [x] Replace all emojis with crisp typographic & inline SVG icons (zero emoji-as-icons)
+- [x] Build responsive package departure cards:
+    - Route name, next departure date (Gregorian & Nepali gatey)
+    - Vehicle type badge & driver status
+    - "X seats left" badge
+    - Seat visualizer matrix: row of small seat squares (filled = booked, empty = available)
+    - Tap to expand/collapse customer list below card
+- [x] Build responsive customer manifest view:
+    - Desktop: High-density editorial table (Customer, Agency, Pax, Paid, Remaining)
+    - Mobile (390px): Stacked customer cards with >= 44px touch targets
+- [x] Status: COMPLETE
+
+## Phase 3: Role Logic & Customer Experience
+- [x] Visible Role Badge in header showing Admin vs Staff with 1-click test switcher
+- [x] Admin Role implementation:
+    - Inline editing for every customer field (Name, Agency, Pax, Paid, direct Remaining edit)
+    - Immediate auto-save on change/blur with "Saved" confirmation
+    - Audit trail logging (who changed what, previous value, new value, timestamp)
+    - Delete customer action with confirmation
+    - Add customer capability
+    - Edit departure, assign/remove drivers, mark departure private, edit packages
+    - Departure total still owed calculated and displayed in rust red (#A4361F)
+    - Price discrepancy warning if Paid + Remaining != trip price
+- [x] Staff Role implementation:
+    - Plain text display for existing bookings (no inputs, no edit buttons)
+    - Add customer button & modal only
+    - Over-booking prevention with clear capacity warning
+    - Admin controls hidden and disabled (no edit packages, driver assignment, or customer delete)
+- [x] Status: COMPLETE
+
+## Phase 4: Backend Rules & Data Enforcement
+- [x] Client-side mutation guard (`enforceRolePermission`) blocking staff from mutating existing records or departures
+- [x] Update `supabase_setup.sql` with strict Row Level Security (RLS) policies:
+    - Customers: SELECT for all, INSERT for all, UPDATE/DELETE for Admin only
+    - Departures & Packages: SELECT for all, INSERT/UPDATE/DELETE for Admin only
+- [x] Status: COMPLETE
+
+## Phase 5: Testing & Accessibility Verification
+- [x] Launch local server and run browser automation testing via Playwright test suite
+- [x] Verify Admin view on 390px mobile viewport (stacked cards, inline edit, remaining edit, save feedback)
+- [x] Verify Admin view on desktop (table, inline edit, audit trail, departure total owed)
+- [x] Verify Staff view on 390px mobile and desktop (text-only customer view, no edit/delete buttons)
+- [x] Verify Staff over-booking prevention and capacity check
+- [x] Verify WCAG touch target (>= 44px) and contrast compliance (>= 4.5:1)
+- [x] Status: COMPLETE
+
+## Phase 6: Summary & Documentation
+- [x] Update README.md with new design system, role credentials, and architecture
+- [x] Final report on changes, test results, and status
+- [x] Status: COMPLETE
+
+## Phase 7: Real Supabase Auth, Auto Config & PostgreSQL Row Level Security (RLS)
+- [x] Requirement 1: Automatic Connection & Anon Key Verification
+    - Removed manual "Supabase Cloud Real-time Connection" modal for normal users.
+    - Created `config.js` defining `window.DEPOSTER_CONFIG` with `SUPABASE_URL` and `SUPABASE_ANON_KEY`.
+    - Cryptographically verified that the key payload is strictly the public anon key (`role: "anon"`), NEVER `service_role`.
+    - Every device and client connects automatically with zero manual setup.
+- [x] Requirement 2: Real Supabase Auth, Profiles Table & Role Authority
+    - Removed simulated Admin/Staff toggle switcher buttons.
+    - Built editorial warm paper Login view (#loginView) matching design specifications:
+        - Warm paper background `#F4EFE6`, `#1B1A17` ink, `#B4570F` burnt-orange button and tabs.
+        - Bricolage Grotesque headings, DM Sans body, 48px touch inputs.
+        - Email/username + password inputs, Show/Hide password toggle.
+        - Portal mode intent tabs (Admin Dispatcher / Staff Booking) with explicit security notice.
+        - One-click demo chips for quick testing.
+    - PostgreSQL `public.profiles` table: linked to `auth.users(id)` with `role` (`admin` or `staff`) and `agency`.
+    - Server-side role authority: Role is strictly queried and enforced from the user's database `profiles.role`. If a staff member selects Admin in the portal selector, they are safely signed in with their real database role (`staff`), and a notification confirms the database override.
+    - Session management: Persistent Supabase auth session, Sign Out button with confirmation, unauthenticated users automatically redirected to `#loginView`.
+    - Role badge in header showing verified authority: `ADMIN • Lalitpur Holidays` or `STAFF • Batuwa Trip`.
+    - Admin-only Staff Management Modal (`#staffModal`) displaying live database user list and new account registration.
+- [x] Requirement 3: Row Level Security (RLS) Policies & Direct API Verification
+    - Signed-out users: Zero read/write access (SELECT returns 0 rows).
+    - Staff users: Allowed to SELECT departures, packages, and bookings; allowed to INSERT new customer bookings only. Direct API calls to UPDATE or DELETE customers or departures are strictly rejected at the database level.
+    - Admin users: Full authorization to SELECT, INSERT, UPDATE, DELETE customer records, edit remaining balances, manage packages, and assign drivers.
+    - Verified via automated Node.js test suite (`test_rls_policies.js`): 8 out of 8 tests passed against live Supabase database.
+    - Verified via Playwright browser test suite (`test_e2e_auth.js`): Unauthenticated view, Admin login, Staff login, Role override, and Sign out all passed.
+- [x] Status: COMPLETE
+

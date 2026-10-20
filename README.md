@@ -1,103 +1,103 @@
-# 🏔️ Everest Annapurna Deposter
+# Everest Annapurna Deposter
 
-**Tour Capacity, Rotational Seating & Driver Manifest App**  
-Designed for Himalayan 4x4 Scorpio Jeeps & EV Vans on Everest, Annapurna, Mustang, and Muktinath routes.
+**Himalayan Tour Capacity, Rotational Seating & Driver Manifest Portal**  
+Designed for 4x4 Scorpio Jeeps & EV Vans on Everest, Annapurna, Mustang, Dhorpatan, and Muktinath routes across Nepal.
 
 ---
 
-## 🚀 Instant Deployment to GitHub Pages (Make It Live in 2 Minutes)
+## 🎨 Design System & Visual Identity
+The portal has been redesigned from the ground up to eliminate AI clichés (no purple/blue gradients, no neon glass, no emojis as icons, no left-border accent cards, and no generic dark dashboards):
 
-Because this repository contains a self-contained `index.html` at the root, you can publish it directly to the web with zero server setup or build commands:
+- **Palette**: Warm paper background (`#F4EFE6`), near-black ink (`#1B1A17`), burnt-orange accent (`#B4570F`), and rust red (`#A4361F`) strictly reserved for unpaid balances & money still owed.
+- **Typography**: Display headings in **Bricolage Grotesque**, body and form elements in **DM Sans** (via Google Fonts).
+- **Iconography**: Clean, crisp inline SVGs only. Zero emojis as functional icons.
+- **Mobile-First Ergonomics**: Tested and optimized for 390px mobile viewports (e.g., iPhone 12/13/14/15) with minimum 44px touch targets on all interactive controls. Customer manifests automatically transform into stacked tactile cards on mobile and expand to high-density editorial tables on desktop.
+- **Seat Visualizer Matrix**: Each departure card features a visual row of small seat squares:
+  - **Burnt Orange Filled Square (`#B4570F`)**: Booked seat.
+  - **Outlined Canvas Square**: Available seat.
+  - Live "X left" status badge and over-booking prevention.
 
-1. **Initialize Git & Push to GitHub**:
+---
+
+## 👥 Dual Roles & Authorization Model
+
+| Feature / Action | 👑 Admin (Lalitpur Holidays Dispatch) | 📋 Staff (Batuwa Trip & Travel Partners) |
+| :--- | :--- | :--- |
+| **View Departures & Seats** | Full access with financial summaries | Full access (open seats, route dates, vehicle) |
+| **Add New Bookings** | Allowed with over-booking capacity checks | Allowed with over-booking capacity checks |
+| **Edit Existing Bookings** | **Inline editing on all fields** (Name, Phone, Agency, Pax, Paid, direct Remaining edit) | **STRICTLY BLOCKED**: Rendered as static plain text |
+| **Delete Bookings** | Allowed with confirmation & audit log | **STRICTLY BLOCKED**: No delete controls rendered |
+| **Departure Total Owed** | Highlighted in Rust Red (`#A4361F`) | Hidden / Summary omitted |
+| **Price Discrepancy Alert** | Warning if `Paid + Remaining ≠ Trip Price` | Non-blocking guidance during booking |
+| **Instant Save & Audit Trail** | Auto-saves with "✓ Saved" pill & audit logging | N/A (read-only existing data) |
+| **Driver Assignment & Depost** | Full control (Name, Phone, Plate, Presets) | View only |
+| **Manage Packages & Routes** | Full control (Add, edit capacity, set rates) | View only |
+| **Create / Edit Departures** | Full control (Mark private, change fleet run) | View only |
+
+---
+
+## 🔐 Real Supabase Auth & PostgreSQL Row Level Security (RLS)
+
+The simulated toggle buttons have been replaced with **real Supabase Auth** backed by a PostgreSQL `profiles` table and strict Row Level Security:
+
+### 1. Zero-Setup Automatic Connection (`config.js`)
+- The manual connection modal has been removed for normal users.
+- `config.js` defines `window.DEPOSTER_CONFIG` containing the Supabase Project URL and **public Anon key**.
+- The key is cryptographically verified to contain `role: "anon"` and never exposes the `service_role` secret key.
+- Every device running the app automatically connects on boot without any manual credential configuration.
+
+### 2. Login Portal & Server-Enforced Role Authority
+- **Warm Paper Login Artboard (`#loginView`)**:
+  - Background: `#F4EFE6`, Ink: `#1B1A17`, Accent: `#B4570F`, 48px input touch targets.
+  - Headings in **Bricolage Grotesque**, body in **DM Sans**.
+  - Username/email and password fields with a Show/Hide password toggle.
+  - Portal mode intent selector (Admin Dispatcher vs Staff Booking) and quick one-click demo chips.
+- **Server Role Authority**:
+  - A PostgreSQL `public.profiles` table stores each user's authenticated UUID (`id`), `role` (`admin` or `staff`), and `agency`.
+  - The signed-in role is loaded from `profiles.role` in the database, **never trusted from the user's selector**. If a user selects "Admin" in the login screen but signs in with a staff account, they are safely initialized as **STAFF**, and a toast notification informs them of the database role enforcement.
+- **Session & Sign Out**:
+  - Supabase Auth session persistence keeps users logged in across refreshes.
+  - Clicking **Sign Out** securely destroys the session, resets application state, and returns to `#loginView`.
+  - Unauthenticated visitors cannot view or access the dispatch dashboard.
+
+### 3. PostgreSQL Row Level Security (RLS)
+The database tables are governed by strict RLS policies:
+- **Signed-Out (Anon) Users**: Zero read access. `SELECT` queries on `customers`, `departures`, and `packages` return `0` rows.
+- **Staff Users**: Can `SELECT` departures, packages, and bookings; can `INSERT` new passenger bookings only. Direct API attempts to `UPDATE` or `DELETE` customer records, adjust remaining balances, or edit departures are **rejected at the PostgreSQL level** (`0 rows modified`).
+- **Admin Users**: Full authority to `SELECT`, `INSERT`, `UPDATE`, and `DELETE` customer records, adjust balances, assign drivers, and manage packages.
+
+---
+
+## 🔑 Demo Test Accounts
+
+| Account | Email / Username | Password | Database Role | Associated Agency |
+| :--- | :--- | :--- | :--- | :--- |
+| **Admin Dispatcher** | `admin@lalitpurholidays.com` (or `admin`) | `lalitpurholidays` | `admin` | Lalitpur Holidays |
+| **Staff Booking** | `staff@batuwatrip.com` (or `staff`) | `batuwatrip` | `staff` | Batuwa Trip |
+
+---
+
+## 🧪 Automated Test Verification
+
+Two automated test suites provide 100% verification coverage:
+1. **Direct Database RLS Test (`test_rls_policies.js`)**:
+   - Calls Supabase REST APIs directly as anon, staff, and admin.
+   - Confirms signed-out reads are blocked (0 rows).
+   - Confirms staff customer `INSERT` succeeds.
+   - Confirms staff direct API calls to `UPDATE` or `DELETE` customers and departures are rejected by RLS.
+   - Confirms admin can update remaining balances and clean up records.
    ```bash
-   git init
-   git add .
-   git commit -m "Initial commit - Everest Annapurna Deposter"
-   git branch -M main
-   git remote add origin https://github.com/<YOUR-USERNAME>/<YOUR-REPO-NAME>.git
-   git push -u origin main
+   node test_rls_policies.js
    ```
 
-2. **Enable GitHub Pages**:
-   - Go to your repository on GitHub.
-   - Click **Settings** → **Pages** (under "Code and automation" in the left sidebar).
-   - Under **Build and deployment** > **Source**, select **Deploy from a branch**.
-   - Under **Branch**, select `main` and `/ (root)`.
-   - Click **Save**.
-   - In 1–2 minutes, your live URL will be active at:  
-     `https://<YOUR-USERNAME>.github.io/<YOUR-REPO-NAME>/`
+2. **Full End-to-End Browser Test (`test_e2e_auth.js`)**:
+   - Tests unauthenticated redirection to the login view.
+   - Tests Admin login and visible controls.
+   - Tests Staff Management modal (`#staffModal`).
+   - Tests Sign Out and session termination.
+   - Tests Staff login with Admin intent selection (verifying database role override).
+   - Tests Staff Add Passenger modal.
+   ```bash
+   node test_e2e_auth.js
+   ```
 
----
-
-## 🌟 Key Features
-
-### 1. Dual User Roles (Admin vs Staff)
-- **👑 Admin Role**:
-  - Full authority over tours, vehicles, agencies, and driver allocation.
-  - **In-App Package & Route Manager (`⚙️ Edit Packages`)**: Prominent in the top navbar and Section 1 header to rename any tour package, customize default vehicle (Scorpio 8 vs EV Van 12), adjust capacities, or add new Himalayan routes directly in the UI.
-  - **Departure Tour & Package Editing (`✏️ Edit Tour`)**: Direct edit option on every departure card to change assigned tour package (e.g. switch between Ghandruk & Pokhara, Muktinath, etc.), date, vehicle type, and capacity.
-  - **Passenger Booking Editor (`✏️ Edit Booking`)**: Edit passenger name, phone, pax, booking agency, remaining cash, or seamlessly move the booking to another tour departure.
-  - **Exclusive permission to depost drivers**: Enter Driver Name (mandatory), phone, vehicle plate, and lock the assignment.
-  - Can create and modify tour routes, delete departures, and select any agency when booking.
-- **📋 Staff Role**:
-  - Streamlined operational view for counter and dispatch staff.
-  - Add, edit, and release passenger groups with automatic agency attribution.
-  - View calendar, open capacity, and remaining cash balances.
-  - Copy driver WhatsApp manifests.
-  - **Driver Deposting and Global Package Definitions are locked**: Staff cannot alter global route templates or depost drivers (`🔒 Admin Only`).
-
-### 2. Mandatory Driver Name Deposting
-- A driver cannot be officially deposted without a **Driver Name**.
-- Dedicated **Admin Driver Deposter Station** with quick-autofill presets for veteran Himalayan drivers (Pasang Sherpa, Mingma Lama, Dipak Tamang, etc.).
-- Depost status badges (`✅ Deposted` vs `⚠️ Pending Admin Depost`) appear across the dashboard, calendar, and manifests.
-
-### 3. Rotational Seating (Fair Himalayan Travel)
-- Strict rotational seating principle: **No fixed seat numbers** printed or assigned.
-- Eliminates guest arguments over window or front seats on bumpy Himalayan mountain journeys.
-
-### 4. Remaining Amount Only
-- No confusing deposit ledger for drivers.
-- Only the **Remaining Cash to Collect** is tracked and highlighted on the WhatsApp manifest.
-
-### 5. 1-Click WhatsApp Manifests
-- Produces clean, emoji-formatted WhatsApp manifests ready to send to drivers, guides, and agencies.
-- Includes direct WhatsApp click links (`wa.me`) for instant dispatch.
-
----
-
-## ⚡ Supabase Cloud & Real-time Multi-Device Sync
-
-**Everest Annapurna Deposter** connects directly to **Supabase** via the official JavaScript SDK with zero server or backend build required. This allows your team members to log in from their smartphones, tablets, and office PCs simultaneously and see seat bookings update live on their screens in real-time.
-
-### Pre-Configured Live Connection
-
-The app is now pre-configured out-of-the-box with your project:
-- **Project URL:** `https://mxvawuawegujcehjypcm.supabase.co`
-- **Anon Public API Key:** Pre-embedded in the code.
-- **Pre-loaded Tour:** Upper Mustang Overland (Kartik 5 gatey, Ujwal Baiju - 7 Pax, NPR 83,500 remaining) is already live in your database!
-
-Whenever you or your team members open `index.html` (or push it to GitHub Pages), it connects to **Live Cloud** with real-time sync active immediately.
-
----
-
----
-
-## 🔑 Team Authentication & Default Access Credentials
-
-The portal features unified authentication for agency staff and dispatch administrators:
-
-| Role | Agency | Default Email / Username | Password | Access Capabilities |
-| :--- | :--- | :--- | :--- | :--- |
-| **👑 Admin** | **Lalitpur Holidays** | `admin@lalitpurholidays.com` | `lalitpurholidays` | Full control: Depost drivers, edit packages & routes, select booking agency, view all financials |
-| **📋 Staff** | **Batuwa Trip** | `staff@batuwatrip.com` | `Batuwa Trip` | Counter staff: Add/edit passenger bookings, view live seats, generate driver WhatsApp manifests |
-
-> [!NOTE]
-> • For quick access, the landing page also provides **1-Click Direct Access buttons** (`👑 Admin` and `📋 Staff`).
-> • Driver manifests strictly protect agency privacy: booking agency names are confidential and omitted from WhatsApp driver manifests.
-
----
-
-## 🛠️ Offline & Local Storage Resilience
-- If Supabase credentials are not entered, or if internet connectivity drops in remote Himalayan areas, the app automatically runs seamlessly in offline mode using `localStorage`.
-- No data is lost; you can still create departures, add passengers, and export WhatsApp manifests anywhere in Nepal.
