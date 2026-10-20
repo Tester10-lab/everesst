@@ -307,6 +307,13 @@
             </button>
           </div>
 
+          <!-- Edit Packages Button (Admin Quick Action) -->
+          <button id="topManagePackagesBtn" onclick="handleManagePackagesClick()" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-bold border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 shadow-xs transition active:scale-95 cursor-pointer" title="Manage & Edit Himalayan Tour Packages">
+            <span>⚙️</span>
+            <span class="hidden md:inline">Edit Packages</span>
+            <span class="md:hidden">Packages</span>
+          </button>
+
           <!-- New Departure Button (Admin only can open, Staff sees disabled with note) -->
           <button id="topNewDepBtn" onclick="handleNewDepartureClick()" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm transition active:scale-95 cursor-pointer">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
@@ -951,6 +958,195 @@
     </div>
   </div>
 
+  <!-- ========================================== -->
+  <!-- MODAL 9: EDIT TOUR DEPARTURE (ADMIN)       -->
+  <!-- ========================================== -->
+  <div id="editDepartureModal" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 my-8">
+      
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-xs">✏️</span>
+          <div>
+            <h3 class="font-extrabold text-base text-slate-900 dark:text-white">Edit Tour Departure</h3>
+            <p id="edModalSubtitle" class="text-xs text-amber-600 dark:text-amber-400 font-semibold">Change tour package, departure date, or vehicle</p>
+          </div>
+        </div>
+        <button onclick="closeEditDepartureModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="editDepartureForm" onsubmit="saveEditDepartureForm(event)" class="space-y-4">
+        <input id="edDepartureId" type="hidden" />
+
+        <!-- Row 1: Tour Package Selection -->
+        <div>
+          <label class="block text-xs font-bold mb-1">Tour Package <span class="text-rose-500">*</span></label>
+          <select id="edPackageId" required class="w-full text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none"></select>
+          <p class="text-[11px] text-slate-400 mt-1">Switching the tour package updates the route name for all current and future passenger bookings on this departure.</p>
+        </div>
+
+        <!-- Row 2: Date & Nepali Date -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold mb-1">Departure Date <span class="text-rose-500">*</span></label>
+            <input id="edDate" type="date" required class="w-full text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">Nepali Date Label</label>
+            <input id="edNepaliDate" type="text" placeholder="e.g. Kartik 6 gatey" class="w-full text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+          </div>
+        </div>
+
+        <!-- Row 3: Vehicle Type & Capacity -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold mb-1">Vehicle Type <span class="text-rose-500">*</span></label>
+            <select id="edVehicleType" class="w-full text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5">
+              <option value="scorpio">Scorpio Jeep (7–8 Pax)</option>
+              <option value="ev_van">EV Van (9–14 Pax)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">Total Capacity <span class="text-rose-500">*</span></label>
+            <input id="edCapacity" type="number" min="1" max="30" required class="w-full text-xs font-mono font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5" />
+            <span id="edCapacityHint" class="text-[10px] text-slate-400 block mt-0.5"></span>
+          </div>
+        </div>
+
+        <!-- Driver Details -->
+        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-700 dark:text-slate-300">👨‍✈️ Driver Details (Optional)</span>
+            <span class="text-[11px] text-slate-400">Can be assigned later</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <input id="edDriverName" type="text" placeholder="Driver Name" class="text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2" />
+            <input id="edDriverPhone" type="tel" placeholder="Driver Phone" class="text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2" />
+            <input id="edVehiclePlate" type="text" placeholder="Plate (BA 2 CHA...)" class="text-xs font-mono font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2" />
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+          <button type="button" onclick="confirmDeleteCurrentDeparture()" class="text-xs text-rose-500 hover:text-rose-600 font-bold hover:underline cursor-pointer">
+            🗑️ Delete Departure
+          </button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="closeEditDepartureModal()" class="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer">Cancel</button>
+            <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm transition cursor-pointer">
+              Save Tour Changes
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 10: EDIT CUSTOMER BOOKING            -->
+  <!-- ========================================== -->
+  <div id="editCustomerModal" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 my-8">
+      
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-xs">✏️</span>
+          <div>
+            <h3 class="font-extrabold text-base text-slate-900 dark:text-white">Edit Passenger Booking</h3>
+            <p id="ecModalSubtitle" class="text-xs text-amber-600 dark:text-amber-400 font-semibold">Modify passenger details, agency, or change tour departure</p>
+          </div>
+        </div>
+        <button onclick="closeEditCustomerModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="editCustomerForm" onsubmit="saveEditCustomerForm(event)" class="space-y-4">
+        <input id="ecDepartureId" type="hidden" />
+        <input id="ecCustomerId" type="hidden" />
+
+        <!-- Move Tour Departure -->
+        <div>
+          <label class="block text-xs font-bold mb-1">Assigned Tour Departure <span class="text-rose-500">*</span></label>
+          <select id="ecTargetDeparture" required class="w-full text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none"></select>
+          <p class="text-[11px] text-slate-400 mt-1">Select a different tour to move this passenger group (e.g. Ghandruk &amp; Pokhara).</p>
+        </div>
+
+        <!-- Row 1: Name & Phone -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold mb-1">Customer / Group Name <span class="text-rose-500">*</span></label>
+            <input id="ecCustName" type="text" required placeholder="e.g. Hema Bhatta" class="w-full text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">Phone Number <span class="text-rose-500">*</span></label>
+            <input id="ecCustPhone" type="tel" required placeholder="e.g. 9868119376" class="w-full text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+          </div>
+        </div>
+
+        <!-- Row 2: Pax & Remaining Cash -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold mb-1">Number of Pax <span class="text-rose-500">*</span></label>
+            <input id="ecCustPax" type="number" min="1" max="25" required class="w-full text-xs font-mono font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5" />
+            <span id="ecPaxHint" class="text-[10px] text-slate-400 block mt-0.5"></span>
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">Remaining Cash (NPR)</label>
+            <input id="ecCustRemaining" type="number" min="0" step="500" placeholder="0" class="w-full text-xs font-mono font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5" />
+            <span class="text-[10px] text-slate-400 block mt-0.5">Cash driver will collect</span>
+          </div>
+        </div>
+
+        <!-- Booking Agency Section -->
+        <div class="space-y-2 p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span>🏢 Booking Agency Name</span>
+              <span class="text-rose-500">*</span>
+            </label>
+            <span id="ecAgencyRoleBadge" class="text-[10px] font-bold px-2 py-0.5 rounded"></span>
+          </div>
+
+          <div id="ecAdminAgencyControls" class="space-y-2">
+            <select id="ecAgencySelect" onchange="handleEditCustAgencySelectChange(this.value)" class="w-full text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 focus:ring-2 focus:ring-amber-500 focus:outline-none">
+              <option value="Lalitpur Holidays">👑 Lalitpur Holidays (Admin Agency)</option>
+              <option value="Batuwa Trip">📋 Batuwa Trip</option>
+              <option value="Hike on Treks">🏔️ Hike on Treks</option>
+              <option value="Satdobato Agency">🏢 Satdobato Agency</option>
+              <option value="Manjushree Agency">🏢 Manjushree Agency</option>
+              <option value="Direct Counter">Direct Counter (Walk-in)</option>
+              <option value="custom">✏️ Type Other Agency Name...</option>
+            </select>
+          </div>
+
+          <input id="ecCustAgency" type="text" required placeholder="Booking Agency Name..." class="w-full text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+        </div>
+
+        <!-- Pickup / Notes -->
+        <div>
+          <label class="block text-xs font-bold mb-1">Pickup Location &amp; Notes</label>
+          <input id="ecCustPickup" type="text" placeholder="e.g. Satdobato Chowk • 1500 advance received" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+          <button type="button" onclick="confirmDeleteFromEditModal()" class="text-xs text-rose-500 hover:text-rose-600 font-bold hover:underline cursor-pointer">
+            ✕ Remove Customer
+          </button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="closeEditCustomerModal()" class="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer">Cancel</button>
+            <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm transition cursor-pointer">
+              Save Booking
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- APPLICATION SCRIPT -->
   <script>
     // ==========================================
@@ -1209,8 +1405,8 @@
     const _now = new Date();
     const DEFAULT_STATE = {
       isLoggedIn: false,
-      role: 'staff', // 'admin' | 'staff'
-      userAgency: 'Batuwa Trip',
+      role: 'admin', // Default to admin for full capability (Lalitpur Holidays)
+      userAgency: 'Lalitpur Holidays',
       currentUser: null,
       lastAdminAgency: 'Lalitpur Holidays',
       activeView: 'list', // 'list' | 'calendar'
@@ -1467,6 +1663,8 @@
       const btnStaff = document.getElementById('roleBtnStaff');
       const banner = document.getElementById('roleBanner');
       const topNewBtn = document.getElementById('topNewDepBtn');
+      const topPkgBtn = document.getElementById('topManagePackagesBtn');
+      const adminPkgBtn = document.getElementById('adminManagePackagesBtn');
 
       if (isAdmin) {
         btnAdmin.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-amber-500 text-slate-950 shadow-xs';
@@ -1474,31 +1672,45 @@
         banner.className = 'px-4 py-2 bg-amber-500/10 border-b border-amber-500/25 text-amber-900 dark:text-amber-300 text-xs font-semibold flex items-center justify-between';
         banner.innerHTML = `
           <div class="max-w-7xl mx-auto w-full flex items-center justify-between">
-            <span>👑 <strong>Admin Active:</strong> You can create departures, assign/depost drivers, and add customer details.</span>
-            <span class="text-[11px] opacity-75">All team members see shared group capacity</span>
+            <span>👑 <strong>Admin Active (Lalitpur Holidays):</strong> Full access to edit tour packages, create departures, and assign drivers.</span>
+            <div class="flex items-center gap-2">
+              <button onclick="handleManagePackagesClick()" class="px-2 py-0.5 rounded-md bg-amber-500 text-slate-950 text-[11px] font-black hover:bg-amber-400 transition cursor-pointer">⚙️ Edit Packages</button>
+              <span class="text-[11px] opacity-75 hidden sm:inline">Shared capacity network</span>
+            </div>
           </div>
         `;
         topNewBtn.classList.remove('opacity-50');
+
+        if (topPkgBtn) {
+          topPkgBtn.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-extrabold border border-amber-500 bg-amber-500/15 hover:bg-amber-500/25 text-amber-700 dark:text-amber-300 shadow-xs transition active:scale-95 cursor-pointer';
+          topPkgBtn.title = 'Manage & Edit Tour Packages (Admin)';
+        }
+
+        if (adminPkgBtn) {
+          adminPkgBtn.className = 'px-3 py-1.5 rounded-xl text-xs font-extrabold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm transition flex items-center gap-1.5 cursor-pointer border border-amber-500';
+          adminPkgBtn.innerHTML = '<span>👑 Edit Packages (Admin)</span>';
+          adminPkgBtn.title = 'Manage & Edit Tour Package Names (Admin)';
+        }
       } else {
         btnAdmin.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
         btnStaff.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-slate-900 dark:bg-slate-700 text-white shadow-xs';
         banner.className = 'px-4 py-2 bg-sky-500/10 border-b border-sky-500/25 text-sky-900 dark:text-sky-300 text-xs font-semibold flex items-center justify-between';
         banner.innerHTML = `
           <div class="max-w-7xl mx-auto w-full flex items-center justify-between">
-            <span>📋 <strong>Staff Active:</strong> You can add customer details to any tour. Driver deposting and new departures are restricted to Admin.</span>
+            <span>📋 <strong>Staff Active (Batuwa Trip):</strong> You can add customer details to any tour. Driver deposting and package editing are restricted to Admin.</span>
             <button onclick="setRole('admin')" class="text-[11px] font-bold underline hover:text-sky-600">Switch to Admin</button>
           </div>
         `;
         topNewBtn.classList.add('opacity-50');
-      }
 
-      const adminPkgBtn = document.getElementById('adminManagePackagesBtn');
-      if (adminPkgBtn) {
-        if (isAdmin) {
-          adminPkgBtn.classList.remove('opacity-50');
-          adminPkgBtn.title = 'Manage & Edit Tour Package Names (Admin)';
-        } else {
-          adminPkgBtn.classList.add('opacity-50');
+        if (topPkgBtn) {
+          topPkgBtn.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700 opacity-50 text-slate-500 dark:text-slate-400 cursor-pointer';
+          topPkgBtn.title = 'Package editing is restricted to Admin (Switch to Admin mode above)';
+        }
+
+        if (adminPkgBtn) {
+          adminPkgBtn.className = 'px-2.5 py-1.5 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700 opacity-60 text-slate-600 dark:text-slate-400 cursor-pointer';
+          adminPkgBtn.innerHTML = '<span>⚙️ Packages (Admin Only)</span>';
           adminPkgBtn.title = 'Package editing is restricted to Admin';
         }
       }
@@ -1506,13 +1718,23 @@
 
     function handleNewDepartureClick() {
       if (state.role !== 'admin') {
-        showToast('🔒 Only Admin can create new departures. Staff can add customer details to any package below.', 'error');
-        return;
+        if (confirm('Creating new departures requires Admin privileges (Lalitpur Holidays). Switch to Admin mode now?')) {
+          setRole('admin');
+        } else {
+          return;
+        }
       }
       openNewDepartureModal();
     }
 
     function handleManagePackagesClick() {
+      if (state.role !== 'admin') {
+        if (confirm('Editing tour package definitions requires Admin privileges (Lalitpur Holidays). Switch to Admin mode now?')) {
+          setRole('admin');
+        } else {
+          return;
+        }
+      }
       openManagePackagesModal();
     }
 
@@ -1523,6 +1745,7 @@
       const container = document.getElementById('packagesOverviewGrid');
       const countEl = document.getElementById('packagesLiveCount');
       const pkgs = getPackages();
+      const isAdmin = state.role === 'admin';
 
       countEl.textContent = `${pkgs.length} Himalayan Packages Active`;
 
@@ -1561,7 +1784,7 @@
               <div class="flex items-start justify-between gap-2">
                 <div class="flex-1">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <h3 class="font-extrabold text-sm text-slate-900 dark:text-white leading-snug">${pkg.name}</h3>
+                    <h3 class="font-extrabold text-sm text-slate-900 dark:text-white leading-snug">${escapeHtml(pkg.name)}</h3>
                     <button onclick="openEditSinglePackageModal('${pkg.id}')" class="px-2 py-0.5 rounded-lg text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition flex items-center gap-1 cursor-pointer" title="Edit Package Name & Capacity">
                       <span>✏️ Edit</span>
                     </button>
@@ -1590,13 +1813,18 @@
             </div>
 
             <div class="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-2">
+              ${isAdmin ? `
+                <button onclick="openEditSinglePackageModal('${pkg.id}')" class="py-2 px-2.5 rounded-xl text-xs font-bold border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 transition flex items-center justify-center gap-1 cursor-pointer" title="Edit ${escapeHtml(pkg.name)}">
+                  <span>✏️ Edit</span>
+                </button>
+              ` : ''}
               ${nextDep ? `
-                <button onclick="openAddCustomerModal('${targetDepId}')" ${getRemainingSeats(nextDep) <= 0 ? 'disabled' : ''} class="w-full py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${getRemainingSeats(nextDep) <= 0 ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed' : 'bg-amber-500 hover:bg-amber-400 text-slate-950 active:scale-95 shadow-xs'}">
+                <button onclick="openAddCustomerModal('${targetDepId}')" ${getRemainingSeats(nextDep) <= 0 ? 'disabled' : ''} class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${getRemainingSeats(nextDep) <= 0 ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed' : 'bg-amber-500 hover:bg-amber-400 text-slate-950 active:scale-95 shadow-xs cursor-pointer'}">
                   <span>+ Add Customer</span>
                 </button>
               ` : `
-                <button onclick="${state.role === 'admin' ? `openNewDepForPackage('${pkg.id}')` : `showToast('Admin creates new tour departures', 'error')`}" class="w-full py-2 px-3 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-                  ${state.role === 'admin' ? '+ Schedule Departure' : 'Awaiting Admin Departure'}
+                <button onclick="${isAdmin ? `openNewDepForPackage('${pkg.id}')` : `showToast('Admin creates new tour departures', 'error')`}" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer">
+                  ${isAdmin ? '+ Schedule Departure' : 'Awaiting Admin Departure'}
                 </button>
               `}
             </div>
@@ -1629,7 +1857,7 @@
               </p>
             </div>
             ${isAdmin ? `
-              <button onclick="openNewDepartureModal()" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition shadow-sm">
+              <button onclick="openNewDepartureModal()" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition shadow-sm cursor-pointer">
                 + Create First Departure
               </button>
             ` : ''}
@@ -1662,9 +1890,12 @@
                   <span class="text-slate-500 font-mono text-[11px]">📞 ${c.phone}</span>
                   ${c.note ? `<span class="text-slate-400 text-[11px] hidden sm:inline">&bull; 📍 ${c.note}</span>` : ''}
                 </div>
-                <div class="flex items-center gap-2.5">
+                <div class="flex items-center gap-2">
                   <span class="font-bold text-amber-600 dark:text-amber-400 font-mono">${formatNPR(c.remaining)}</span>
-                  <button onclick="deleteCustomer('${dep.id}', '${c.id}')" class="text-slate-400 hover:text-rose-500 text-xs font-bold px-1.5 py-0.5 rounded-md hover:bg-rose-500/10 transition" title="Remove customer">✕</button>
+                  <button onclick="openEditCustomerModal('${dep.id}', '${c.id}')" class="text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 text-xs font-bold px-2 py-0.5 rounded-md border border-amber-500/30 transition cursor-pointer flex items-center gap-1" title="Edit Customer Booking">
+                    <span>✏️ Edit</span>
+                  </button>
+                  <button onclick="deleteCustomer('${dep.id}', '${c.id}')" class="text-slate-400 hover:text-rose-500 text-xs font-bold px-1.5 py-0.5 rounded-md hover:bg-rose-500/10 transition cursor-pointer" title="Remove customer">✕</button>
                 </div>
               </div>
             `).join('');
@@ -1676,9 +1907,9 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
               <div>
                 <div class="flex items-center gap-2 flex-wrap">
-                  <h3 class="font-extrabold text-base text-slate-900 dark:text-white">${pkg.name}</h3>
-                  <button onclick="openEditSinglePackageModal('${pkg.id}')" class="px-2 py-0.5 rounded-lg text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition flex items-center gap-1 cursor-pointer" title="Edit Package Name & Capacity">
-                    <span>✏️ Edit</span>
+                  <h3 class="font-extrabold text-base text-slate-900 dark:text-white">${escapeHtml(pkg.name)}</h3>
+                  <button onclick="openEditSinglePackageModal('${pkg.id}')" class="px-2 py-0.5 rounded-lg text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition flex items-center gap-1 cursor-pointer" title="Edit Package Template">
+                    <span>✏️ Edit Package</span>
                   </button>
                   <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${left > 0 ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/15 text-rose-600 border border-rose-500/30'}">
                     ${left} / ${dep.capacity} Seats Available
@@ -1705,14 +1936,20 @@
                 `}
 
                 ${isAdmin ? `
-                  <button onclick="openAssignDriverModal('${dep.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                  <button onclick="openEditDepartureModal('${dep.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-700 dark:text-amber-300 border border-amber-500/30 transition flex items-center gap-1 cursor-pointer" title="Edit Tour Package, Date, Vehicle or Capacity">
+                    <span>✏️ Edit Tour</span>
+                  </button>
+                  <button onclick="openAssignDriverModal('${dep.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer">
                     ${dep.driverName ? 'Edit Driver' : 'Assign Driver'}
+                  </button>
+                  <button onclick="deleteDeparture('${dep.id}')" class="p-1.5 rounded-xl text-xs text-rose-500 hover:bg-rose-500/10 border border-rose-500/20 transition cursor-pointer" title="Delete Departure">
+                    🗑️
                   </button>
                 ` : `
                   <span class="text-[11px] text-slate-400 italic px-2">Driver depost: Admin only</span>
                 `}
 
-                <button onclick="openManifestModal('${dep.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition flex items-center gap-1">
+                <button onclick="openManifestModal('${dep.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition flex items-center gap-1 cursor-pointer">
                   <span>WhatsApp Manifest</span>
                 </button>
               </div>
@@ -2326,6 +2563,13 @@
     // MODAL 8: QUICK EDIT SINGLE PACKAGE
     // ==========================================
     function openEditSinglePackageModal(pkgId) {
+      if (state.role !== 'admin') {
+        if (confirm('Editing tour package details requires Admin privileges (Lalitpur Holidays). Switch to Admin mode now?')) {
+          setRole('admin');
+        } else {
+          return;
+        }
+      }
       const pkg = getPackages().find(p => p.id === pkgId);
       if (!pkg) return;
 
@@ -2343,6 +2587,9 @@
 
     function saveSinglePackageEdit(e) {
       e.preventDefault();
+      if (state.role !== 'admin') {
+        setRole('admin');
+      }
       const pkgId = document.getElementById('espPackageId').value;
       const pkg = getPackages().find(p => p.id === pkgId);
       if (!pkg) return;
@@ -2374,6 +2621,295 @@
       closeEditSinglePackageModal();
       renderAll();
       showToast(`Package updated: "${newName}"`);
+    }
+
+    // ==========================================
+    // MODAL 9: EDIT TOUR DEPARTURE (ADMIN ONLY)
+    // ==========================================
+    function openEditDepartureModal(depId) {
+      if (state.role !== 'admin') {
+        if (confirm('Editing tour departures requires Admin privileges (Lalitpur Holidays). Switch to Admin mode now?')) {
+          setRole('admin');
+        } else {
+          return;
+        }
+      }
+      const dep = state.departures.find(d => d.id === depId);
+      if (!dep) return;
+
+      document.getElementById('edDepartureId').value = dep.id;
+      const pkg = getPackage(dep.packageId);
+      document.getElementById('edModalSubtitle').textContent = `${pkg.name} • ${formatDate(dep.date)}`;
+
+      // Populate Package dropdown
+      const pkgSelect = document.getElementById('edPackageId');
+      pkgSelect.innerHTML = getPackages().map(p => `
+        <option value="${p.id}" ${p.id === dep.packageId ? 'selected' : ''}>${escapeHtml(p.name)}</option>
+      `).join('');
+
+      document.getElementById('edDate').value = dep.date;
+      document.getElementById('edNepaliDate').value = dep.nepaliDate || '';
+      document.getElementById('edVehicleType').value = dep.vehicleType || 'scorpio';
+      
+      const booked = getBookedPax(dep);
+      const capInput = document.getElementById('edCapacity');
+      capInput.value = dep.capacity;
+      capInput.min = Math.max(1, booked);
+      document.getElementById('edCapacityHint').textContent = booked > 0
+        ? `Minimum ${booked} seats (already booked by ${(dep.customers || []).length} passenger groups)`
+        : 'No passengers booked yet';
+
+      document.getElementById('edDriverName').value = dep.driverName || '';
+      document.getElementById('edDriverPhone').value = dep.driverPhone || '';
+      document.getElementById('edVehiclePlate').value = dep.vehiclePlate || '';
+
+      document.getElementById('editDepartureModal').classList.remove('hidden');
+    }
+
+    function closeEditDepartureModal() {
+      document.getElementById('editDepartureModal').classList.add('hidden');
+    }
+
+    function saveEditDepartureForm(e) {
+      e.preventDefault();
+      if (state.role !== 'admin') {
+        setRole('admin');
+      }
+
+      const depId = document.getElementById('edDepartureId').value;
+      const dep = state.departures.find(d => d.id === depId);
+      if (!dep) return;
+
+      const booked = getBookedPax(dep);
+      const newCap = Number(document.getElementById('edCapacity').value) || 8;
+      if (newCap < booked) {
+        showToast(`Capacity cannot be less than ${booked} (current booked seats)!`, 'error');
+        return;
+      }
+
+      const newPackageId = document.getElementById('edPackageId').value;
+      const newDate = document.getElementById('edDate').value;
+      const newNepaliDate = document.getElementById('edNepaliDate').value.trim();
+      const newVehicle = document.getElementById('edVehicleType').value;
+      const newDriverName = document.getElementById('edDriverName').value.trim();
+      const newDriverPhone = document.getElementById('edDriverPhone').value.trim();
+      const newPlate = document.getElementById('edVehiclePlate').value.trim().toUpperCase();
+
+      dep.packageId = newPackageId;
+      dep.date = newDate;
+      dep.nepaliDate = newNepaliDate;
+      dep.vehicleType = newVehicle;
+      dep.capacity = newCap;
+      dep.driverName = newDriverName;
+      dep.driverPhone = newDriverPhone;
+      dep.vehiclePlate = newPlate;
+
+      saveState();
+
+      if (supabaseClient) {
+        supabaseClient.from('departures').update({
+          package_id: dep.packageId,
+          date: dep.date,
+          nepali_date: dep.nepaliDate,
+          vehicle_type: dep.vehicleType,
+          capacity: dep.capacity,
+          driver_name: dep.driverName,
+          driver_phone: dep.driverPhone,
+          vehicle_plate: dep.vehiclePlate
+        }).eq('id', dep.id).catch(err => console.warn('Supabase departure update error:', err));
+      }
+
+      closeEditDepartureModal();
+      renderAll();
+      const updatedPkg = getPackage(newPackageId);
+      showToast(`Tour departure updated! Running ${updatedPkg.name}`);
+    }
+
+    function confirmDeleteCurrentDeparture() {
+      const depId = document.getElementById('edDepartureId').value;
+      closeEditDepartureModal();
+      deleteDeparture(depId);
+    }
+
+    function deleteDeparture(depId) {
+      if (state.role !== 'admin') {
+        if (confirm('Deleting departures requires Admin privileges (Lalitpur Holidays). Switch to Admin mode now?')) {
+          setRole('admin');
+        } else {
+          return;
+        }
+      }
+      const dep = state.departures.find(d => d.id === depId);
+      if (!dep) return;
+
+      const booked = getBookedPax(dep);
+      const pkg = getPackage(dep.packageId);
+      const promptMsg = booked > 0 
+        ? `⚠️ This departure has ${(dep.customers || []).length} passenger groups (${booked} seats booked). Are you sure you want to permanently delete this ${pkg.name} departure?`
+        : `Delete departure for "${pkg.name}" (${formatDate(dep.date)})?`;
+
+      if (confirm(promptMsg)) {
+        state.departures = state.departures.filter(d => d.id !== depId);
+        saveState();
+
+        if (supabaseClient) {
+          supabaseClient.from('departures').delete().eq('id', depId).catch(err => console.warn('Supabase departure delete error:', err));
+        }
+
+        renderAll();
+        showToast(`Deleted departure for "${pkg.name}"`);
+      }
+    }
+
+    // ==========================================
+    // MODAL 10: EDIT CUSTOMER BOOKING
+    // ==========================================
+    function handleEditCustAgencySelectChange(val) {
+      const input = document.getElementById('ecCustAgency');
+      if (val === 'custom') {
+        input.value = '';
+        input.placeholder = 'Type Booking Agency Name...';
+        input.focus();
+      } else {
+        input.value = val;
+      }
+    }
+
+    function openEditCustomerModal(depId, custId) {
+      const dep = state.departures.find(d => d.id === depId);
+      if (!dep) return;
+      const cust = (dep.customers || []).find(c => c.id === custId);
+      if (!cust) return;
+
+      document.getElementById('ecDepartureId').value = dep.id;
+      document.getElementById('ecCustomerId').value = cust.id;
+      document.getElementById('ecCustName').value = cust.name;
+      document.getElementById('ecCustPhone').value = cust.phone;
+      document.getElementById('ecCustPax').value = cust.pax;
+      document.getElementById('ecCustRemaining').value = cust.remaining || 0;
+      document.getElementById('ecCustPickup').value = cust.note || '';
+
+      const pkg = getPackage(dep.packageId);
+      document.getElementById('ecModalSubtitle').textContent = `${cust.name} (${cust.pax} Pax) • Current: ${pkg.name}`;
+
+      // Populate Departure dropdown so customer can be moved to another tour!
+      const depSelect = document.getElementById('ecTargetDeparture');
+      depSelect.innerHTML = state.departures.map(d => {
+        const p = getPackage(d.packageId);
+        const leftSeats = getRemainingSeats(d) + (d.id === dep.id ? Number(cust.pax) : 0);
+        return `<option value="${d.id}" ${d.id === dep.id ? 'selected' : ''}>${escapeHtml(p.name)} • ${formatDate(d.date)}${d.nepaliDate ? ` (${d.nepaliDate})` : ''} - ${leftSeats} seats free</option>`;
+      }).join('');
+
+      // Agency Controls
+      const isAdmin = state.role === 'admin';
+      const adminControls = document.getElementById('ecAdminAgencyControls');
+      const agencyBadge = document.getElementById('ecAgencyRoleBadge');
+      const agencyInput = document.getElementById('ecCustAgency');
+      const agencySelect = document.getElementById('ecAgencySelect');
+      const currentAgency = cust.agency || cust.bookedBy || 'Direct Counter';
+
+      if (isAdmin) {
+        if (adminControls) adminControls.classList.remove('hidden');
+        if (agencyBadge) {
+          agencyBadge.textContent = '👑 Admin Agency Selector';
+          agencyBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/15 text-amber-600 dark:text-amber-400';
+        }
+        if (agencySelect) {
+          if (Array.from(agencySelect.options).some(o => o.value === currentAgency)) {
+            agencySelect.value = currentAgency;
+          } else {
+            agencySelect.value = 'custom';
+          }
+        }
+        agencyInput.value = currentAgency;
+        agencyInput.readOnly = false;
+      } else {
+        // Staff locked to assigned agency or current customer agency
+        if (adminControls) adminControls.classList.add('hidden');
+        if (agencyBadge) {
+          agencyBadge.textContent = '📋 Staff Agency';
+          agencyBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/15 text-sky-600 dark:text-sky-400';
+        }
+        agencyInput.value = currentAgency;
+      }
+
+      document.getElementById('editCustomerModal').classList.remove('hidden');
+    }
+
+    function closeEditCustomerModal() {
+      document.getElementById('editCustomerModal').classList.add('hidden');
+    }
+
+    function confirmDeleteFromEditModal() {
+      const depId = document.getElementById('ecDepartureId').value;
+      const custId = document.getElementById('ecCustomerId').value;
+      closeEditCustomerModal();
+      deleteCustomer(depId, custId);
+    }
+
+    function saveEditCustomerForm(e) {
+      e.preventDefault();
+      const origDepId = document.getElementById('ecDepartureId').value;
+      const custId = document.getElementById('ecCustomerId').value;
+      const targetDepId = document.getElementById('ecTargetDeparture').value;
+
+      const origDep = state.departures.find(d => d.id === origDepId);
+      const targetDep = state.departures.find(d => d.id === targetDepId);
+      if (!origDep || !targetDep) return;
+
+      const cust = (origDep.customers || []).find(c => c.id === custId);
+      if (!cust) return;
+
+      const newPax = Number(document.getElementById('ecCustPax').value) || 1;
+      const agency = document.getElementById('ecCustAgency').value.trim();
+      if (!agency) {
+        showToast('Please enter the Booking Agency Name', 'error');
+        return;
+      }
+
+      // Capacity check
+      const availableInTarget = targetDep.capacity - getBookedPax(targetDep) + (origDepId === targetDepId ? cust.pax : 0);
+      if (newPax > availableInTarget) {
+        showToast(`Cannot assign ${newPax} pax! Only ${availableInTarget} seats available in target departure.`, 'error');
+        return;
+      }
+
+      // Update customer fields
+      cust.name = document.getElementById('ecCustName').value.trim();
+      cust.phone = document.getElementById('ecCustPhone').value.trim();
+      cust.pax = newPax;
+      cust.agency = agency;
+      cust.bookedBy = agency;
+      cust.remaining = Number(document.getElementById('ecCustRemaining').value || 0);
+      cust.note = document.getElementById('ecCustPickup').value.trim();
+
+      // If moved to a different departure
+      if (origDepId !== targetDepId) {
+        origDep.customers = origDep.customers.filter(c => c.id !== custId);
+        if (!targetDep.customers) targetDep.customers = [];
+        targetDep.customers.push(cust);
+      }
+
+      saveState();
+
+      if (supabaseClient) {
+        supabaseClient.from('customers').upsert({
+          id: cust.id,
+          departure_id: targetDepId,
+          name: cust.name,
+          phone: cust.phone,
+          pax: cust.pax,
+          remaining: cust.remaining,
+          agency_name: cust.agency,
+          note: cust.note || '',
+          booked_by: cust.agency || (currentUser && currentUser.email) || 'Admin'
+        }).catch(err => console.warn('Supabase customer upsert error:', err));
+      }
+
+      closeEditCustomerModal();
+      renderAll();
+      const targetPkg = getPackage(targetDep.packageId);
+      showToast(`Updated ${cust.name} (${cust.pax} pax) on ${targetPkg.name}!`);
     }
 
     // ==========================================
@@ -2445,6 +2981,9 @@
     }
 
     function savePackageEdit(pkgId) {
+      if (state.role !== 'admin') {
+        setRole('admin');
+      }
       const pkg = getPackages().find(p => p.id === pkgId);
       if (!pkg) return;
 
@@ -2472,11 +3011,15 @@
         }).catch(err => console.warn('Supabase package update error:', err));
       }
 
+      renderPackagesManagerList();
       renderAll();
       showToast(`Package updated: "${newName}"`);
     }
 
     function addNewPackageFromManager() {
+      if (state.role !== 'admin') {
+        setRole('admin');
+      }
       const nameInput = document.getElementById('newPkgName');
       const vSelect = document.getElementById('newPkgVehicle');
       const capInput = document.getElementById('newPkgCapacity');
@@ -2519,6 +3062,13 @@
     }
 
     function deletePackage(pkgId) {
+      if (state.role !== 'admin') {
+        if (confirm('Deleting packages requires Admin privileges (Lalitpur Holidays). Switch to Admin mode now?')) {
+          setRole('admin');
+        } else {
+          return;
+        }
+      }
       const pkgs = getPackages();
       if (pkgs.length <= 1) {
         showToast('At least one package is required', 'error');
@@ -2543,6 +3093,13 @@
     }
 
     function resetDefaultPackages() {
+      if (state.role !== 'admin') {
+        if (confirm('Resetting tour packages requires Admin privileges (Lalitpur Holidays). Switch to Admin mode now?')) {
+          setRole('admin');
+        } else {
+          return;
+        }
+      }
       if (confirm('Reset all packages to default Himalayan routes?')) {
         state.packages = JSON.parse(JSON.stringify(DEFAULT_PACKAGES));
         saveState();
@@ -2861,12 +3418,12 @@
       } else {
         // guest
         state.isLoggedIn = true;
-        state.role = 'staff';
-        state.userAgency = 'Guest Viewer';
+        state.role = 'admin';
+        state.userAgency = 'Lalitpur Holidays';
         currentUser = null;
         state.currentUser = null;
         saveState();
-        showToast('Entering as Guest (Viewer)');
+        showToast('Entering Dashboard (Admin Mode Active)');
       }
       showDashboardView();
     }

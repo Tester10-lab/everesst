@@ -35,15 +35,17 @@ Because this repository contains a self-contained `index.html` at the root, you 
 ### 1. Dual User Roles (Admin vs Staff)
 - **👑 Admin Role**:
   - Full authority over tours, vehicles, agencies, and driver allocation.
-  - **In-App Package & Route Manager (`⚙️ Edit Packages`)**: Rename any tour package, customize default vehicle (Scorpio 8 vs EV Van 12), adjust capacities, or add new Himalayan routes directly in the UI.
-  - **Exclusive permission to depost drivers**: Enter Driver Name (mandatory), phone, vehicle plate, fuel/advance deposit, and lock the assignment.
-  - Can create and modify tour routes, set private charter status, and reset data.
+  - **In-App Package & Route Manager (`⚙️ Edit Packages`)**: Prominent in the top navbar and Section 1 header to rename any tour package, customize default vehicle (Scorpio 8 vs EV Van 12), adjust capacities, or add new Himalayan routes directly in the UI.
+  - **Departure Tour & Package Editing (`✏️ Edit Tour`)**: Direct edit option on every departure card to change assigned tour package (e.g. switch between Ghandruk & Pokhara, Muktinath, etc.), date, vehicle type, and capacity.
+  - **Passenger Booking Editor (`✏️ Edit Booking`)**: Edit passenger name, phone, pax, booking agency, remaining cash, or seamlessly move the booking to another tour departure.
+  - **Exclusive permission to depost drivers**: Enter Driver Name (mandatory), phone, vehicle plate, and lock the assignment.
+  - Can create and modify tour routes, delete departures, and select any agency when booking.
 - **📋 Staff Role**:
   - Streamlined operational view for counter and dispatch staff.
-  - Add, edit, and release passenger groups.
+  - Add, edit, and release passenger groups with automatic agency attribution.
   - View calendar, open capacity, and remaining cash balances.
   - Copy driver WhatsApp manifests.
-  - **Driver Deposting is locked**: Staff cannot depost or change driver details (`🔒 Admin Only`).
+  - **Driver Deposting and Global Package Definitions are locked**: Staff cannot alter global route templates or depost drivers (`🔒 Admin Only`).
 
 ### 2. Mandatory Driver Name Deposting
 - A driver cannot be officially deposted without a **Driver Name**.
