@@ -109,7 +109,7 @@ on conflict (id) do update set
 
 -- 9. Seed Passenger Bookings (with Agency Names)
 insert into public.customers (id, departure_id, name, phone, pax, agency_name, remaining, note, booked_by) values
-  ('c-ujwal-1', 'dep-mustang-kartik5', 'Ujwal Baiju', '+977 984-3399734', 7, 'Everest Agency', 83500, 'Kartik 5 departure', 'Everest Agency'),
+  ('c-ujwal-1', 'dep-mustang-kartik5', 'Ujwal Baiju', '+977 984-3399734', 7, 'Lalitpur Holidays', 83500, 'Kartik 5 departure', 'Lalitpur Holidays'),
   ('c-hema-1', 'dep-ghandruk-kartik6', 'Hema Bhatta', '9868119376', 3, 'Satdobato Agency', 7500, 'Satdobato • 1500 rec / 9000 pkg', 'Satdobato Agency'),
   ('c-rubishna-1', 'dep-ghandruk-kartik6', 'Rubishna Ranjit & Prajwol Gupt Ranjit', '9841228980 / 9861667312', 2, 'Manjushree Agency', 0, 'Manjushree Temple', 'Manjushree Agency'),
   ('c-kumar-1', 'dep-amayan-kartik6', 'Kumar Poudel', '9851089299', 9, 'Samakhusi Travels', 44500, 'Samakhusi & Dhapasi • 3 Room', 'Samakhusi Travels'),

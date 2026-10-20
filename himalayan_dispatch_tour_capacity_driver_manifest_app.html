@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Everest Annapurna Deposter</title>
+  <title>Lalitpur Holidays - Himalayan Tour Capacity &amp; Dispatch Portal</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -61,10 +61,10 @@
           </div>
           <div>
             <h1 class="font-extrabold text-base sm:text-lg tracking-tight leading-tight">
-              Everest Annapurna Deposter
+              Lalitpur Holidays
             </h1>
             <p class="text-[11px] text-amber-400 font-medium">
-              Himalayan Tour Dispatch &amp; Capacity Network • Nepal
+              Himalayan Tour Dispatch &amp; Capacity Network • Lalitpur &amp; Kathmandu
             </p>
           </div>
         </div>
@@ -100,7 +100,7 @@
         </h2>
 
         <p class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl">
-          The collaborative booking portal for Kathmandu &amp; Pokhara travel agencies. Share Scorpio 4x4 &amp; EV Van capacities across Upper Mustang, Ghandruk, Ama Yangri, Dhorpatan, and Rara Lake with guaranteed rotational seating and instant WhatsApp driver manifests.
+          The collaborative booking portal for <strong>Lalitpur Holidays</strong>, <strong>Batuwa Trip</strong>, <strong>Hike on Treks</strong>, and partner travel agencies. Share Scorpio 4x4 &amp; EV Van capacities with guaranteed rotational seating and confidential driver manifests.
         </p>
 
         <!-- Stats Bar -->
@@ -146,6 +146,30 @@
             <p class="text-xs text-slate-300 mt-1">Sign in with your team credentials or enter instantly</p>
           </div>
 
+          <!-- Credentials Guide Card -->
+          <div class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/25 text-xs space-y-2">
+            <div class="font-extrabold text-amber-300 flex items-center justify-between">
+              <span class="flex items-center gap-1.5"><span>🔑</span><span>Portal Credentials</span></span>
+              <span class="text-[10px] bg-amber-500/20 px-2 py-0.5 rounded text-amber-200 font-mono">Password = Agency Name</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+              <div class="bg-black/40 p-2.5 rounded-xl border border-white/5 space-y-1">
+                <div class="font-bold text-amber-400 flex items-center gap-1">
+                  <span>👑 Admin (Lalitpur Holidays)</span>
+                </div>
+                <div class="text-slate-300 text-[10px] font-mono">Login: <span class="text-white">admin@lalitpurholidays.com</span></div>
+                <div class="text-slate-300 text-[10px] font-mono">Password: <span class="text-amber-300 font-bold">lalitpurholidays</span></div>
+              </div>
+              <div class="bg-black/40 p-2.5 rounded-xl border border-white/5 space-y-1">
+                <div class="font-bold text-sky-400 flex items-center gap-1">
+                  <span>📋 Staff (Batuwa Trip)</span>
+                </div>
+                <div class="text-slate-300 text-[10px] font-mono">Login: <span class="text-white">staff@batuwatrip.com</span></div>
+                <div class="text-slate-300 text-[10px] font-mono">Password: <span class="text-sky-300 font-bold">Batuwa Trip</span></div>
+              </div>
+            </div>
+          </div>
+
           <!-- Tab Switcher: Sign In vs Register -->
           <div class="flex bg-black/40 p-1 rounded-xl text-xs font-bold border border-white/10">
             <button id="hlTabSignIn" onclick="switchHomeAuthMode('signin')" class="w-1/2 py-2 rounded-lg bg-amber-500 text-slate-950 shadow-xs transition cursor-pointer font-bold">
@@ -166,25 +190,25 @@
 
             <div id="hlAgencyGroup" class="hidden">
               <label class="block text-xs font-bold text-slate-200 mb-1">Your Agency / Travel Desk Name <span class="text-rose-400">*</span></label>
-              <input id="hlAgency" type="text" placeholder="e.g. Everest Agency / Annapurna Tours" class="w-full text-xs font-semibold rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+              <input id="hlAgency" type="text" placeholder="e.g. Batuwa Trip / Lalitpur Holidays" class="w-full text-xs font-semibold rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500" />
             </div>
 
             <div id="hlRoleGroup" class="hidden">
               <label class="block text-xs font-bold text-slate-200 mb-1">Access Role</label>
               <select id="hlRole" class="w-full text-xs font-semibold rounded-xl border border-white/15 bg-slate-900 px-3 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
-                <option value="staff">📋 Agency Counter Staff (Add bookings &amp; manifests)</option>
-                <option value="admin">👑 Tour Dispatcher / Admin (Assign drivers, schedule departures)</option>
+                <option value="staff">📋 Agency Counter Staff (Batuwa Trip / Partner)</option>
+                <option value="admin">👑 Tour Dispatcher / Admin (Lalitpur Holidays)</option>
               </select>
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-200 mb-1">Email Address <span class="text-rose-400">*</span></label>
-              <input id="hlEmail" type="email" required placeholder="name@agency.com" class="w-full text-xs font-semibold rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+              <label class="block text-xs font-bold text-slate-200 mb-1">Email or Username <span class="text-rose-400">*</span></label>
+              <input id="hlEmail" type="text" required placeholder="admin@lalitpurholidays.com or staff@batuwatrip.com" class="w-full text-xs font-semibold rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500" />
             </div>
 
             <div>
               <label class="block text-xs font-bold text-slate-200 mb-1">Password <span class="text-rose-400">*</span></label>
-              <input id="hlPassword" type="password" required placeholder="••••••••" class="w-full text-xs font-semibold rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+              <input id="hlPassword" type="password" required placeholder="Enter password (e.g. Batuwa Trip or lalitpurholidays)" class="w-full text-xs font-semibold rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500" />
             </div>
 
             <div id="hlFeedback" class="hidden text-xs font-semibold p-2.5 rounded-xl border"></div>
@@ -197,14 +221,14 @@
           <!-- Quick Access / Instant Entry Buttons -->
           <div class="pt-4 border-t border-white/10 space-y-2.5">
             <div class="text-center text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              Instant 1-Click Access (No Password Needed)
+              Instant 1-Click Access (No Typing Required)
             </div>
             <div class="grid grid-cols-2 gap-2.5">
               <button onclick="quickEnterDashboard('admin')" type="button" class="p-2.5 rounded-xl text-xs font-bold bg-amber-500/15 hover:bg-amber-500 text-amber-300 hover:text-slate-950 border border-amber-500/30 transition flex items-center justify-center gap-1.5 cursor-pointer">
-                <span>👑 Dispatch Admin</span>
+                <span>👑 Admin (Lalitpur Holidays)</span>
               </button>
               <button onclick="quickEnterDashboard('staff')" type="button" class="p-2.5 rounded-xl text-xs font-bold bg-sky-500/15 hover:bg-sky-500 text-sky-300 hover:text-white border border-sky-500/30 transition flex items-center justify-center gap-1.5 cursor-pointer">
-                <span>📋 Agency Staff</span>
+                <span>📋 Staff (Batuwa Trip)</span>
               </button>
             </div>
           </div>
@@ -222,7 +246,7 @@
 
     <!-- Landing Footer -->
     <footer class="border-t border-white/10 px-4 py-4 text-center text-xs text-slate-500">
-      Everest Annapurna Deposter &bull; Himalayan Tour Capacity &amp; Booking Network &bull; Kathmandu &amp; Pokhara, Nepal
+      Lalitpur Holidays &bull; Himalayan Tour Capacity &amp; Booking Network &bull; Lalitpur &amp; Kathmandu, Nepal
     </footer>
 
   </div>
@@ -247,14 +271,14 @@
           <div>
             <div class="flex items-center gap-2">
               <h1 class="font-extrabold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white leading-tight">
-                Everest Annapurna Deposter
+                Lalitpur Holidays
               </h1>
               <button onclick="showHomeLoginView()" class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-amber-900/40 text-amber-700 dark:text-amber-400 border border-slate-200 dark:border-slate-700 transition flex items-center gap-1 cursor-pointer" title="Return to Portal Login / Home">
                 <span>🏠 Home</span>
               </button>
             </div>
             <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block">
-              Tour Capacity &bull; Shared Group Seats &bull; Driver Deposting
+              Tour Capacity &bull; Shared Group Seats &bull; Driver Dispatching
             </p>
           </div>
         </div>
@@ -544,19 +568,41 @@
           </div>
         </div>
 
-        <!-- Booking Agency Name (Required) -->
+        <!-- Booking Agency Selection (Admin Selector vs Staff Fixed) -->
         <div>
           <label class="block text-xs font-bold mb-1 flex items-center justify-between">
-            <span class="text-slate-900 dark:text-white">Booking Agency Name <span class="text-rose-500">* (Required)</span></span>
-            <span class="text-[10px] text-sky-600 dark:text-sky-400 font-bold">🏢 Agency / Desk</span>
+            <span class="text-slate-900 dark:text-white">Booking Agency <span class="text-rose-500">* (Required)</span></span>
+            <span id="acAgencyRoleBadge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400">🏢 Agency Attribution</span>
           </label>
-          <input id="acCustAgency" type="text" required placeholder="e.g. Everest Agency / Annapurna Tours / Direct Counter" class="w-full text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-amber-50/70 dark:bg-amber-950/20 px-3 py-2.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:outline-none" />
-          <div class="flex items-center gap-1.5 mt-1.5 flex-wrap text-[10px]">
-            <span class="text-slate-400 font-medium">Quick Presets:</span>
-            <button type="button" onclick="document.getElementById('acCustAgency').value='Everest Agency'" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-amber-900/40 border border-slate-200 dark:border-slate-700 font-semibold cursor-pointer">Everest Agency</button>
-            <button type="button" onclick="document.getElementById('acCustAgency').value='Annapurna Tours'" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-amber-900/40 border border-slate-200 dark:border-slate-700 font-semibold cursor-pointer">Annapurna Tours</button>
-            <button type="button" onclick="document.getElementById('acCustAgency').value='Direct Counter'" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-amber-900/40 border border-slate-200 dark:border-slate-700 font-semibold cursor-pointer">Direct Counter</button>
-            <button type="button" onclick="document.getElementById('acCustAgency').value='Online / WhatsApp'" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-amber-900/40 border border-slate-200 dark:border-slate-700 font-semibold cursor-pointer">Online / WhatsApp</button>
+
+          <!-- Admin Controls (Selector + Presets) -->
+          <div id="acAdminAgencyControls" class="space-y-2">
+            <select id="acAgencySelect" onchange="handleAdminAgencySelectChange(this.value)" class="w-full text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-amber-50/70 dark:bg-amber-950/20 px-3 py-2.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+              <option value="Lalitpur Holidays">Lalitpur Holidays (Admin - Default)</option>
+              <option value="Batuwa Trip">Batuwa Trip (Botwa Trip)</option>
+              <option value="Hike on Treks">Hike on Treks</option>
+              <option value="custom">Other Booking Agency (Type Custom)...</option>
+            </select>
+            <div class="flex items-center gap-1.5 flex-wrap text-[10px]">
+              <span class="text-slate-400 font-medium">Quick Select:</span>
+              <button type="button" onclick="selectAgencyPreset('Lalitpur Holidays')" class="px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-900/40 border border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300 font-bold cursor-pointer">Lalitpur Holidays</button>
+              <button type="button" onclick="selectAgencyPreset('Batuwa Trip')" class="px-2 py-0.5 rounded-md bg-sky-100 dark:bg-sky-900/40 border border-sky-300 dark:border-sky-700 text-sky-800 dark:text-sky-300 font-bold cursor-pointer">Batuwa Trip</button>
+              <button type="button" onclick="selectAgencyPreset('Hike on Treks')" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 border border-slate-300 dark:border-slate-700 font-semibold cursor-pointer">Hike on Treks</button>
+            </div>
+          </div>
+
+          <!-- Agency Input Field (Used when custom is selected or populated) -->
+          <div id="acAgencyInputWrap" class="mt-2">
+            <input id="acCustAgency" type="text" required placeholder="Agency Name (e.g. Lalitpur Holidays)" class="w-full text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+          </div>
+
+          <!-- Staff Fixed Agency Display (When logged in as Batuwa Trip staff) -->
+          <div id="acStaffAgencyDisplay" class="hidden p-2.5 rounded-xl bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/60 text-xs text-sky-800 dark:text-sky-300 flex items-center justify-between">
+            <span class="font-bold flex items-center gap-1.5">
+              <span>🏢</span>
+              <span id="acStaffAgencyName">Batuwa Trip</span>
+            </span>
+            <span class="text-[10px] font-semibold text-slate-500">Auto-attributed to your staff agency</span>
           </div>
         </div>
 
@@ -908,7 +954,8 @@
     // ==========================================
     // DATA MODEL & STORAGE
     // ==========================================
-    const STORAGE_KEY = 'everest_annapurna_deposter_v7';
+    const STORAGE_KEY = 'lalitpur_holidays_dispatch_v1';
+    const OLD_STORAGE_KEY = 'everest_annapurna_deposter_v7';
 
     // ==========================================
     // SUPABASE CLOUD & AUTH CONFIGURATION
@@ -1025,15 +1072,16 @@
         const email = currentUser.email || 'Staff';
         const name = (currentUser.user_metadata && currentUser.user_metadata.name) || email.split('@')[0];
         const role = state.role || 'staff';
+        const agency = (currentUser.user_metadata && currentUser.user_metadata.agency) || state.userAgency || (role === 'admin' ? 'Lalitpur Holidays' : 'Batuwa Trip');
         const roleBadge = role === 'admin' 
           ? '<span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-amber-500 text-slate-950">👑 Admin</span>'
           : '<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-sky-500/20 text-sky-600 dark:text-sky-300">📋 Staff</span>';
 
         area.innerHTML = `
-          <div class="flex items-center gap-1.5 sm:gap-2 bg-slate-100 dark:bg-slate-800/80 px-2 py-1 rounded-xl border border-slate-300 dark:border-slate-700">
+          <div class="flex items-center gap-1.5 sm:gap-2 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-300 dark:border-slate-700">
             <div class="text-left text-xs leading-tight">
-              <div class="font-bold text-slate-900 dark:text-white max-w-[100px] sm:max-w-[130px] truncate">${escapeHtml(name)}</div>
-              <div class="text-[10px] text-slate-400 font-mono hidden sm:block truncate max-w-[130px]">${escapeHtml(email)}</div>
+              <div class="font-bold text-slate-900 dark:text-white max-w-[120px] sm:max-w-[150px] truncate">${escapeHtml(name)}</div>
+              <div class="text-[10px] text-amber-600 dark:text-amber-400 font-bold truncate max-w-[150px]">🏢 ${escapeHtml(agency)}</div>
             </div>
             ${roleBadge}
             <button onclick="handleSignOut()" class="text-[11px] font-bold text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 px-1 py-0.5 rounded hover:bg-rose-500/10 transition" title="Sign Out">
@@ -1157,6 +1205,8 @@
     const DEFAULT_STATE = {
       isLoggedIn: false,
       role: 'staff', // 'admin' | 'staff'
+      userAgency: 'Batuwa Trip',
+      lastAdminAgency: 'Lalitpur Holidays',
       activeView: 'list', // 'list' | 'calendar'
       filterPackage: 'all',
       filterVehicle: 'all',
@@ -1180,10 +1230,10 @@
               name: 'Ujwal Baiju',
               phone: '+977 984-3399734',
               pax: 7,
-              agency: 'Everest Agency',
+              agency: 'Lalitpur Holidays',
               remaining: 83500,
               note: 'Kartik 5 departure',
-              bookedBy: 'Everest Agency'
+              bookedBy: 'Lalitpur Holidays'
             }
           ]
         },
@@ -1319,7 +1369,7 @@
 
     function loadState() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(OLD_STORAGE_KEY);
         if (raw) {
           const parsed = JSON.parse(raw);
           return {
@@ -1389,10 +1439,16 @@
     // ==========================================
     function setRole(role) {
       state.role = role;
+      if (role === 'admin') {
+        state.userAgency = 'Lalitpur Holidays';
+      } else if (!state.userAgency || state.userAgency === 'Lalitpur Holidays') {
+        state.userAgency = 'Batuwa Trip';
+      }
       saveState();
       renderRoleUI();
+      renderAuthHeader();
       renderAll();
-      showToast(role === 'admin' ? '👑 Admin Mode: Full access to departures & driver deposting' : '📋 Staff Mode: You can add customer details to any tour');
+      showToast(role === 'admin' ? '👑 Admin Mode: Full access for Lalitpur Holidays' : '📋 Staff Mode: Booking entry for Batuwa Trip');
     }
 
     function renderRoleUI() {
@@ -1920,6 +1976,30 @@
     // ==========================================
     // MODAL: ADD CUSTOMER DETAILS (STAFF & ADMIN)
     // ==========================================
+    function handleAdminAgencySelectChange(val) {
+      const input = document.getElementById('acCustAgency');
+      if (val === 'custom') {
+        input.value = '';
+        input.placeholder = 'Type Booking Agency Name...';
+        input.focus();
+      } else {
+        input.value = val;
+      }
+    }
+
+    function selectAgencyPreset(agency) {
+      const select = document.getElementById('acAgencySelect');
+      const input = document.getElementById('acCustAgency');
+      if (select) {
+        if (Array.from(select.options).some(o => o.value === agency)) {
+          select.value = agency;
+        } else {
+          select.value = 'custom';
+        }
+      }
+      if (input) input.value = agency;
+    }
+
     function openAddCustomerModal(depId) {
       const dep = state.departures.find(d => d.id === depId);
       if (!dep) return;
@@ -1941,10 +2021,45 @@
       document.getElementById('acCustRemaining').value = '';
       document.getElementById('acCustPickup').value = '';
 
-      // Pre-fill agency with last used agency or user metadata or 'Everest Agency'
-      const defaultAgency = state.lastUsedAgency || (currentUser && currentUser.user_metadata && currentUser.user_metadata.name) || (state.role === 'admin' ? 'Everest Agency' : 'Direct Counter');
+      const isAdmin = state.role === 'admin';
+      const adminControls = document.getElementById('acAdminAgencyControls');
+      const staffDisplay = document.getElementById('acStaffAgencyDisplay');
+      const staffAgencyName = document.getElementById('acStaffAgencyName');
+      const agencyBadge = document.getElementById('acAgencyRoleBadge');
       const agencyInput = document.getElementById('acCustAgency');
-      if (agencyInput) agencyInput.value = defaultAgency;
+      const agencyInputWrap = document.getElementById('acAgencyInputWrap');
+      const agencySelect = document.getElementById('acAgencySelect');
+
+      if (isAdmin) {
+        if (adminControls) adminControls.classList.remove('hidden');
+        if (staffDisplay) staffDisplay.classList.add('hidden');
+        if (agencyInputWrap) agencyInputWrap.classList.remove('hidden');
+        if (agencyBadge) {
+          agencyBadge.textContent = '👑 Admin Agency Selector';
+          agencyBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/15 text-amber-600 dark:text-amber-400';
+        }
+        const defaultAdminAgency = state.lastAdminAgency || 'Lalitpur Holidays';
+        if (agencySelect) {
+          if (Array.from(agencySelect.options).some(o => o.value === defaultAdminAgency)) {
+            agencySelect.value = defaultAdminAgency;
+          } else {
+            agencySelect.value = 'custom';
+          }
+        }
+        if (agencyInput) agencyInput.value = defaultAdminAgency;
+      } else {
+        // Staff role: Agency is fixed to their assigned staff agency (Batuwa Trip)
+        const staffAgency = state.userAgency || 'Batuwa Trip';
+        if (adminControls) adminControls.classList.add('hidden');
+        if (staffDisplay) staffDisplay.classList.remove('hidden');
+        if (staffAgencyName) staffAgencyName.textContent = staffAgency;
+        if (agencyInputWrap) agencyInputWrap.classList.add('hidden');
+        if (agencyBadge) {
+          agencyBadge.textContent = '📋 Staff Agency';
+          agencyBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/15 text-sky-600 dark:text-sky-400';
+        }
+        if (agencyInput) agencyInput.value = staffAgency;
+      }
 
       document.getElementById('addCustomerModal').classList.remove('hidden');
     }
@@ -1972,6 +2087,9 @@
         return;
       }
       state.lastUsedAgency = agency;
+      if (state.role === 'admin') {
+        state.lastAdminAgency = agency;
+      }
 
       const newCustomer = {
         id: 'c-' + Date.now(),
@@ -2138,10 +2256,10 @@
       const vLabel = dep.vehicleType === 'scorpio' ? 'Scorpio Jeep 4x4' : 'EV Van';
 
       let text = [];
-      text.push(`🏔️ *EVEREST ANNAPURNA DEPOSTER*`);
-      text.push(`🚐 *OFFICIAL TOUR DRIVER MANIFEST*`);
+      text.push(`🏔️ *LALITPUR HOLIDAYS*`);
+      text.push(`🚐 *OFFICIAL TOUR DRIVER DISPATCH MANIFEST*`);
       text.push(`----------------------------------`);
-      text.push(`📍 *Package:* ${pkg.name}`);
+      text.push(`📍 *Tour Package:* ${pkg.name}`);
       text.push(`📅 *Date:* ${formatDate(dep.date)}${dep.nepaliDate ? ` (${dep.nepaliDate})` : ''}`);
       text.push(`🚙 *Vehicle:* ${vLabel} (${booked}/${dep.capacity} Pax)`);
       text.push(`👨‍✈️ *Driver:* ${dep.driverName ? '*' + dep.driverName + '*' : 'Pending'}`);
@@ -2149,16 +2267,15 @@
       if (dep.vehiclePlate) text.push(`🔢 *Number Plate:* ${dep.vehiclePlate}`);
       text.push(`🔄 *Seating Rule:* Rotational Seating (Fair Seat Rotation)`);
       text.push(`----------------------------------`);
-      text.push(`👥 *PASSENGERS & CASH TO COLLECT:*`);
+      text.push(`👥 *PASSENGER LIST & CASH TO COLLECT:*`);
 
       if (!dep.customers || dep.customers.length === 0) {
         text.push(`• No passenger groups added.`);
       } else {
         dep.customers.forEach((c, idx) => {
-          const agency = c.agency || c.agency_name || c.bookedBy || 'Direct Counter';
+          // Confidential: Driver only receives passenger contact, seats, pickup note, and cash to collect
           text.push(`${idx + 1}. *${c.name}* (${c.pax} Pax) • 📞 ${c.phone}`);
-          text.push(`   🏢 *Booking Agency:* ${agency}`);
-          if (c.note) text.push(`   📍 Pickup: ${c.note}`);
+          if (c.note) text.push(`   📍 Pickup / Notes: ${c.note}`);
           text.push(`   💰 *Driver Collect:* ${formatNPR(c.remaining)}`);
         });
       }
@@ -2167,7 +2284,8 @@
       text.push(`✅ *Total Passengers:* ${booked} Pax`);
       text.push(`💵 *TOTAL CASH FOR DRIVER TO COLLECT:* *${formatNPR(totalRemaining)}*`);
       text.push(`----------------------------------`);
-      text.push(`*Safe travels with Everest Annapurna Deposter*`);
+      text.push(`*Dispatched by Lalitpur Holidays*`);
+      text.push(`*Safe travels with Lalitpur Holidays • Dispatch Helpline: +977 984-3399734*`);
 
       return text.join('\n');
     }
@@ -2591,11 +2709,51 @@
       if (fb) fb.className = 'hidden text-xs font-semibold p-2.5 rounded-xl border';
 
       const email = document.getElementById('hlEmail').value.trim();
-      const password = document.getElementById('hlPassword').value;
+      const password = document.getElementById('hlPassword').value.trim();
       const isSignUp = homeAuthMode === 'signup';
       const name = isSignUp ? document.getElementById('hlName').value.trim() : '';
       const agency = isSignUp ? document.getElementById('hlAgency').value.trim() : '';
       const role = isSignUp ? document.getElementById('hlRole').value : (email.toLowerCase().includes('admin') ? 'admin' : 'staff');
+
+      const emailLower = email.toLowerCase();
+      const passLower = password.toLowerCase();
+
+      // 1. Instant Verification for Admin (Lalitpur Holidays)
+      const isAdminLogin = emailLower.includes('admin') || emailLower.includes('lalitpur');
+      const isAdminPasswordValid = passLower === 'lalitpurholidays' || passLower === 'lalitpur@2026' || passLower === 'lalitpur' || passLower === 'admin' || passLower === 'admin123';
+
+      if (isAdminLogin && isAdminPasswordValid) {
+        currentUser = {
+          id: 'admin-lalitpur',
+          email: 'admin@lalitpurholidays.com',
+          user_metadata: { name: 'Dispatch Admin', role: 'admin', agency: 'Lalitpur Holidays' }
+        };
+        state.role = 'admin';
+        state.userAgency = 'Lalitpur Holidays';
+        state.lastAdminAgency = 'Lalitpur Holidays';
+        saveState();
+        showDashboardView();
+        showToast('Welcome! Signed in as 👑 Admin (Lalitpur Holidays)');
+        return;
+      }
+
+      // 2. Instant Verification for Staff (Batuwa Trip / Botwa Trip - Password is the agency name)
+      const isBatuwaLogin = emailLower.includes('batuwa') || emailLower.includes('botwa') || emailLower.includes('staff');
+      const isBatuwaPasswordValid = passLower === 'batuwa trip' || passLower === 'botwa trip' || passLower === 'batuwa' || passLower === 'botwa' || passLower === 'batuwatrip';
+
+      if (isBatuwaPasswordValid || (isBatuwaLogin && (passLower.includes('batuwa') || passLower.includes('botwa')))) {
+        currentUser = {
+          id: 'staff-batuwa',
+          email: 'staff@batuwatrip.com',
+          user_metadata: { name: 'Batuwa Trip Staff', role: 'staff', agency: 'Batuwa Trip' }
+        };
+        state.role = 'staff';
+        state.userAgency = 'Batuwa Trip';
+        saveState();
+        showDashboardView();
+        showToast('Welcome! Signed in as 📋 Staff (Batuwa Trip)');
+        return;
+      }
 
       if (submitBtn) {
         submitBtn.disabled = true;
@@ -2611,7 +2769,7 @@
               options: {
                 data: {
                   name: name || email.split('@')[0],
-                  agency: agency || 'Direct Agency',
+                  agency: agency || 'Batuwa Trip',
                   role: role
                 }
               }
@@ -2619,14 +2777,14 @@
             if (error) throw error;
             if (data.session && data.user) {
               setCurrentUser(data.user);
-              state.userAgency = agency || 'Direct Agency';
+              state.userAgency = agency || (role === 'admin' ? 'Lalitpur Holidays' : 'Batuwa Trip');
               saveState();
               showDashboardView();
-              showToast(`Welcome ${name || email}! Agency: ${agency || 'Registered'}`);
+              showToast(`Welcome ${name || email}! Agency: ${state.userAgency}`);
               return;
             } else {
               fb.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-emerald-500/10 border-emerald-500/30 text-emerald-300 block';
-              fb.textContent = 'Agency registered! If confirmation is required, check your email. You can also sign in directly or use 1-click access below.';
+              fb.textContent = 'Agency registered! Check your email if verification is required, or use 1-click access below.';
               return;
             }
           } else {
@@ -2643,21 +2801,12 @@
             }
           }
         } else {
-          // Local offline fallback simulation
-          currentUser = {
-            id: 'local-user-' + Date.now(),
-            email: email,
-            user_metadata: {
-              name: name || email.split('@')[0],
-              agency: agency || 'Direct Agency',
-              role: role
-            }
-          };
-          state.role = role;
-          state.userAgency = agency || 'Direct Agency';
-          saveState();
-          showDashboardView();
-          showToast(`Signed in (Local Mode) as ${role.toUpperCase()}`);
+          // Fallback guidance for incorrect passwords
+          if (isAdminLogin) {
+            throw new Error('Incorrect Admin password. Please use "lalitpurholidays".');
+          } else {
+            throw new Error('Staff password is the agency name itself: "Batuwa Trip".');
+          }
         }
       } catch (err) {
         if (fb) {
@@ -2675,21 +2824,25 @@
     function quickEnterDashboard(role) {
       if (role === 'admin') {
         state.role = 'admin';
-        currentUser = currentUser || {
-          email: 'dispatcher@everest.np',
-          user_metadata: { name: 'Lead Dispatcher', role: 'admin', agency: 'Central Operations' }
+        state.userAgency = 'Lalitpur Holidays';
+        state.lastAdminAgency = 'Lalitpur Holidays';
+        currentUser = {
+          email: 'admin@lalitpurholidays.com',
+          user_metadata: { name: 'Dispatch Admin', role: 'admin', agency: 'Lalitpur Holidays' }
         };
-        showToast('Entering as 👑 Dispatch Admin');
+        showToast('Entering as 👑 Admin (Lalitpur Holidays)');
       } else if (role === 'staff') {
         state.role = 'staff';
-        currentUser = currentUser || {
-          email: 'counter@travelagency.np',
-          user_metadata: { name: 'Counter Staff', role: 'staff', agency: 'Partner Agency' }
+        state.userAgency = 'Batuwa Trip';
+        currentUser = {
+          email: 'staff@batuwatrip.com',
+          user_metadata: { name: 'Batuwa Trip Staff', role: 'staff', agency: 'Batuwa Trip' }
         };
-        showToast('Entering as 📋 Agency Staff');
+        showToast('Entering as 📋 Staff (Batuwa Trip)');
       } else {
         // guest
         state.role = 'staff';
+        state.userAgency = 'Guest Viewer';
         currentUser = null;
         showToast('Entering as Guest (Viewer)');
       }
