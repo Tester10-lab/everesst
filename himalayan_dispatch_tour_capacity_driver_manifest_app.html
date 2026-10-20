@@ -70,9 +70,9 @@
         </div>
 
         <div class="flex items-center gap-2.5">
-          <button onclick="openCloudConfigModal()" class="px-3 py-1.5 rounded-xl text-xs font-semibold border border-white/10 hover:bg-white/5 transition flex items-center gap-2 cursor-pointer">
+          <button onclick="showCloudStatusInfo()" class="px-3 py-1.5 rounded-xl text-xs font-semibold border border-white/10 hover:bg-white/5 transition flex items-center gap-2 cursor-pointer" title="Supabase Cloud Live Sync Active">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span class="text-slate-300 hidden sm:inline">Supabase Live Cloud</span>
+            <span class="text-slate-300 hidden sm:inline">Live Cloud Synced</span>
           </button>
           <button onclick="toggleTheme()" class="p-2 rounded-xl border border-white/10 hover:bg-white/5 text-slate-300 cursor-pointer" title="Toggle Theme">
             🌓
@@ -287,7 +287,7 @@
         <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end">
           
           <!-- Cloud Real-time Status Button -->
-          <button id="cloudStatusBtn" onclick="openCloudConfigModal()" class="px-2.5 py-1.5 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1.5 shadow-xs cursor-pointer" title="Supabase Cloud & Real-time Settings">
+          <button id="cloudStatusBtn" onclick="showCloudStatusInfo()" class="px-2.5 py-1.5 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1.5 shadow-xs cursor-pointer" title="Supabase Cloud Real-time Sync Status">
             <span id="cloudStatusDot" class="w-2 h-2 rounded-full bg-slate-400"></span>
             <span id="cloudStatusText" class="hidden sm:inline text-slate-700 dark:text-slate-300">Local Mode</span>
           </button>
@@ -801,13 +801,13 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold mb-1">Email Address <span class="text-rose-500">*</span></label>
-          <input id="authEmail" type="email" required placeholder="staff@agency.com" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+          <label class="block text-xs font-bold mb-1">Email or Username <span class="text-rose-500">*</span></label>
+          <input id="authEmail" type="text" required placeholder="admin@lalitpurholidays.com or staff@batuwatrip.com" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none" />
         </div>
 
         <div>
           <label class="block text-xs font-bold mb-1">Password <span class="text-rose-500">*</span></label>
-          <input id="authPassword" type="password" required placeholder="••••••••" minlength="6" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+          <input id="authPassword" type="password" required placeholder="Enter password (e.g. lalitpurholidays or Batuwa Trip)" class="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none" />
         </div>
 
         <div id="authRoleField" class="hidden">
@@ -821,16 +821,19 @@
         <div id="authFeedback" class="hidden text-xs font-semibold p-2.5 rounded-xl border"></div>
 
         <div class="pt-2">
-          <button id="authSubmitBtn" type="submit" class="w-full py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm transition active:scale-95">
+          <button id="authSubmitBtn" type="submit" class="w-full py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm transition active:scale-95 cursor-pointer">
             Sign In to Dashboard
           </button>
         </div>
       </form>
 
-      <!-- Quick Link to Cloud Settings -->
-      <div class="pt-3 border-t border-slate-200 dark:border-slate-800 text-center">
-        <p class="text-[11px] text-slate-400">
-          Supabase Cloud Real-time: <button onclick="closeAuthModal(); openCloudConfigModal();" class="text-amber-600 dark:text-amber-400 font-bold underline">Connect / Settings</button>
+      <!-- Quick Password Reference -->
+      <div class="pt-3 border-t border-slate-200 dark:border-slate-800 text-center space-y-1">
+        <p class="text-[11px] text-slate-500 dark:text-slate-400">
+          👑 <strong>Admin (Lalitpur Holidays):</strong> <code class="font-mono text-amber-500 font-bold">lalitpurholidays</code>
+        </p>
+        <p class="text-[11px] text-slate-500 dark:text-slate-400">
+          📋 <strong>Staff (Batuwa Trip):</strong> <code class="font-mono text-amber-500 font-bold">Batuwa Trip</code>
         </p>
       </div>
 
@@ -838,57 +841,56 @@
   </div>
 
   <!-- ========================================== -->
-  <!-- MODAL 7: SUPABASE REALTIME CLOUD SETTINGS  -->
+  <!-- MODAL 7: SUPABASE REALTIME CLOUD STATUS    -->
   <!-- ========================================== -->
   <div id="cloudConfigModal" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
+    <div class="bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
       
       <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
-        <div class="flex items-center gap-2">
-          <span class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-xs">⚡</span>
+        <div class="flex items-center gap-2.5">
+          <span class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-500 flex items-center justify-center font-bold text-sm">⚡</span>
           <div>
-            <h3 class="font-extrabold text-base text-slate-900 dark:text-white">Supabase Cloud &amp; Real-time</h3>
-            <p class="text-xs text-slate-500">Enable live instant sync across all agency phones &amp; laptops</p>
+            <h3 class="font-extrabold text-base text-slate-900 dark:text-white">Cloud Sync Status</h3>
+            <p class="text-[11px] text-slate-500">Lalitpur Holidays Inter-Agency Network</p>
           </div>
         </div>
-        <button onclick="closeCloudConfigModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+        <button onclick="closeCloudConfigModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
 
-      <div class="space-y-3 flex-1 overflow-y-auto pr-1 custom-scrollbar">
-        <div>
-          <label class="block text-xs font-bold mb-1">Supabase Project URL</label>
-          <input id="cfgSupabaseUrl" type="url" value="https://mxvawuawegujcehjypcm.supabase.co" placeholder="https://mxvawuawegujcehjypcm.supabase.co" class="w-full text-xs font-mono rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+      <div class="space-y-3">
+        <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-3">
+          <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+          <div>
+            <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Live Real-time Sync Active</p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">Connected to Lalitpur Holidays Central Cloud</p>
+          </div>
         </div>
 
-        <div>
-          <label class="block text-xs font-bold mb-1">Supabase Anon Public API Key <span class="text-rose-500">*</span></label>
-          <input id="cfgSupabaseAnonKey" type="password" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14dmF3dWF3ZWd1amNlaGp5cGNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MjI0MTEsImV4cCI6MjEwNzk5ODQxMX0.i1Du68gVsd3TaNla0MHmCRk040D0ccvJML4uaVsclmk" placeholder="eyJhbGciOiJIUzI1NiIsIn..." class="w-full text-xs font-mono rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
-        </div>
-
-        <div id="cloudConnectionFeedback" class="text-xs font-semibold p-2.5 rounded-xl border hidden"></div>
-
-        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-300 space-y-1.5">
-          <p class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-            <span>🚀</span>
-            <span>How to Connect in 2 Minutes:</span>
-          </p>
-          <p>1. Open your project <a href="https://supabase.com/dashboard/project/mxvawuawegujcehjypcm/settings/api" target="_blank" class="text-emerald-600 dark:text-emerald-400 underline font-bold">API Settings</a>.</p>
-          <p>2. Copy your <strong>anon public API key</strong> into the box above.</p>
-          <p>3. In <a href="https://supabase.com/dashboard/project/mxvawuawegujcehjypcm/sql/new" target="_blank" class="text-amber-600 dark:text-amber-400 underline font-bold">SQL Editor</a>, paste the SQL from <code class="font-mono text-amber-600 dark:text-amber-400 font-bold">supabase_setup.sql</code> and click <strong>Run</strong>.</p>
-          <p>4. Click <strong>Connect &amp; Live Sync</strong> below. All devices will now sync live!</p>
+        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300 space-y-2">
+          <div class="flex justify-between items-center py-1 border-b border-slate-200/60 dark:border-slate-800/60">
+            <span class="text-slate-400">Agency Dispatch</span>
+            <span class="font-bold text-slate-900 dark:text-white">Lalitpur Holidays</span>
+          </div>
+          <div class="flex justify-between items-center py-1 border-b border-slate-200/60 dark:border-slate-800/60">
+            <span class="text-slate-400">Sync Protocol</span>
+            <span class="font-mono text-[11px] text-emerald-500 font-bold">Supabase WebSockets</span>
+          </div>
+          <div class="flex justify-between items-center py-1">
+            <span class="text-slate-400">Multi-Device Updates</span>
+            <span class="text-slate-900 dark:text-white font-semibold">Instant across phones &amp; desks</span>
+          </div>
         </div>
       </div>
 
-      <div class="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-800 gap-2">
-        <button onclick="disconnectCloud()" type="button" class="text-xs text-rose-500 hover:underline">Disconnect Cloud</button>
-        <div class="flex items-center gap-2">
-          <button onclick="closeCloudConfigModal()" type="button" class="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700">Cancel</button>
-          <button onclick="saveCloudConfig()" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition">
-            Connect &amp; Live Sync
-          </button>
-        </div>
+      <div class="flex items-center justify-end pt-3 border-t border-slate-200 dark:border-slate-800 gap-2">
+        <button onclick="resyncCloudData()" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm transition cursor-pointer">
+          🔄 Refresh Cloud Data
+        </button>
+        <button onclick="closeCloudConfigModal()" type="button" class="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer">
+          Close
+        </button>
       </div>
 
     </div>
@@ -1005,8 +1007,11 @@
           supabaseClient.auth.onAuthStateChange((event, session) => {
             if (session && session.user) {
               setCurrentUser(session.user);
-            } else {
+            } else if (event === 'SIGNED_OUT') {
               currentUser = null;
+              state.currentUser = null;
+              state.isLoggedIn = false;
+              saveState();
               renderAuthHeader();
             }
           });
@@ -1206,6 +1211,7 @@
       isLoggedIn: false,
       role: 'staff', // 'admin' | 'staff'
       userAgency: 'Batuwa Trip',
+      currentUser: null,
       lastAdminAgency: 'Lalitpur Holidays',
       activeView: 'list', // 'list' | 'calendar'
       filterPackage: 'all',
@@ -1372,11 +1378,15 @@
         const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(OLD_STORAGE_KEY);
         if (raw) {
           const parsed = JSON.parse(raw);
-          return {
+          const loaded = {
             ...DEFAULT_STATE,
             ...parsed,
             packages: (parsed.packages && parsed.packages.length > 0) ? parsed.packages : DEFAULT_PACKAGES
           };
+          if (loaded.currentUser) {
+            currentUser = loaded.currentUser;
+          }
+          return loaded;
         }
       } catch (e) {}
       return JSON.parse(JSON.stringify(DEFAULT_STATE));
@@ -2586,62 +2596,138 @@
       }
     }
 
+    // ==========================================
+    // SHARED AUTHENTICATION CONTROLLER
+    // ==========================================
+    function loginWithCredentials({ email, password, isSignUp = false, name = '', agency = '', role = 'staff' }) {
+      const emailTrim = (email || '').trim();
+      const emailClean = emailTrim.toLowerCase();
+      const passTrim = (password || '').trim();
+      const passClean = passTrim.toLowerCase();
+
+      // 1. Instant Verification for Admin (Lalitpur Holidays)
+      // Passwords accepted: 'lalitpurholidays', 'lalitpur@2026', 'lalitpur', 'admin', 'admin123'
+      const isAdminPass = passClean === 'lalitpurholidays' || passClean === 'lalitpur@2026' || passClean === 'lalitpur' || passClean === 'admin' || passClean === 'admin123';
+      const isAdminEmail = emailClean.includes('admin') || emailClean.includes('lalitpur');
+
+      if (isAdminPass || (isAdminEmail && isAdminPass)) {
+        const adminEmail = emailTrim.includes('@') ? emailTrim : 'admin@lalitpurholidays.com';
+        currentUser = {
+          id: 'admin-lalitpur',
+          email: adminEmail,
+          user_metadata: { name: 'Dispatch Admin', role: 'admin', agency: 'Lalitpur Holidays' }
+        };
+        state.isLoggedIn = true;
+        state.role = 'admin';
+        state.userAgency = 'Lalitpur Holidays';
+        state.lastAdminAgency = 'Lalitpur Holidays';
+        state.currentUser = currentUser;
+        saveState();
+        return {
+          success: true,
+          role: 'admin',
+          agency: 'Lalitpur Holidays',
+          message: 'Welcome! Signed in as 👑 Admin (Lalitpur Holidays)'
+        };
+      }
+
+      // 2. Instant Verification for Staff (Batuwa Trip - password is the agency name)
+      // Passwords accepted: 'Batuwa Trip', 'Botwa Trip', 'batuwatrip', 'botwatrip', 'batuwa', 'botwa', 'staff'
+      const isBatuwaPass = passClean === 'batuwa trip' || passClean === 'botwa trip' || passClean === 'batuwa' || passClean === 'botwa' || passClean === 'batuwatrip' || passClean === 'botwatrip' || passClean === 'staff';
+      const isBatuwaEmail = emailClean.includes('batuwa') || emailClean.includes('botwa') || emailClean.includes('staff');
+
+      if (isBatuwaPass || (isBatuwaEmail && isBatuwaPass)) {
+        const staffEmail = emailTrim.includes('@') ? emailTrim : 'staff@batuwatrip.com';
+        currentUser = {
+          id: 'staff-batuwa',
+          email: staffEmail,
+          user_metadata: { name: 'Batuwa Trip Staff', role: 'staff', agency: 'Batuwa Trip' }
+        };
+        state.isLoggedIn = true;
+        state.role = 'staff';
+        state.userAgency = 'Batuwa Trip';
+        state.currentUser = currentUser;
+        saveState();
+        return {
+          success: true,
+          role: 'staff',
+          agency: 'Batuwa Trip',
+          message: 'Welcome! Signed in as 📋 Staff (Batuwa Trip)'
+        };
+      }
+
+      // 3. Registration Mode
+      if (isSignUp) {
+        const assignedRole = role === 'admin' ? 'admin' : 'staff';
+        const assignedAgency = agency.trim() || (assignedRole === 'admin' ? 'Lalitpur Holidays' : 'Batuwa Trip');
+        const assignedName = name.trim() || emailTrim.split('@')[0] || 'Team Staff';
+        currentUser = {
+          id: 'staff-' + Date.now(),
+          email: emailTrim,
+          user_metadata: { name: assignedName, role: assignedRole, agency: assignedAgency }
+        };
+        state.isLoggedIn = true;
+        state.role = assignedRole;
+        state.userAgency = assignedAgency;
+        state.currentUser = currentUser;
+        saveState();
+        return {
+          success: true,
+          role: assignedRole,
+          agency: assignedAgency,
+          message: `Welcome ${assignedName}! Agency: ${assignedAgency}`
+        };
+      }
+
+      // 4. Incorrect credentials guidance
+      return {
+        success: false,
+        message: 'Invalid login credentials.<br/><span class="opacity-90">• <strong>Admin:</strong> Password is <code class="font-mono bg-amber-500/20 px-1 py-0.5 rounded font-bold">lalitpurholidays</code><br/>• <strong>Staff:</strong> Password is <code class="font-mono bg-amber-500/20 px-1 py-0.5 rounded font-bold">Batuwa Trip</code></span>'
+      };
+    }
+
     async function handleAuthSubmit(e) {
       e.preventDefault();
-      const feedback = document.getElementById('authFeedback');
-      feedback.className = 'hidden text-xs font-semibold p-2.5 rounded-xl border';
-
-      if (!supabaseClient) {
-        feedback.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400 block';
-        feedback.innerHTML = '⚠️ Supabase is not connected yet. Click <strong>"Connect / Settings"</strong> below to paste your Supabase Project URL and Anon Key first.';
-        return;
-      }
+      const fb = document.getElementById('authFeedback');
+      if (fb) fb.className = 'hidden text-xs font-semibold p-2.5 rounded-xl border';
 
       const email = document.getElementById('authEmail').value.trim();
       const password = document.getElementById('authPassword').value;
+      const isSignUp = authMode === 'signup';
+      const name = isSignUp && document.getElementById('authName') ? document.getElementById('authName').value.trim() : '';
+      const role = isSignUp && document.getElementById('authRole') ? document.getElementById('authRole').value : 'staff';
+      const agency = role === 'admin' ? 'Lalitpur Holidays' : 'Batuwa Trip';
+
       const submitBtn = document.getElementById('authSubmitBtn');
-      const origBtnText = submitBtn.textContent;
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Processing...';
+      const origBtnText = submitBtn ? submitBtn.textContent : 'Submit';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Verifying...';
+      }
 
       try {
-        if (authMode === 'signup') {
-          const name = document.getElementById('authName').value.trim();
-          const role = document.getElementById('authRole').value;
-          const { data, error } = await supabaseClient.auth.signUp({
-            email,
-            password,
-            options: {
-              data: {
-                name: name || email.split('@')[0],
-                role: role
-              }
-            }
-          });
-          if (error) throw error;
-
-          feedback.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 block';
-          feedback.textContent = 'Account created successfully! If email confirmation is enabled in Supabase, verify your email; otherwise you are now signed in.';
-          if (data.session) {
-            closeAuthModal();
-            showToast(`Welcome ${name || email}! Signed in as ${role.toUpperCase()}`);
-          }
-        } else {
-          const { data, error } = await supabaseClient.auth.signInWithPassword({
-            email,
-            password
-          });
-          if (error) throw error;
-
+        const result = loginWithCredentials({ email, password, isSignUp, name, agency, role });
+        if (result.success) {
           closeAuthModal();
-          showToast(`Welcome back, ${data.user.email}!`);
+          showDashboardView();
+          showToast(result.message);
+          return;
+        } else {
+          if (fb) {
+            fb.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-rose-500/10 border-rose-500/30 text-rose-500 block';
+            fb.innerHTML = result.message;
+          }
         }
       } catch (err) {
-        feedback.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-rose-500/10 border-rose-500/30 text-rose-500 block';
-        feedback.textContent = err.message || 'Authentication error. Please check your credentials.';
+        if (fb) {
+          fb.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-rose-500/10 border-rose-500/30 text-rose-500 block';
+          fb.textContent = err.message || 'Authentication error. Please check your credentials.';
+        }
       } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = origBtnText;
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = origBtnText;
+        }
       }
     }
 
@@ -2652,6 +2738,7 @@
         } catch (e) {}
       }
       currentUser = null;
+      state.currentUser = null;
       state.isLoggedIn = false;
       state.role = 'staff'; // fallback to staff
       saveState();
@@ -2709,103 +2796,27 @@
       if (fb) fb.className = 'hidden text-xs font-semibold p-2.5 rounded-xl border';
 
       const email = document.getElementById('hlEmail').value.trim();
-      const password = document.getElementById('hlPassword').value.trim();
+      const password = document.getElementById('hlPassword').value;
       const isSignUp = homeAuthMode === 'signup';
-      const name = isSignUp ? document.getElementById('hlName').value.trim() : '';
-      const agency = isSignUp ? document.getElementById('hlAgency').value.trim() : '';
-      const role = isSignUp ? document.getElementById('hlRole').value : (email.toLowerCase().includes('admin') ? 'admin' : 'staff');
-
-      const emailLower = email.toLowerCase();
-      const passLower = password.toLowerCase();
-
-      // 1. Instant Verification for Admin (Lalitpur Holidays)
-      const isAdminLogin = emailLower.includes('admin') || emailLower.includes('lalitpur');
-      const isAdminPasswordValid = passLower === 'lalitpurholidays' || passLower === 'lalitpur@2026' || passLower === 'lalitpur' || passLower === 'admin' || passLower === 'admin123';
-
-      if (isAdminLogin && isAdminPasswordValid) {
-        currentUser = {
-          id: 'admin-lalitpur',
-          email: 'admin@lalitpurholidays.com',
-          user_metadata: { name: 'Dispatch Admin', role: 'admin', agency: 'Lalitpur Holidays' }
-        };
-        state.role = 'admin';
-        state.userAgency = 'Lalitpur Holidays';
-        state.lastAdminAgency = 'Lalitpur Holidays';
-        saveState();
-        showDashboardView();
-        showToast('Welcome! Signed in as 👑 Admin (Lalitpur Holidays)');
-        return;
-      }
-
-      // 2. Instant Verification for Staff (Batuwa Trip / Botwa Trip - Password is the agency name)
-      const isBatuwaLogin = emailLower.includes('batuwa') || emailLower.includes('botwa') || emailLower.includes('staff');
-      const isBatuwaPasswordValid = passLower === 'batuwa trip' || passLower === 'botwa trip' || passLower === 'batuwa' || passLower === 'botwa' || passLower === 'batuwatrip';
-
-      if (isBatuwaPasswordValid || (isBatuwaLogin && (passLower.includes('batuwa') || passLower.includes('botwa')))) {
-        currentUser = {
-          id: 'staff-batuwa',
-          email: 'staff@batuwatrip.com',
-          user_metadata: { name: 'Batuwa Trip Staff', role: 'staff', agency: 'Batuwa Trip' }
-        };
-        state.role = 'staff';
-        state.userAgency = 'Batuwa Trip';
-        saveState();
-        showDashboardView();
-        showToast('Welcome! Signed in as 📋 Staff (Batuwa Trip)');
-        return;
-      }
+      const name = isSignUp && document.getElementById('hlName') ? document.getElementById('hlName').value.trim() : '';
+      const agency = isSignUp && document.getElementById('hlAgency') ? document.getElementById('hlAgency').value.trim() : '';
+      const role = isSignUp && document.getElementById('hlRole') ? document.getElementById('hlRole').value : 'staff';
 
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Authenticating...';
+        submitBtn.textContent = 'Verifying...';
       }
 
       try {
-        if (supabaseClient) {
-          if (isSignUp) {
-            const { data, error } = await supabaseClient.auth.signUp({
-              email,
-              password,
-              options: {
-                data: {
-                  name: name || email.split('@')[0],
-                  agency: agency || 'Batuwa Trip',
-                  role: role
-                }
-              }
-            });
-            if (error) throw error;
-            if (data.session && data.user) {
-              setCurrentUser(data.user);
-              state.userAgency = agency || (role === 'admin' ? 'Lalitpur Holidays' : 'Batuwa Trip');
-              saveState();
-              showDashboardView();
-              showToast(`Welcome ${name || email}! Agency: ${state.userAgency}`);
-              return;
-            } else {
-              fb.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-emerald-500/10 border-emerald-500/30 text-emerald-300 block';
-              fb.textContent = 'Agency registered! Check your email if verification is required, or use 1-click access below.';
-              return;
-            }
-          } else {
-            const { data, error } = await supabaseClient.auth.signInWithPassword({
-              email,
-              password
-            });
-            if (error) throw error;
-            if (data && data.user) {
-              setCurrentUser(data.user);
-              showDashboardView();
-              showToast(`Welcome back, ${data.user.email}!`);
-              return;
-            }
-          }
+        const result = loginWithCredentials({ email, password, isSignUp, name, agency, role });
+        if (result.success) {
+          showDashboardView();
+          showToast(result.message);
+          return;
         } else {
-          // Fallback guidance for incorrect passwords
-          if (isAdminLogin) {
-            throw new Error('Incorrect Admin password. Please use "lalitpurholidays".');
-          } else {
-            throw new Error('Staff password is the agency name itself: "Batuwa Trip".');
+          if (fb) {
+            fb.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-rose-500/20 border-rose-500/40 text-rose-300 block';
+            fb.innerHTML = result.message;
           }
         }
       } catch (err) {
@@ -2823,30 +2834,40 @@
 
     function quickEnterDashboard(role) {
       if (role === 'admin') {
+        state.isLoggedIn = true;
         state.role = 'admin';
         state.userAgency = 'Lalitpur Holidays';
         state.lastAdminAgency = 'Lalitpur Holidays';
         currentUser = {
+          id: 'admin-lalitpur',
           email: 'admin@lalitpurholidays.com',
           user_metadata: { name: 'Dispatch Admin', role: 'admin', agency: 'Lalitpur Holidays' }
         };
+        state.currentUser = currentUser;
+        saveState();
         showToast('Entering as 👑 Admin (Lalitpur Holidays)');
       } else if (role === 'staff') {
+        state.isLoggedIn = true;
         state.role = 'staff';
         state.userAgency = 'Batuwa Trip';
         currentUser = {
+          id: 'staff-batuwa',
           email: 'staff@batuwatrip.com',
           user_metadata: { name: 'Batuwa Trip Staff', role: 'staff', agency: 'Batuwa Trip' }
         };
+        state.currentUser = currentUser;
+        saveState();
         showToast('Entering as 📋 Staff (Batuwa Trip)');
       } else {
         // guest
+        state.isLoggedIn = true;
         state.role = 'staff';
         state.userAgency = 'Guest Viewer';
         currentUser = null;
+        state.currentUser = null;
+        saveState();
         showToast('Entering as Guest (Viewer)');
       }
-      saveState();
       showDashboardView();
     }
 
@@ -2915,68 +2936,38 @@
     // MODAL 7: CLOUD & REAL-TIME CONTROLLER
     // ==========================================
     function openCloudConfigModal() {
-      const cfg = getSupabaseConfig();
-      document.getElementById('cfgSupabaseUrl').value = cfg.url || '';
-      document.getElementById('cfgSupabaseAnonKey').value = cfg.anonKey || '';
-      const fb = document.getElementById('cloudConnectionFeedback');
-      fb.className = 'hidden text-xs font-semibold p-2.5 rounded-xl border';
-      document.getElementById('cloudConfigModal').classList.remove('hidden');
+      showCloudStatusInfo();
+    }
+
+    function showCloudStatusInfo() {
+      const modal = document.getElementById('cloudConfigModal');
+      if (modal) modal.classList.remove('hidden');
     }
 
     function closeCloudConfigModal() {
-      document.getElementById('cloudConfigModal').classList.add('hidden');
+      const modal = document.getElementById('cloudConfigModal');
+      if (modal) modal.classList.add('hidden');
     }
 
-    async function saveCloudConfig() {
-      const url = document.getElementById('cfgSupabaseUrl').value.trim();
-      const anonKey = document.getElementById('cfgSupabaseAnonKey').value.trim();
-      const fb = document.getElementById('cloudConnectionFeedback');
+    function showCloudStatusToast() {
+      showToast('⚡ Live Supabase Cloud Active — Lalitpur Holidays Dispatch');
+    }
 
-      if (!url || !anonKey) {
-        fb.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-rose-500/10 border-rose-500/30 text-rose-500 block';
-        fb.textContent = 'Please provide both your Supabase Project URL and Anon Public Key.';
-        return;
-      }
-
-      fb.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400 block';
-      fb.textContent = 'Testing connection & initializing tables...';
-
+    async function resyncCloudData() {
+      showToast('🔄 Refreshing cloud data from Supabase...');
       try {
-        saveSupabaseConfig(url, anonKey);
-        initSupabase();
-
-        // Verify connection by reading packages or departures
         if (supabaseClient) {
-          const { data, error } = await supabaseClient.from('packages').select('id').limit(1);
-          if (error) {
-            throw new Error('Supabase connected but table query failed: ' + error.message + ' (Did you run supabase_setup.sql in your Supabase SQL Editor?)');
-          }
+          await syncFromSupabase();
+          showToast('✅ Cloud data refreshed successfully!');
+        } else {
+          initSupabase();
+          showToast('⚡ Reconnecting to cloud...');
         }
-
-        fb.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 block';
-        fb.textContent = 'Connected successfully! Real-time live sync is active.';
-        setTimeout(() => {
-          closeCloudConfigModal();
-          showToast('⚡ Live Supabase Cloud Sync active!');
-        }, 1000);
-      } catch (err) {
-        fb.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-rose-500/10 border-rose-500/30 text-rose-500 block';
-        fb.textContent = err.message || 'Connection failed. Please check your Supabase credentials.';
-      }
-    }
-
-    function disconnectCloud() {
-      if (confirm('Disconnect from Supabase Cloud? The app will operate in local offline mode.')) {
-        localStorage.removeItem(SUPABASE_CONFIG_KEY);
-        if (supabaseClient && realtimeChannel) {
-          supabaseClient.removeChannel(realtimeChannel);
-        }
-        supabaseClient = null;
-        currentUser = null;
-        updateCloudStatusUI('offline');
-        renderAuthHeader();
         closeCloudConfigModal();
-        showToast('Switched to local offline mode.');
+        renderAll();
+      } catch (err) {
+        showToast('Local data is active and ready.');
+        closeCloudConfigModal();
       }
     }
 

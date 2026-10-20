@@ -79,19 +79,20 @@ Whenever you or your team members open `index.html` (or push it to GitHub Pages)
 
 ---
 
-## 🔑 Team Authentication (Admin vs Staff Sign-In)
+---
 
-Once connected to Supabase, team members can authenticate:
+## 🔑 Team Authentication & Default Access Credentials
 
-1. Click **Sign In** in the top navigation bar.
-2. If it is their first time:
-   - Click **Register Staff**.
-   - Enter Full Name, Email, and Password.
-   - Choose role: **Staff** (can add customers to open departures) or **Admin** (can depost drivers, create new departures, and edit packages).
-3. Once logged in:
-   - The top header displays the user's name and role badge (`👑 Admin` or `📋 Staff`).
-   - The booking log tracks who added each customer (`booked_by`).
-   - Clicking **Sign Out** returns the user safely to guest/staff mode.
+The portal features unified authentication for agency staff and dispatch administrators:
+
+| Role | Agency | Default Email / Username | Password | Access Capabilities |
+| :--- | :--- | :--- | :--- | :--- |
+| **👑 Admin** | **Lalitpur Holidays** | `admin@lalitpurholidays.com` | `lalitpurholidays` | Full control: Depost drivers, edit packages & routes, select booking agency, view all financials |
+| **📋 Staff** | **Batuwa Trip** | `staff@batuwatrip.com` | `Batuwa Trip` | Counter staff: Add/edit passenger bookings, view live seats, generate driver WhatsApp manifests |
+
+> [!NOTE]
+> • For quick access, the landing page also provides **1-Click Direct Access buttons** (`👑 Admin` and `📋 Staff`).
+> • Driver manifests strictly protect agency privacy: booking agency names are confidential and omitted from WhatsApp driver manifests.
 
 ---
 
