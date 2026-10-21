@@ -1062,14 +1062,17 @@
             </button>
           </div>
           <input id="loginPassword" type="password" required placeholder="••••••••" class="form-input" style="height: 48px; font-size: 14.5px;" autocomplete="current-password" />
+          <div style="display: flex; justify-content: flex-end; margin-top: 6px;">
+            <button type="button" onclick="openForgotPasswordModal()" style="font-size: 12px; color: var(--accent-orange); font-weight: 600; padding: 2px 0; background: none; border: none; cursor: pointer;">
+              Forgot password?
+            </button>
+          </div>
         </div>
 
         <button id="loginSubmitBtn" type="submit" class="btn-primary touch-target" style="height: 48px; font-size: 15px; font-weight: 700; width: 100%; margin-top: 4px; box-shadow: 0 4px 12px rgba(180, 87, 15, 0.2);">
           Sign In to Portal
         </button>
       </form>
-
-
 
       <!-- Security Trust Footer -->
       <div style="margin-top: 20px; text-align: center; font-size: 11.5px; color: var(--ink-muted); display: flex; align-items: center; justify-content: center; gap: 6px;">
@@ -1080,6 +1083,96 @@
         <span>Protected by Supabase Auth &amp; Postgres Row Level Security</span>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: FORGOT PASSWORD (REQUEST RESET LINK)
+       ======================================================================== -->
+  <div id="forgotPasswordModal" class="modal-overlay hidden" role="dialog" aria-labelledby="forgotPasswordModalTitle" aria-modal="true">
+    <div class="modal-box" style="max-width: 420px;">
+      <div style="padding: 20px 24px; border-bottom: 1px solid var(--rule-paper); display: flex; align-items: center; justify-content: space-between;">
+        <h3 id="forgotPasswordModalTitle" style="font-size: 18px; font-weight: 800; margin: 0; color: var(--ink-primary);">
+          Reset Password
+        </h3>
+        <button type="button" onclick="closeForgotPasswordModal()" class="touch-target" style="color: var(--ink-muted);" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <form id="forgotPasswordForm" onsubmit="handleForgotPasswordSubmit(event)" style="padding: 20px 24px; display: flex; flex-direction: column; gap: 14px;">
+        <p style="font-size: 13.5px; color: var(--ink-secondary); margin: 0; line-height: 1.45;">
+          Enter your registered email address and we'll send you an instant link to choose a new password.
+        </p>
+
+        <div id="forgotPasswordFeedback" style="display: none;"></div>
+
+        <div>
+          <label for="forgotEmailInput" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
+            Email Address <span style="color: var(--rust-owed);">*</span>
+          </label>
+          <input id="forgotEmailInput" type="email" required placeholder="name@agency.com" class="form-input" style="height: 48px; font-size: 14.5px;" autocomplete="email" />
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px;">
+          <button type="button" onclick="closeForgotPasswordModal()" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 16px;">
+            Cancel
+          </button>
+          <button id="forgotPasswordSubmitBtn" type="submit" class="btn-primary touch-target" style="min-height: 44px; padding: 0 20px; font-weight: 700;">
+            Send Reset Link
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: SET NEW PASSWORD (RECOVERY TOKEN REDIRECT)
+       ======================================================================== -->
+  <div id="resetPasswordModal" class="modal-overlay hidden" role="dialog" aria-labelledby="resetPasswordModalTitle" aria-modal="true">
+    <div class="modal-box" style="max-width: 420px;">
+      <div style="padding: 20px 24px; border-bottom: 1px solid var(--rule-paper); display: flex; align-items: center; justify-content: space-between;">
+        <h3 id="resetPasswordModalTitle" style="font-size: 18px; font-weight: 800; margin: 0; color: var(--ink-primary);">
+          Choose New Password
+        </h3>
+        <button type="button" onclick="closeResetPasswordModal()" class="touch-target" style="color: var(--ink-muted);" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <form id="resetPasswordForm" onsubmit="handleUpdatePasswordSubmit(event)" style="padding: 20px 24px; display: flex; flex-direction: column; gap: 14px;">
+        <p style="font-size: 13.5px; color: var(--ink-secondary); margin: 0; line-height: 1.45;">
+          Your recovery link is verified. Enter your new password below.
+        </p>
+
+        <div id="resetPasswordFeedback" style="display: none; padding: 10px 12px; border-radius: 8px; background-color: var(--rust-owed-subtle); border: 1px solid var(--rust-owed-border); color: var(--rust-owed); font-size: 12.5px; font-weight: 600;"></div>
+
+        <div>
+          <label for="newPasswordInput" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
+            New Password <span style="color: var(--rust-owed);">*</span>
+          </label>
+          <input id="newPasswordInput" type="password" required placeholder="Minimum 6 characters" minlength="6" class="form-input" style="height: 48px; font-size: 14.5px;" autocomplete="new-password" />
+        </div>
+
+        <div>
+          <label for="confirmNewPasswordInput" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
+            Confirm New Password <span style="color: var(--rust-owed);">*</span>
+          </label>
+          <input id="confirmNewPasswordInput" type="password" required placeholder="Re-enter new password" minlength="6" class="form-input" style="height: 48px; font-size: 14.5px;" autocomplete="new-password" />
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px;">
+          <button id="updatePasswordSubmitBtn" type="submit" class="btn-primary touch-target" style="width: 100%; min-height: 46px; font-weight: 700;">
+            Save New Password &amp; Sign In
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -2394,6 +2487,142 @@
           submitBtn.textContent = 'Sign In to Portal';
         }
       }
+    // ========================================================================
+    // PASSWORD RECOVERY & RESET HANDLERS
+    // ========================================================================
+    function openForgotPasswordModal() {
+      const email = (document.getElementById('loginEmail')?.value || '').trim();
+      const input = document.getElementById('forgotEmailInput');
+      if (input && email) input.value = email;
+      const fb = document.getElementById('forgotPasswordFeedback');
+      if (fb) fb.style.display = 'none';
+      document.getElementById('forgotPasswordModal')?.classList.remove('hidden');
+    }
+
+    function closeForgotPasswordModal() {
+      document.getElementById('forgotPasswordModal')?.classList.add('hidden');
+    }
+
+    async function handleForgotPasswordSubmit(e) {
+      e.preventDefault();
+      const email = (document.getElementById('forgotEmailInput')?.value || '').trim();
+      const fb = document.getElementById('forgotPasswordFeedback');
+      const btn = document.getElementById('forgotPasswordSubmitBtn');
+      if (!email) return;
+
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Sending link...';
+      }
+
+      try {
+        if (!supabaseClient) {
+          supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+        const redirectUrl = window.location.origin + window.location.pathname;
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+          redirectTo: redirectUrl
+        });
+        if (error) throw error;
+
+        if (fb) {
+          fb.style.display = 'block';
+          fb.style.color = '#14532D';
+          fb.style.backgroundColor = '#F0FDF4';
+          fb.style.border = '1px solid #BBF7D0';
+          fb.style.padding = '10px 12px';
+          fb.style.borderRadius = '8px';
+          fb.style.fontSize = '12.5px';
+          fb.style.marginBottom = '12px';
+          fb.textContent = 'Password reset email sent! Please check your inbox and click the reset link.';
+        }
+      } catch (err) {
+        if (fb) {
+          fb.style.display = 'block';
+          fb.style.color = 'var(--rust-owed)';
+          fb.style.backgroundColor = 'var(--rust-owed-subtle)';
+          fb.style.border = '1px solid var(--rust-owed-border)';
+          fb.style.padding = '10px 12px';
+          fb.style.borderRadius = '8px';
+          fb.style.fontSize = '12.5px';
+          fb.style.marginBottom = '12px';
+          fb.textContent = err.message || 'Error sending reset email.';
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = 'Send Reset Link';
+        }
+      }
+    }
+
+    function openResetPasswordModal() {
+      const p1 = document.getElementById('newPasswordInput');
+      const p2 = document.getElementById('confirmNewPasswordInput');
+      if (p1) p1.value = '';
+      if (p2) p2.value = '';
+      const fb = document.getElementById('resetPasswordFeedback');
+      if (fb) fb.style.display = 'none';
+      document.getElementById('resetPasswordModal')?.classList.remove('hidden');
+    }
+
+    function closeResetPasswordModal() {
+      document.getElementById('resetPasswordModal')?.classList.add('hidden');
+    }
+
+    async function handleUpdatePasswordSubmit(e) {
+      e.preventDefault();
+      const p1 = document.getElementById('newPasswordInput')?.value || '';
+      const p2 = document.getElementById('confirmNewPasswordInput')?.value || '';
+      const fb = document.getElementById('resetPasswordFeedback');
+      const btn = document.getElementById('updatePasswordSubmitBtn');
+
+      if (!p1 || p1.length < 6) {
+        if (fb) {
+          fb.style.display = 'block';
+          fb.textContent = 'Password must be at least 6 characters.';
+        }
+        return;
+      }
+      if (p1 !== p2) {
+        if (fb) {
+          fb.style.display = 'block';
+          fb.textContent = 'Passwords do not match.';
+        }
+        return;
+      }
+
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Updating...';
+      }
+
+      try {
+        if (!supabaseClient) {
+          supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+        const { data, error } = await supabaseClient.auth.updateUser({ password: p1 });
+        if (error) throw error;
+
+        showToast('Password updated successfully!');
+        closeResetPasswordModal();
+        window.history.replaceState(null, '', window.location.pathname);
+        if (data && data.user) {
+          await loadUserProfileAndEnterApp(data.user);
+        } else {
+          showLoginView();
+        }
+      } catch (err) {
+        if (fb) {
+          fb.style.display = 'block';
+          fb.textContent = err.message || 'Failed to update password.';
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = 'Save New Password & Sign In';
+        }
+      }
     }
 
     async function loadUserProfileAndEnterApp(user, intentRole = null) {
@@ -2728,10 +2957,19 @@
           console.log('[Supabase Auth Event]:', event);
           if (event === 'SIGNED_OUT') {
             showLoginView();
+          } else if (event === 'PASSWORD_RECOVERY') {
+            console.log('[Supabase Auth] PASSWORD_RECOVERY event detected');
+            openResetPasswordModal();
           } else if (!session && navigator.onLine) {
             showLoginView();
           }
         });
+
+        // Check if user came from a password recovery link
+        if (window.location.hash.includes('type=recovery') || window.location.href.includes('type=recovery')) {
+          console.log('[Supabase] Password recovery URL detected');
+          setTimeout(() => openResetPasswordModal(), 200);
+        }
 
         // Check if an existing authenticated session is stored
         const { data: { session } } = await supabaseClient.auth.getSession();
@@ -5729,6 +5967,8 @@
         closeManagePackagesModal();
         closeStaffModal();
         closeEditDepartureModal();
+        closeForgotPasswordModal();
+        closeResetPasswordModal();
       }
     });
 
