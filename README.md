@@ -50,9 +50,7 @@ The simulated toggle buttons have been replaced with **real Supabase Auth** back
 - **Warm Paper Login Artboard (`#loginView`)**:
   - Background: `#F4EFE6`, Ink: `#1B1A17`, Accent: `#B4570F`, 48px input touch targets.
   - Headings in **Bricolage Grotesque**, body in **DM Sans**.
-  - Username/email and password fields with a Show/Hide password toggle.
-  - Portal mode intent selector (Admin Dispatcher vs Staff Booking) and quick one-click demo chips.
-- **Server Role Authority**:
+  - Portal mode intent selector (Admin Dispatcher vs Staff Booking) with secure credentials.
   - A PostgreSQL `public.profiles` table stores each user's authenticated UUID (`id`), `role` (`admin` or `staff`), and `agency`.
   - The signed-in role is loaded from `profiles.role` in the database, **never trusted from the user's selector**. If a user selects "Admin" in the login screen but signs in with a staff account, they are safely initialized as **STAFF**, and a toast notification informs them of the database role enforcement.
 - **Session & Sign Out**:
