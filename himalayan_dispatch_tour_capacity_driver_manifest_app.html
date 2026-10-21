@@ -3137,42 +3137,176 @@
     // ========================================================================
     // WHATSAPP DRIVER MANIFEST BUILDER
     // ========================================================================
-    function buildManifestText(dep) {
-      const pkg = getPackage(dep.packageId);
-      const bookedPax = getBookedPax(dep);
-      const capacity = Number(dep.capacity || 8);
-      const seatsLeft = Math.max(0, capacity - bookedPax);
-      const totalRemaining = getTotalRemainingNPR(dep);
+    function isFinancialSegment(s) {
+      if (!s) return false;
+      const lower = s.toLowerCase();
+      return lower.includes('npr') || lower.includes('paid') || lower.includes('advance') || 
+             lower.includes('rec') || lower.includes('owed') || /\d+\s*k\b/.test(lower) ||
+             /\/\s*\d+/.test(lower);
+    }
 
-      const lines = [];
-      lines.push(`HIMALAYAN TOUR DISPATCH & DRIVER MANIFEST`);
-      lines.push(`Route: ${pkg.name}`);
-      lines.push(`Departure: ${formatDateDisplay(dep.date)} ${dep.nepaliDate ? '(' + dep.nepaliDate + ')' : ''}`);
-      lines.push(`Vehicle: ${dep.vehicleType === 'ev_van' ? 'EV Van' : 'Scorpio 4x4'} | Plate: ${dep.vehiclePlate || 'Assigned on departure'}`);
-      lines.push(`Driver: ${dep.driverName || 'Pending'} (${dep.driverPhone || 'N/A'})`);
-      lines.push(`Capacity: ${capacity} Pax | Booked: ${bookedPax} Pax (${seatsLeft} seat(s) open)`);
-      lines.push(`Rotational Seating: No reserved seat numbers. Fair rotation across route.`);
-      lines.push(`----------------------------------------`);
-      lines.push(`PASSENGERS LIST:`);
+    function extractCustomerDispatchDetails(cust) {
+      let location = cust.pickupLocation ? cust.pickupLocation.trim() : '';
+      let roomNote = cust.roomNote ? cust.roomNote.trim() : '';
+      const rawNote = (cust.note || '').trim();
 
-      (dep.customers || []).forEach((c, idx) => {
-        lines.push(`${idx + 1}. ${c.name} — ${c.pax} Pax`);
-        lines.push(`   Contact: ${c.phone}`);
-        if (Number(c.remaining) > 0) {
-          lines.push(`   *CASH TO COLLECT: NPR ${Number(c.remaining).toLocaleString('en-IN')}*`);
-        } else {
-          lines.push(`   Payment: Paid in full (No collection)`);
+      if (location && roomNote) {
+        return { location, noteAndRooms: roomNote };
+      }
+
+      if (location) {
+        if (!rawNote) {
+          return { location, noteAndRooms: 'None' };
         }
-        if (c.note) {
-          lines.push(`   Note: ${c.note}`);
+        const cleanParts = rawNote.split(/[•|]/)
+          .map(p => p.trim())
+          .filter(p => p && !isFinancialSegment(p) && !/^(pickup|location):/i.test(p));
+        return {
+          location,
+          noteAndRooms: cleanParts.length > 0 ? cleanParts.join(' • ') : 'None'
+        };
+      }
+
+      if (roomNote) {
+        let extractedLoc = '';
+        if (rawNote) {
+          const parts = rawNote.split(/[•|]/).map(p => p.trim()).filter(Boolean);
+          for (let p of parts) {
+            if (/^(pickup|location|point):/i.test(p)) {
+              extractedLoc = p.replace(/^(pickup|location|point):\s*/i, '').trim();
+              break;
+            } else if (!isFinancialSegment(p) && !p.toLowerCase().includes(roomNote.toLowerCase())) {
+              extractedLoc = p;
+              break;
+            }
+          }
+        }
+        return {
+          location: extractedLoc || 'Kathmandu Pickup Point',
+          noteAndRooms: roomNote
+        };
+      }
+
+      if (!rawNote) {
+        return {
+          location: 'Kathmandu Pickup Point',
+          noteAndRooms: 'None'
+        };
+      }
+
+      let parts = rawNote.split(/[•|]/).map(p => p.trim()).filter(Boolean);
+      if (parts.length === 1 && rawNote.includes(',')) {
+        const commaParts = rawNote.split(',').map(p => p.trim()).filter(Boolean);
+        if (commaParts.some(p => /room|rm/i.test(p))) {
+          parts = commaParts;
+        }
+      }
+
+      let extractedLoc = '';
+      let noteRoomParts = [];
+
+      parts.forEach(part => {
+        if (isFinancialSegment(part)) {
+          return;
+        }
+        if (/^(pickup|location|point):/i.test(part)) {
+          extractedLoc = part.replace(/^(pickup|location|point):\s*/i, '').trim();
+          return;
+        }
+        if (/room|rm\b/i.test(part)) {
+          noteRoomParts.push(part);
+          return;
+        }
+        if (!extractedLoc && !/pkg\b/i.test(part)) {
+          extractedLoc = part;
+        } else {
+          noteRoomParts.push(part);
         }
       });
 
-      lines.push(`----------------------------------------`);
-      lines.push(`TOTAL CASH TO COLLECT BY DRIVER: NPR ${totalRemaining.toLocaleString('en-IN')}`);
-      lines.push(`Dispatch desk: Lalitpur Holidays / Inter-Agency Portal`);
+      return {
+        location: extractedLoc || 'Kathmandu Pickup Point',
+        noteAndRooms: noteRoomParts.length > 0 ? noteRoomParts.join(' • ') : 'None'
+      };
+    }
 
-      return lines.join('\n');
+    function buildManifestText(dep) {
+      const pkg = getPackage(dep.packageId);
+      const customers = dep.customers || [];
+      const totalPax = customers.reduce((sum, c) => sum + (Number(c.pax) || 0), 0);
+      const totalRemaining = customers.reduce((sum, c) => sum + (Number(c.remaining) || 0), 0);
+
+      const travelDateStr = dep.nepaliDate 
+        ? `${formatDateDisplay(dep.date)} (${dep.nepaliDate})` 
+        : formatDateDisplay(dep.date);
+
+      const lines = [];
+
+      const packageGroups = {};
+      customers.forEach(c => {
+        let pName = pkg.name;
+        if (c.packageName) {
+          pName = c.packageName;
+        } else if (c.packageId) {
+          pName = getPackage(c.packageId).name;
+        }
+        if (!packageGroups[pName]) {
+          packageGroups[pName] = [];
+        }
+        packageGroups[pName].push(c);
+      });
+
+      const packageNames = Object.keys(packageGroups);
+
+      if (packageNames.length === 0) {
+        lines.push(`*Package Name:* ${pkg.name}`);
+        lines.push(`*Travel Date:* ${travelDateStr}`);
+        lines.push(`*Total Number of People:* 0`);
+        lines.push(`*Total Remaining to Collect on Scorpio:* NPR 0`);
+        lines.push('');
+        lines.push('No passengers booked yet.');
+        return lines.join('\n');
+      }
+
+      packageNames.forEach((pkgName, pIdx) => {
+        const groupCustomers = packageGroups[pkgName];
+        const groupPax = groupCustomers.reduce((sum, c) => sum + (Number(c.pax) || 0), 0);
+        const groupRemaining = groupCustomers.reduce((sum, c) => sum + (Number(c.remaining) || 0), 0);
+
+        if (pIdx > 0) {
+          lines.push('----------------------------------------');
+        }
+
+        lines.push(`*Package Name:* ${pkgName}`);
+        lines.push(`*Travel Date:* ${travelDateStr}`);
+        lines.push(`*Total Number of People:* ${groupPax}`);
+        lines.push(`*Total Remaining to Collect on Scorpio:* NPR ${groupRemaining.toLocaleString('en-IN')}`);
+        lines.push('');
+
+        groupCustomers.forEach((c, idx) => {
+          const phoneStr = c.phone ? c.phone.trim() : 'Phone not provided';
+          const nameStr = c.name ? c.name.trim() : 'Guest';
+          const paxCount = Number(c.pax) || 1;
+          const custRemaining = Number(c.remaining) || 0;
+          const details = extractCustomerDispatchDetails(c);
+
+          lines.push(`*Guest ${idx + 1}:*`);
+          lines.push(`- Passenger Name: ${nameStr}`);
+          lines.push(`- Passenger Number: ${phoneStr}`);
+          lines.push(`- Passenger Location: ${details.location}`);
+          lines.push(`- Total Number of People: ${paxCount}`);
+          lines.push(`- Total Remaining to Collect on Scorpio: NPR ${custRemaining.toLocaleString('en-IN')}${custRemaining === 0 ? ' (Paid in full)' : ''}`);
+          lines.push(`- Note and Rooms: ${details.noteAndRooms}`);
+          lines.push('');
+        });
+      });
+
+      const depNotes = (dep.notes || '').trim();
+      if (depNotes) {
+        lines.push(`*Trip Note:* ${depNotes}`);
+      }
+
+      return lines.join('\n').trim();
     }
 
     let activeManifestDep = null;

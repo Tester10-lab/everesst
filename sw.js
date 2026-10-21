@@ -1,7 +1,7 @@
 // ============================================================================
 // BOOKINGS — SERVICE WORKER (OFFLINE PWA CACHE)
 // ============================================================================
-const CACHE_NAME = 'bookings-v6';
+const CACHE_NAME = 'bookings-v7';
 
 // Support manual skipWaiting trigger from app update bar
 self.addEventListener('message', (event) => {

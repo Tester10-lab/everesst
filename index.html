@@ -1426,24 +1426,24 @@
         <!-- Customer Name -->
         <div>
           <label for="acCustomerName" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
-            Customer / Group Lead Name <span style="color: var(--rust-owed);">*</span>
+            Customer Name <span style="color: var(--rust-owed);">*</span>
           </label>
           <input id="acCustomerName" type="text" required placeholder="e.g. Passenger Full Name / Lead" class="form-input" />
         </div>
 
-        <!-- Phone Number -->
+        <!-- Contact (Phone) -->
         <div>
           <label for="acCustomerPhone" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
-            Contact Phone Number <span style="color: var(--rust-owed);">*</span>
+            Contact <span style="color: var(--rust-owed);">*</span>
           </label>
           <input id="acCustomerPhone" type="tel" required placeholder="e.g. +977 98XXXXXXXX" class="form-input" />
         </div>
 
-        <!-- Pax & Agency Row -->
+        <!-- Packs & Booking Agency -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
           <div>
             <label for="acPaxCount" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
-              Pax (Seats) <span style="color: var(--rust-owed);">*</span>
+              Packs <span style="color: var(--rust-owed);">*</span>
             </label>
             <input id="acPaxCount" type="number" min="1" max="12" value="1" required oninput="validateCapacityOnInput()" class="form-input" style="font-weight: 700;" />
             <span id="acSeatsRemainingHint" style="font-size: 11.5px; color: var(--ink-secondary); margin-top: 3px; display: block;"></span>
@@ -1451,40 +1451,44 @@
 
           <div>
             <label for="acAgencyName" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
-              Booking Agency
+              Booking agency
             </label>
             <input id="acAgencyName" type="text" placeholder="e.g. Batuwa Trip / Direct" class="form-input" />
           </div>
         </div>
 
-        <!-- Financial Row: Paid & Remaining -->
+        <!-- Financial Row: Pay to visit & Remaining to collect -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
           <div>
             <label for="acPaidAmount" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
-              Paid Deposit (NPR)
+              Pay to visit (NPR)
             </label>
-            <input id="acPaidAmount" type="number" min="0" step="500" value="0" oninput="handleModalPriceRecalc()" class="form-input" style="font-weight: 600;" />
+            <input id="acPaidAmount" type="number" min="0" step="100" value="0" class="form-input" style="font-weight: 600;" />
           </div>
 
           <div>
             <label for="acRemainingAmount" style="display: block; font-size: 13px; font-weight: 700; color: var(--rust-owed); margin-bottom: 6px;">
-              Remaining to Collect (NPR) <span style="color: var(--rust-owed);">*</span>
+              Remaining to collect (NPR) <span style="color: var(--rust-owed);">*</span>
             </label>
-            <input id="acRemainingAmount" type="number" min="0" step="500" value="0" required oninput="handleModalPriceRecalc()" class="form-input" style="font-weight: 700; color: var(--rust-owed);" />
+            <input id="acRemainingAmount" type="number" min="0" step="100" value="0" required class="form-input" style="font-weight: 700; color: var(--rust-owed);" />
           </div>
         </div>
 
-        <!-- Trip Price Guidance & Discrepancy Warning -->
-        <div id="acPriceGuidanceBox" style="padding: 10px 12px; border-radius: 8px; background-color: var(--surface-subtle); border: 1px solid var(--rule-paper); font-size: 12px; line-height: 1.4;">
-          <!-- Shows estimated trip total vs paid+remaining -->
-        </div>
+        <!-- Separate Inputs: Pickup Location & Note for rooms -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label for="acPickupLocation" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
+              Pickup Location <span style="color: var(--rust-owed);">*</span>
+            </label>
+            <input id="acPickupLocation" type="text" required placeholder="e.g. Thamel Hotel / Kalanki Chowk" class="form-input" />
+          </div>
 
-        <!-- Pickup / Notes -->
-        <div>
-          <label for="acNotes" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
-            Pickup Location / Dispatch Note
-          </label>
-          <input id="acNotes" type="text" placeholder="e.g. Kalanki Chowk 6:00 AM • 3 Room" class="form-input" />
+          <div>
+            <label for="acRoomNote" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
+              Note for rooms
+            </label>
+            <input id="acRoomNote" type="text" placeholder="e.g. 1 Deluxe Double Room / 2 Twin Beds" class="form-input" />
+          </div>
         </div>
 
         <!-- Submit & Cancel -->
@@ -1726,7 +1730,7 @@
 
       <div style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
         <div style="background-color: var(--surface-subtle); padding: 10px 14px; border-radius: 8px; border: 1px solid var(--rule-paper); font-size: 12.5px; color: var(--ink-secondary); line-height: 1.4;">
-          Review the dispatch manifest below. You can edit the text directly before sending. Passenger details and pickup notes are included. Agency pricing, packages totals, and advances are strictly excluded.
+          Review the driver WhatsApp dispatch message below. Formatted strictly with package name, travel date, passenger number, passenger location, total people, total remaining to collect on Scorpio, and note &amp; rooms.
         </div>
 
         <textarea id="manifestTextarea" rows="13" style="width: 100%; padding: 12px; font-family: monospace; font-size: 12.5px; line-height: 1.45; border-radius: 8px; border: 1px solid var(--rule-paper-strong); background-color: #FFFFFF; color: var(--ink-primary); resize: vertical;"></textarea>
@@ -1734,6 +1738,13 @@
         <div style="display: flex; gap: 10px; justify-content: flex-end; align-items: center; flex-wrap: wrap; margin-top: 4px;">
           <button onclick="closeManifestModal()" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px;">
             Cancel
+          </button>
+          <button id="manifestCopyRoomsBtn" type="button" onclick="copyManifestRooms()" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; border-color: #7C2D12; color: #7C2D12; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <span>Copy rooms only</span>
           </button>
           <button id="manifestCopyBtn" type="button" onclick="copyManifestText()" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; border-color: var(--accent-orange); color: var(--accent-orange); font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -3622,7 +3633,9 @@
                     <span style="font-weight: 600; color: var(--ink-primary);">${escapeHtml(shortDateLine)}</span>
                     <span style="color: var(--ink-muted);">&bull;</span>
                     <span>${escapeHtml(vehicleLabel)}</span>
-                    ${driverName ? `<span style="color: var(--ink-muted);">&bull;</span><span>Driver: ${escapeHtml(driverName)}</span>` : ''}
+                    ${driverName 
+                      ? `<span style="color: var(--ink-muted);">&bull;</span><button type="button" onclick="openAssignDriverModal('${dep.id}', event)" class="driver-tag-pill" style="border: 1px solid #A7F3D0; background: #ECFDF5; color: #065F46; border-radius: 4px; padding: 2px 7px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" title="Click to change driver"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Driver: ${escapeHtml(driverName)}</button>` 
+                      : (isAdmin ? `<span style="color: var(--ink-muted);">&bull;</span><button type="button" onclick="openAssignDriverModal('${dep.id}', event)" class="driver-tag-pill" style="border: 1px solid #FCD34D; background: #FEF3C7; color: #92400E; border-radius: 4px; padding: 2px 7px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" title="Click to assign driver"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>+ Assign driver</button>` : '')}
                     ${isAdmin ? `
                       <span style="color: var(--ink-muted);">&bull;</span>
                       <span class="badge badge-owed" style="font-size: 11px; padding: 1px 6px;">Owed: ${formatNPR(getTotalRemainingNPR(dep))}</span>
@@ -3670,6 +3683,14 @@
             <!-- Admin Visible Controls Bar (Admin only) -->
             ${isAdmin ? `
               <div class="card-direct-actions-bar" onclick="event.stopPropagation();">
+                <button type="button" onclick="openAssignDriverModal('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700; color: #1E3A8A; display: inline-flex; align-items: center; gap: 6px;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                  <span>${driverName ? 'Change driver' : 'Assign driver'}</span>
+                </button>
+                <button type="button" onclick="copyDepartureRooms('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700; color: #7C2D12; display: inline-flex; align-items: center; gap: 6px;" title="Copy hotel room list for this tour">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                  <span>Copy rooms</span>
+                </button>
                 ${depStatus === 'open' ? `
                   <button onclick="handleMarkAsFull('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700;">
                     Mark as Full
@@ -3904,7 +3925,9 @@
                     <span style="font-weight: 600; color: var(--ink-primary);">${escapeHtml(shortDateLine)}</span>
                     <span style="color: var(--ink-muted);">&bull;</span>
                     <span>${escapeHtml(vehicleLabel)}</span>
-                    ${driverName ? `<span style="color: var(--ink-muted);">&bull;</span><span>Driver: ${escapeHtml(driverName)}</span>` : ''}
+                    ${driverName 
+                      ? `<span style="color: var(--ink-muted);">&bull;</span><button type="button" onclick="openAssignDriverModal('${dep.id}', event)" class="driver-tag-pill" style="border: 1px solid #A7F3D0; background: #ECFDF5; color: #065F46; border-radius: 4px; padding: 2px 7px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" title="Click to change driver"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Driver: ${escapeHtml(driverName)}</button>` 
+                      : (isAdmin ? `<span style="color: var(--ink-muted);">&bull;</span><button type="button" onclick="openAssignDriverModal('${dep.id}', event)" class="driver-tag-pill" style="border: 1px solid #FCD34D; background: #FEF3C7; color: #92400E; border-radius: 4px; padding: 2px 7px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" title="Click to assign driver"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>+ Assign driver</button>` : '')}
                     ${isAdmin ? `
                       <span style="color: var(--ink-muted);">&bull;</span>
                       <span class="badge badge-owed" style="font-size: 11px; padding: 1px 6px;">Owed: ${formatNPR(getTotalRemainingNPR(dep))}</span>
@@ -3939,6 +3962,14 @@
             <!-- Admin Visible Controls Bar (Admin only) -->
             ${isAdmin ? `
               <div class="card-direct-actions-bar" onclick="event.stopPropagation();">
+                <button type="button" onclick="openAssignDriverModal('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700; color: #1E3A8A; display: inline-flex; align-items: center; gap: 6px;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                  <span>${driverName ? 'Change driver' : 'Assign driver'}</span>
+                </button>
+                <button type="button" onclick="copyDepartureRooms('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700; color: #7C2D12; display: inline-flex; align-items: center; gap: 6px;" title="Copy hotel room list for this tour">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                  <span>Copy rooms</span>
+                </button>
                 ${depStatus === 'dispatched' ? `
                   <button onclick="handleSendToDriverClick('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700; color: #128C7E; display: inline-flex; align-items: center; gap: 6px;">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -3986,6 +4017,140 @@
     }
     window.applyServiceWorkerUpdate = applyServiceWorkerUpdate;
 
+    // ========================================================================
+    // HOTEL ROOMS & PICKUP HELPERS
+    // ========================================================================
+    function getCustomerLocationAndRooms(cust) {
+      if (!cust) return { pickup: '', rooms: '' };
+      let pickup = (cust.pickupLocation || '').trim();
+      let rooms = (cust.roomNote || '').trim();
+
+      if ((!pickup || !rooms) && cust.note) {
+        const rawNote = cust.note.trim();
+        if (rawNote.includes('•') || rawNote.includes('|') || rawNote.includes(':')) {
+          const parts = rawNote.split(/[•|]/).map(p => p.trim()).filter(Boolean);
+          parts.forEach(part => {
+            if (/^(pickup|location|point):/i.test(part)) {
+              if (!pickup) pickup = part.replace(/^(pickup|location|point):\s*/i, '').trim();
+            } else if (/^(rooms?|rm|hotel):/i.test(part)) {
+              if (!rooms) rooms = part.replace(/^(rooms?|rm|hotel):\s*/i, '').trim();
+            } else if (/room|rm\b/i.test(part)) {
+              if (!rooms) rooms = part;
+            } else if (!pickup && !part.toLowerCase().includes('npr') && !part.toLowerCase().includes('paid')) {
+              pickup = part;
+            }
+          });
+        } else {
+          if (!pickup && !rawNote.toLowerCase().includes('npr')) {
+            if (/room|rm\b/i.test(rawNote)) {
+              if (!rooms) rooms = rawNote;
+            } else {
+              pickup = rawNote;
+            }
+          }
+        }
+      }
+
+      return {
+        pickup: pickup || '',
+        rooms: rooms || ''
+      };
+    }
+    window.getCustomerLocationAndRooms = getCustomerLocationAndRooms;
+
+    function formatDepartureRoomsText(dep) {
+      if (!dep) return '';
+      const pkg = getPackage(dep.packageId || dep.package_id);
+      const dateStr = dep.nepaliDate 
+        ? `${formatDateDisplay(dep.date)} (${dep.nepaliDate})` 
+        : formatDateDisplay(dep.date);
+      const customers = dep.customers || [];
+      const totalPax = customers.reduce((sum, c) => sum + (Number(c.pax) || 0), 0);
+
+      const lines = [];
+      lines.push(`🏨 *HOTEL ROOMS ALLOTMENT*`);
+      lines.push(`*Package:* ${pkg.name}`);
+      lines.push(`*Travel Date:* ${dateStr}`);
+      lines.push(`*Total Guests:* ${totalPax} Pax (${customers.length} Bookings)`);
+      if (dep.driverName) {
+        lines.push(`*Assigned Driver:* ${dep.driverName} ${dep.vehiclePlate ? '[' + dep.vehiclePlate + ']' : ''}`);
+      }
+      lines.push('');
+      lines.push('*Passenger & Room Distribution:*');
+
+      if (customers.length === 0) {
+        lines.push('No passengers booked yet.');
+      } else {
+        customers.forEach((c, idx) => {
+          const lr = getCustomerLocationAndRooms(c);
+          const phone = c.phone ? ` • Phone: ${c.phone}` : '';
+          const agency = c.agency ? ` • Agency: ${c.agency}` : '';
+          const roomStr = lr.rooms || 'Standard Room';
+          const pickupStr = lr.pickup || 'Direct Pickup';
+          lines.push(`*Guest ${idx + 1}:* ${c.name} (${c.pax || 1} Pax)${phone}${agency}`);
+          lines.push(`- Note for Rooms: ${roomStr}`);
+          lines.push(`- Pickup Location: ${pickupStr}`);
+          lines.push('');
+        });
+      }
+
+      return lines.join('\n').trim();
+    }
+    window.formatDepartureRoomsText = formatDepartureRoomsText;
+
+    function fallbackCopyText(text, successMsg) {
+      const msg = successMsg || 'Copied to clipboard!';
+      const temp = document.createElement('textarea');
+      temp.value = text;
+      temp.style.position = 'fixed';
+      temp.style.left = '-9999px';
+      document.body.appendChild(temp);
+      temp.select();
+      try {
+        document.execCommand('copy');
+        showToast(msg);
+      } catch (e) {
+        showToast('Please copy text manually.', 'error');
+      }
+      document.body.removeChild(temp);
+    }
+
+    function copyDepartureRooms(depId, event) {
+      if (event) event.stopPropagation();
+      const dep = (state.departures || []).find(d => d.id === depId);
+      if (!dep) return;
+      const text = formatDepartureRoomsText(dep);
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('Hotel room allotment copied to clipboard!');
+        }).catch(() => {
+          fallbackCopyText(text, 'Hotel room allotment copied to clipboard!');
+        });
+      } else {
+        fallbackCopyText(text, 'Hotel room allotment copied to clipboard!');
+      }
+    }
+    window.copyDepartureRooms = copyDepartureRooms;
+
+    function copyManifestRooms() {
+      if (!activeManifestDep) {
+        showToast('No active departure found', 'error');
+        return;
+      }
+      const text = formatDepartureRoomsText(activeManifestDep);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('Hotel room allotment copied to clipboard!');
+        }).catch(() => {
+          fallbackCopyText(text, 'Hotel room allotment copied to clipboard!');
+        });
+      } else {
+        fallbackCopyText(text, 'Hotel room allotment copied to clipboard!');
+      }
+    }
+    window.copyManifestRooms = copyManifestRooms;
+
     /**
      * Renders Customer Manifest:
      * - Desktop Table View (>= 640px)
@@ -4028,6 +4193,50 @@
       }
 
       // -------------------------------------------------------------
+      // 0. HOTEL ROOMS ALLOTMENT SUMMARY SECTION
+      // -------------------------------------------------------------
+      const totalPax = customers.reduce((sum, c) => sum + (Number(c.pax) || 0), 0);
+      const roomsListSummaryHtml = customers.map((c, i) => {
+        const locAndRooms = getCustomerLocationAndRooms(c);
+        return `
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; padding: 6px 0; border-bottom: ${i < customers.length - 1 ? '1px dashed var(--rule-paper)' : 'none'};">
+            <div>
+              <strong>${i + 1}. ${escapeHtml(c.name)}</strong> (${c.pax || 1} Pax)
+              <div style="color: var(--ink-secondary); font-size: 12px; margin-top: 2px;">
+                Rooms: <strong style="color: #7C2D12;">${escapeHtml(locAndRooms.rooms || 'Standard Room')}</strong> &bull; Pickup: <strong>${escapeHtml(locAndRooms.pickup || 'Direct')}</strong>
+              </div>
+            </div>
+            <div style="font-size: 12px; color: var(--ink-muted); text-align: right; flex-shrink: 0;">
+              ${escapeHtml(c.phone || '')}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const roomsBoxHtml = `
+        <div class="rooms-allotment-section paper-card" style="padding: 14px 16px; margin-bottom: 14px; background: #FFFDF9; border: 1px solid var(--rule-paper-strong); border-radius: 8px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
+            <div>
+              <h4 style="margin: 0; font-size: 14px; font-weight: 800; color: var(--ink-primary); display: flex; align-items: center; gap: 6px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>Hotel Rooms Allotment (${customers.length} Bookings • ${totalPax} Pax)</span>
+              </h4>
+              <p style="margin: 3px 0 0; font-size: 12px; color: var(--ink-secondary);">
+                Overview of hotel room notes and passenger allocations for this departure.
+              </p>
+            </div>
+            <button type="button" onclick="copyDepartureRooms('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 38px; padding: 0 14px; font-size: 12.5px; font-weight: 700; color: #7C2D12; border-color: #7C2D12; display: inline-flex; align-items: center; gap: 6px; background-color: #FFFFFF;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span>Copy Rooms</span>
+            </button>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid var(--rule-paper); border-radius: 6px; padding: 10px 14px; font-size: 12.5px; line-height: 1.45;">
+            ${roomsListSummaryHtml}
+          </div>
+        </div>
+      `;
+
+      // -------------------------------------------------------------
       // 1. DESKTOP TABLE VIEW
       // -------------------------------------------------------------
       let tableRows = '';
@@ -4035,79 +4244,77 @@
         const pax = Number(cust.pax) || 1;
         const paid = Number(cust.paid) || 0;
         const remaining = Number(cust.remaining) || 0;
-        const totalAccounted = paid + remaining;
-        const expectedPrice = pax * standardPricePerPax;
-        const hasDiscrepancy = totalAccounted !== expectedPrice;
+        const locAndRooms = getCustomerLocationAndRooms(cust);
         const offlineInputAttr = isOffline ? 'disabled title="Offline mode: Editing existing bookings is disabled to prevent sync conflicts."' : '';
         const offlineDelAttr = isOffline ? 'disabled title="Offline mode: Deleting customer bookings is disabled while offline." style="opacity: 0.35; cursor: not-allowed; height: 36px; width: 36px; padding: 0; border-radius: 6px;"' : 'style="height: 36px; width: 36px; padding: 0; border-radius: 6px;"';
 
         if (isAdmin) {
-          // ADMIN INLINE EDITABLE ROW (Disabled if offline per requirement 5)
+          // ADMIN INLINE EDITABLE ROW
           tableRows += `
-            <tr style="border-bottom: 1px solid var(--rule-paper); font-size: 13.5px;" id="cust-row-${cust.id}">
+            <tr style="border-bottom: 1px solid var(--rule-paper); font-size: 13px;" id="cust-row-${cust.id}">
               
               <!-- Customer Name & Phone -->
-              <td style="padding: 10px 8px; vertical-align: middle;">
+              <td style="padding: 10px 8px; vertical-align: middle; min-width: 150px;">
                 <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
                   <input type="text" value="${escapeHtml(cust.name)}" 
                          onchange="saveCustomerInline('${dep.id}', '${cust.id}', 'name', this.value)" 
                          class="inline-edit-input" style="font-weight: 700; margin-bottom: 4px;" 
-                         placeholder="Passenger Name" aria-label="Customer Name" ${offlineInputAttr} />
+                         placeholder="Customer Name" aria-label="Customer Name" ${offlineInputAttr} />
                   ${cust.status ? getStatusBadgeHtml(cust) : ''}
                 </div>
                 <input type="tel" value="${escapeHtml(cust.phone)}" 
                        onchange="saveCustomerInline('${dep.id}', '${cust.id}', 'phone', this.value)" 
                        class="inline-edit-input" style="font-size: 12px; color: var(--ink-secondary);" 
-                       placeholder="Phone Number" aria-label="Phone Number" ${offlineInputAttr} />
-                ${cust.note ? `<div style="font-size: 11.5px; color: var(--ink-muted); margin-top: 2px;">Note: ${escapeHtml(cust.note)}</div>` : ''}
+                       placeholder="Contact Phone" aria-label="Contact Phone" ${offlineInputAttr} />
               </td>
 
-              <!-- Agency -->
-              <td style="padding: 10px 8px; vertical-align: middle; width: 140px;">
+              <!-- Booking Agency -->
+              <td style="padding: 10px 8px; vertical-align: middle; width: 120px;">
                 <input type="text" value="${escapeHtml(cust.agency || '')}" 
                        onchange="saveCustomerInline('${dep.id}', '${cust.id}', 'agency', this.value)" 
-                       class="inline-edit-input" placeholder="Agency" aria-label="Agency" ${offlineInputAttr} />
+                       class="inline-edit-input" placeholder="Booking Agency" aria-label="Booking Agency" ${offlineInputAttr} />
               </td>
 
-              <!-- Pax Count -->
-              <td style="padding: 10px 8px; vertical-align: middle; width: 75px;">
+              <!-- Packs (Pax Count) -->
+              <td style="padding: 10px 8px; vertical-align: middle; width: 70px;">
                 <input type="number" min="1" max="25" value="${pax}" 
                        onchange="handleInlinePaxChange('${dep.id}', '${cust.id}', this.value, ${pax})" 
-                       class="inline-edit-input" style="text-align: center; font-weight: 700;" aria-label="Pax Count" ${offlineInputAttr} />
+                       class="inline-edit-input" style="text-align: center; font-weight: 700;" aria-label="Packs" ${offlineInputAttr} />
               </td>
 
-              <!-- Paid Amount -->
-              <td style="padding: 10px 8px; vertical-align: middle; width: 120px;">
-                <input type="number" min="0" step="500" value="${paid}" 
+              <!-- Pay to Visit (Paid Amount) -->
+              <td style="padding: 10px 8px; vertical-align: middle; width: 110px;">
+                <input type="number" min="0" step="100" value="${paid}" 
                        onchange="saveCustomerInline('${dep.id}', '${cust.id}', 'paid', this.value)" 
-                       class="inline-edit-input" style="font-weight: 600;" aria-label="Paid Amount (NPR)" ${offlineInputAttr} />
+                       class="inline-edit-input" style="font-weight: 600;" aria-label="Pay to Visit (NPR)" ${offlineInputAttr} />
               </td>
 
-              <!-- Remaining Amount (Directly Editable by Admin!) -->
-              <td style="padding: 10px 8px; vertical-align: middle; width: 130px;">
-                <input type="number" min="0" step="500" value="${remaining}" 
-                       onchange="saveCustomerInline('${dep.id}', '${cust.id}', 'remaining', this.value)" 
-                       class="inline-edit-input money-owed" aria-label="Remaining Amount (NPR)" ${offlineInputAttr} />
-              </td>
-
-              <!-- Price Check & Discrepancy Status -->
-              <td style="padding: 10px 8px; vertical-align: middle;">
+              <!-- Remaining to Collect (NPR) -->
+              <td style="padding: 10px 8px; vertical-align: middle; width: 125px;">
                 <div style="display: flex; flex-direction: column; gap: 2px;">
+                  <input type="number" min="0" step="100" value="${remaining}" 
+                         onchange="saveCustomerInline('${dep.id}', '${cust.id}', 'remaining', this.value)" 
+                         class="inline-edit-input money-owed" aria-label="Remaining to Collect (NPR)" ${offlineInputAttr} />
                   <span id="saved-badge-${cust.id}" class="saved-pill">✓ Saved</span>
-                  ${hasDiscrepancy ? `
-                    <span class="badge badge-owed" style="font-size: 10.5px; padding: 2px 5px;" title="Expected: NPR ${expectedPrice.toLocaleString()} (NPR ${standardPricePerPax.toLocaleString()} × ${pax} pax)">
-                      ⚠️ Total ≠ NPR ${expectedPrice.toLocaleString()}
-                    </span>
-                  ` : `
-                    <span style="font-size: 11px; color: var(--ink-secondary); font-weight: 500;">
-                      Standard rate matched
-                    </span>
-                  `}
                 </div>
               </td>
 
-              <!-- Actions (Delete - disabled while offline per rule 5) -->
-              <td style="padding: 10px 8px; vertical-align: middle; text-align: right; width: 60px;">
+              <!-- Pickup Location -->
+              <td style="padding: 10px 8px; vertical-align: middle; min-width: 140px;">
+                <input type="text" value="${escapeHtml(locAndRooms.pickup)}" 
+                       onchange="saveCustomerInline('${dep.id}', '${cust.id}', 'pickupLocation', this.value)" 
+                       class="inline-edit-input" placeholder="Pickup location" aria-label="Pickup Location" ${offlineInputAttr} />
+              </td>
+
+              <!-- Note for Rooms -->
+              <td style="padding: 10px 8px; vertical-align: middle; min-width: 150px;">
+                <input type="text" value="${escapeHtml(locAndRooms.rooms)}" 
+                       onchange="saveCustomerInline('${dep.id}', '${cust.id}', 'roomNote', this.value)" 
+                       class="inline-edit-input" placeholder="Note for rooms" aria-label="Note for rooms" ${offlineInputAttr} />
+              </td>
+
+              <!-- Actions (Delete) -->
+              <td style="padding: 10px 8px; vertical-align: middle; text-align: right; width: 50px;">
                 <button onclick="handleDeleteCustomerClick('${dep.id}', '${cust.id}')" 
                         class="btn-danger touch-target" ${offlineDelAttr} 
                         aria-label="Delete booking for ${escapeHtml(cust.name)}">
@@ -4121,9 +4328,9 @@
             </tr>
           `;
         } else {
-          // STAFF READ-ONLY ROW (Plain text, no inputs, no delete buttons)
+          // STAFF READ-ONLY ROW
           tableRows += `
-            <tr style="border-bottom: 1px solid var(--rule-paper); font-size: 13.5px;">
+            <tr style="border-bottom: 1px solid var(--rule-paper); font-size: 13px;">
               
               <!-- Customer Name & Phone -->
               <td style="padding: 12px 8px; vertical-align: middle;">
@@ -4132,37 +4339,41 @@
                   ${cust.status ? getStatusBadgeHtml(cust) : ''}
                 </div>
                 <div style="font-size: 12px; color: var(--ink-secondary); margin-top: 2px;">${escapeHtml(cust.phone)}</div>
-                ${cust.note ? `<div style="font-size: 11.5px; color: var(--ink-muted); margin-top: 2px;">${escapeHtml(cust.note)}</div>` : ''}
               </td>
 
-              <!-- Agency -->
+              <!-- Booking Agency -->
               <td style="padding: 12px 8px; vertical-align: middle;">
                 <span class="badge badge-paper">${escapeHtml(cust.agency || 'Direct')}</span>
               </td>
 
-              <!-- Pax Count -->
+              <!-- Packs -->
               <td style="padding: 12px 8px; vertical-align: middle; font-weight: 700; text-align: center;">
                 ${pax}
               </td>
 
-              <!-- Paid Amount -->
+              <!-- Pay to Visit -->
               <td style="padding: 12px 8px; vertical-align: middle; font-weight: 600;">
                 ${formatNPR(paid)}
               </td>
 
-              <!-- Remaining Amount (Rust Red) -->
+              <!-- Remaining to Collect (Rust Red) -->
               <td style="padding: 12px 8px; vertical-align: middle;">
                 <span style="font-weight: 800; color: var(--rust-owed);">
                   ${formatNPR(remaining)}
                 </span>
               </td>
 
-              <!-- Status -->
-              <td style="padding: 12px 8px; vertical-align: middle;">
-                ${getStatusBadgeHtml(cust)}
+              <!-- Pickup Location -->
+              <td style="padding: 12px 8px; vertical-align: middle; font-size: 12.5px;">
+                ${escapeHtml(locAndRooms.pickup || 'Direct')}
               </td>
 
-              <!-- No actions for staff -->
+              <!-- Note for Rooms -->
+              <td style="padding: 12px 8px; vertical-align: middle; font-size: 12.5px; color: #7C2D12; font-weight: 600;">
+                ${escapeHtml(locAndRooms.rooms || 'Standard Room')}
+              </td>
+
+              <!-- Status / Action -->
               <td style="padding: 12px 8px; vertical-align: middle; text-align: right; color: var(--ink-muted); font-size: 12px;">
                 &mdash;
               </td>
@@ -4176,13 +4387,14 @@
         <div class="desktop-table-view" style="overflow-x: auto; margin-bottom: 8px;">
           <table style="width: 100%; border-collapse: collapse; text-align: left;">
             <thead>
-              <tr style="border-bottom: 2px solid var(--rule-paper-strong); font-size: 12px; color: var(--ink-secondary); text-transform: uppercase; letter-spacing: 0.03em;">
-                <th style="padding: 8px; font-weight: 700;">Customer</th>
-                <th style="padding: 8px; font-weight: 700;">Agency</th>
-                <th style="padding: 8px; font-weight: 700; text-align: center;">Pax</th>
-                <th style="padding: 8px; font-weight: 700;">Paid</th>
-                <th style="padding: 8px; font-weight: 700; color: var(--rust-owed);">Remaining (NPR)</th>
-                <th style="padding: 8px; font-weight: 700;">Rate Check</th>
+              <tr style="border-bottom: 2px solid var(--rule-paper-strong); font-size: 11.5px; color: var(--ink-secondary); text-transform: uppercase; letter-spacing: 0.03em;">
+                <th style="padding: 8px; font-weight: 700;">Customer &amp; Contact</th>
+                <th style="padding: 8px; font-weight: 700;">Booking Agency</th>
+                <th style="padding: 8px; font-weight: 700; text-align: center;">Packs</th>
+                <th style="padding: 8px; font-weight: 700;">Pay to Visit</th>
+                <th style="padding: 8px; font-weight: 700; color: var(--rust-owed);">Remaining to Collect</th>
+                <th style="padding: 8px; font-weight: 700;">Pickup Location</th>
+                <th style="padding: 8px; font-weight: 700;">Note for Rooms</th>
                 <th style="padding: 8px; font-weight: 700; text-align: right;">${isAdmin ? 'Delete' : ''}</th>
               </tr>
             </thead>
@@ -4201,25 +4413,23 @@
         const pax = Number(cust.pax) || 1;
         const paid = Number(cust.paid) || 0;
         const remaining = Number(cust.remaining) || 0;
-        const totalAccounted = paid + remaining;
-        const expectedPrice = pax * standardPricePerPax;
-        const hasDiscrepancy = totalAccounted !== expectedPrice;
+        const locAndRooms = getCustomerLocationAndRooms(cust);
         const offlineInputAttr = isOffline ? 'disabled title="Offline mode: Editing existing bookings is disabled to prevent sync conflicts."' : '';
         const offlineDelAttr = isOffline ? 'disabled title="Offline mode: Deleting bookings is disabled while offline." style="opacity: 0.35; cursor: not-allowed; height: 44px; width: 44px; padding: 0; flex-shrink: 0;"' : 'style="height: 44px; width: 44px; padding: 0; flex-shrink: 0;"';
 
         if (isAdmin) {
-          // ADMIN MOBILE CARD WITH INLINE INPUTS (Disabled if offline)
+          // ADMIN MOBILE CARD WITH INLINE INPUTS
           mobileCardsHtml += `
             <div class="paper-card-white" style="padding: 14px; display: flex; flex-direction: column; gap: 10px;">
               <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;">
                 <div style="flex: 1;">
                   <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px;">
-                    <label style="font-size: 11px; font-weight: 700; color: var(--ink-secondary);">Passenger Name</label>
+                    <label style="font-size: 11px; font-weight: 700; color: var(--ink-secondary);">Customer Name</label>
                     ${cust.status ? getStatusBadgeHtml(cust) : ''}
                   </div>
                   <input type="text" value="${escapeHtml(cust.name)}" 
                          onchange="saveCustomerInline('${dep.id}', '${cust.id}', 'name', this.value)" 
-                         class="inline-edit-input" style="font-weight: 700; height: 44px;" placeholder="Name" ${offlineInputAttr} />
+                         class="inline-edit-input" style="font-weight: 700; height: 44px;" placeholder="Customer Name" ${offlineInputAttr} />
                 </div>
                 <button onclick="handleDeleteCustomerClick('${dep.id}', '${cust.id}')" 
                         class="btn-danger touch-target" ${offlineDelAttr} 
@@ -4233,13 +4443,13 @@
 
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                 <div>
-                  <label style="font-size: 11px; font-weight: 700; color: var(--ink-secondary); display: block; margin-bottom: 2px;">Phone</label>
+                  <label style="font-size: 11px; font-weight: 700; color: var(--ink-secondary); display: block; margin-bottom: 2px;">Contact Phone</label>
                   <input type="tel" value="${escapeHtml(cust.phone)}" 
                          onchange="saveCustomerInline('${dep.id}', '${cust.id}', 'phone', this.value)" 
                          class="inline-edit-input" style="height: 44px;" placeholder="Phone" ${offlineInputAttr} />
                 </div>
                 <div>
-                  <label style="font-size: 11px; font-weight: 700; color: var(--ink-secondary); display: block; margin-bottom: 2px;">Agency</label>
+                  <label style="font-size: 11px; font-weight: 700; color: var(--ink-secondary); display: block; margin-bottom: 2px;">Booking Agency</label>
                   <input type="text" value="${escapeHtml(cust.agency || '')}" 
                          onchange="saveCustomerInline('${dep.id}', '${cust.id}', 'agency', this.value)" 
                          class="inline-edit-input" style="height: 44px;" placeholder="Agency" ${offlineInputAttr} />
@@ -4248,40 +4458,47 @@
 
               <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
                 <div>
-                  <label style="font-size: 11px; font-weight: 700; color: var(--ink-secondary); display: block; margin-bottom: 2px;">Pax</label>
+                  <label style="font-size: 11px; font-weight: 700; color: var(--ink-secondary); display: block; margin-bottom: 2px;">Packs</label>
                   <input type="number" min="1" max="25" value="${pax}" 
                          onchange="handleInlinePaxChange('${dep.id}', '${cust.id}', this.value, ${pax})" 
                          class="inline-edit-input" style="text-align: center; font-weight: 700; height: 44px;" ${offlineInputAttr} />
                 </div>
                 <div>
-                  <label style="font-size: 11px; font-weight: 700; color: var(--ink-secondary); display: block; margin-bottom: 2px;">Paid (NPR)</label>
-                  <input type="number" min="0" step="500" value="${paid}" 
+                  <label style="font-size: 11px; font-weight: 700; color: var(--ink-secondary); display: block; margin-bottom: 2px;">Pay to Visit</label>
+                  <input type="number" min="0" step="100" value="${paid}" 
                          onchange="saveCustomerInline('${dep.id}', '${cust.id}', 'paid', this.value)" 
                          class="inline-edit-input" style="height: 44px;" ${offlineInputAttr} />
                 </div>
                 <div>
                   <label style="font-size: 11px; font-weight: 700; color: var(--rust-owed); display: block; margin-bottom: 2px;">Remaining</label>
-                  <input type="number" min="0" step="500" value="${remaining}" 
+                  <input type="number" min="0" step="100" value="${remaining}" 
                          onchange="saveCustomerInline('${dep.id}', '${cust.id}', 'remaining', this.value)" 
                          class="inline-edit-input money-owed" style="height: 44px;" ${offlineInputAttr} />
                 </div>
               </div>
 
-              <!-- Save Pill & Discrepancy warning -->
-              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11.5px;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div>
+                  <label style="font-size: 11px; font-weight: 700; color: var(--ink-secondary); display: block; margin-bottom: 2px;">Pickup Location</label>
+                  <input type="text" value="${escapeHtml(locAndRooms.pickup)}" 
+                         onchange="saveCustomerInline('${dep.id}', '${cust.id}', 'pickupLocation', this.value)" 
+                         class="inline-edit-input" style="height: 44px;" placeholder="Pickup" ${offlineInputAttr} />
+                </div>
+                <div>
+                  <label style="font-size: 11px; font-weight: 700; color: var(--ink-secondary); display: block; margin-bottom: 2px;">Note for Rooms</label>
+                  <input type="text" value="${escapeHtml(locAndRooms.rooms)}" 
+                         onchange="saveCustomerInline('${dep.id}', '${cust.id}', 'roomNote', this.value)" 
+                         class="inline-edit-input" style="height: 44px;" placeholder="Rooms" ${offlineInputAttr} />
+                </div>
+              </div>
+
+              <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
                 <span id="saved-badge-mobile-${cust.id}" class="saved-pill">✓ Saved</span>
-                ${hasDiscrepancy ? `
-                  <span class="badge badge-owed" style="font-size: 11px;">
-                    ⚠️ Total ≠ NPR ${expectedPrice.toLocaleString()}
-                  </span>
-                ` : `
-                  <span style="color: var(--ink-secondary);">Rate OK</span>
-                `}
               </div>
             </div>
           `;
         } else {
-          // STAFF MOBILE CARD (Plain text)
+          // STAFF MOBILE CARD
           mobileCardsHtml += `
             <div class="paper-card-white" style="padding: 14px; display: flex; flex-direction: column; gap: 8px;">
               <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;">
@@ -4297,11 +4514,11 @@
 
               <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding-top: 8px; border-top: 1px dashed var(--rule-paper); font-size: 12px;">
                 <div>
-                  <span style="color: var(--ink-secondary); display: block;">Pax</span>
+                  <span style="color: var(--ink-secondary); display: block;">Packs</span>
                   <strong style="font-size: 14px; color: var(--ink-primary);">${pax} Pax</strong>
                 </div>
                 <div>
-                  <span style="color: var(--ink-secondary); display: block;">Paid</span>
+                  <span style="color: var(--ink-secondary); display: block;">Pay to Visit</span>
                   <strong style="font-size: 13.5px; color: var(--ink-primary);">${formatNPR(paid)}</strong>
                 </div>
                 <div>
@@ -4310,14 +4527,17 @@
                 </div>
               </div>
 
-              ${cust.note ? `<div style="font-size: 11.5px; color: var(--ink-muted); margin-top: 2px;">${escapeHtml(cust.note)}</div>` : ''}
+              <div style="font-size: 12px; color: var(--ink-secondary); padding-top: 4px;">
+                <div>Pickup: <strong>${escapeHtml(locAndRooms.pickup || 'Direct')}</strong></div>
+                <div style="margin-top: 2px;">Rooms: <strong style="color: #7C2D12;">${escapeHtml(locAndRooms.rooms || 'Standard Room')}</strong></div>
+              </div>
             </div>
           `;
         }
       });
       mobileCardsHtml += '</div>';
 
-      return desktopTableHtml + mobileCardsHtml;
+      return roomsBoxHtml + desktopTableHtml + mobileCardsHtml;
     }
 
     /**
@@ -4351,15 +4571,30 @@
     // ========================================================================
     // USER ACTIONS & DATA MUTATIONS
     // ========================================================================
+    function renderAllDeparturesViews() {
+      renderDeparturesList();
+      if (typeof renderFullDeparturesList === 'function') {
+        renderFullDeparturesList();
+      }
+      updateTabBadges();
+    }
+
     function toggleDepartureExpanded(depId, event) {
-      // Don't toggle if user clicked on an input or button
-      if (event && event.target && (event.target.tagName === 'INPUT' || event.target.tagName === 'BUTTON' || event.target.closest('button'))) {
+      // Don't toggle if user clicked on an input, button, or link
+      if (event && event.target && (
+        event.target.tagName === 'INPUT' || 
+        event.target.tagName === 'BUTTON' || 
+        event.target.closest('button') ||
+        event.target.tagName === 'A' ||
+        event.target.closest('a') ||
+        event.target.closest('.card-direct-actions-bar')
+      )) {
         return;
       }
       if (!state.expandedDepartures) state.expandedDepartures = {};
       state.expandedDepartures[depId] = !state.expandedDepartures[depId];
       saveState();
-      renderDeparturesList();
+      renderAllDeparturesViews();
     }
 
     /**
@@ -4367,14 +4602,14 @@
      */
     function saveCustomerInline(depId, custId, field, value) {
       if (!enforceRolePermission('update_customer', 'customer')) {
-        renderDeparturesList(); // Revert UI
+        renderAllDeparturesViews(); // Revert UI
         return;
       }
 
       // Requirement 5: Admin cannot edit existing records while offline
       if (!navigator.onLine) {
         showToast('Offline mode: Modifying existing bookings is disabled to prevent sync conflicts.', 'error');
-        renderDeparturesList(); // Revert input
+        renderAllDeparturesViews(); // Revert input
         return;
       }
 
@@ -4385,11 +4620,23 @@
 
       const oldValue = cust[field];
       let newValue = value;
-      if (field === 'paid' || field === 'remaining' || field === 'pax') {
+      if (field === 'pickupLocation' || field === 'roomNote') {
+        cust[field] = String(value || '').trim();
+        newValue = cust[field];
+        // Keep composite note in sync for backward compatibility & database note field
+        const p = (cust.pickupLocation || '').trim();
+        const r = (cust.roomNote || '').trim();
+        let noteParts = [];
+        if (p) noteParts.push(`Pickup: ${p}`);
+        if (r) noteParts.push(`Rooms: ${r}`);
+        cust.note = noteParts.join(' • ');
+      } else if (field === 'paid' || field === 'remaining' || field === 'pax') {
         newValue = Math.max(0, Number(value) || 0);
+        cust[field] = newValue;
+      } else {
+        cust[field] = newValue;
       }
 
-      cust[field] = newValue;
       cust.updatedAt = new Date().toISOString();
 
       saveState();
@@ -4409,6 +4656,7 @@
           agency_name: cust.agency,
           paid: cust.paid,
           remaining: cust.remaining,
+          note: cust.note,
           updated_at: cust.updatedAt
         }).eq('id', custId).then(({ error }) => {
           if (error) console.warn('Supabase customer update error:', error);
@@ -4416,7 +4664,7 @@
       }
 
       // Re-render departures list after small delay to recalculate totals
-      setTimeout(() => renderDeparturesList(), 400);
+      setTimeout(() => renderAllDeparturesViews(), 400);
     }
 
     /**
@@ -4424,13 +4672,13 @@
      */
     function handleInlinePaxChange(depId, custId, newPaxVal, oldPaxVal) {
       if (!enforceRolePermission('update_customer', 'customer')) {
-        renderDeparturesList();
+        renderAllDeparturesViews();
         return;
       }
 
       if (!navigator.onLine) {
         showToast('Offline mode: Modifying existing bookings is disabled to prevent sync conflicts.', 'error');
-        renderDeparturesList();
+        renderAllDeparturesViews();
         return;
       }
 
@@ -4444,7 +4692,7 @@
       if (otherPax + newPax > capacity) {
         const allowed = capacity - otherPax;
         showToast(`Cannot change pax to ${newPax}. Vehicle capacity is ${capacity} (only ${allowed} seats available).`, 'error');
-        renderDeparturesList(); // revert
+        renderAllDeparturesViews(); // revert
         return;
       }
 
@@ -4581,7 +4829,7 @@
         });
       }
 
-      renderDeparturesList();
+      renderAllDeparturesViews();
     }
 
     // ========================================================================
@@ -4609,14 +4857,14 @@
       document.getElementById('acPaxCount').max = String(seatsLeft);
       document.getElementById('acAgencyName').value = state.userAgency || 'Batuwa Trip';
       document.getElementById('acPaidAmount').value = '0';
-      document.getElementById('acNotes').value = '';
-
-      // Set initial remaining price to 1 * pricePerPax
-      const stdPrice = Number(dep.pricePerPax || pkg.pricePerPax) || 15500;
-      document.getElementById('acRemainingAmount').value = String(stdPrice);
+      document.getElementById('acRemainingAmount').value = '0';
+      
+      const pickEl = document.getElementById('acPickupLocation');
+      if (pickEl) pickEl.value = '';
+      const roomEl = document.getElementById('acRoomNote');
+      if (roomEl) roomEl.value = '';
 
       validateCapacityOnInput();
-      handleModalPriceRecalc();
 
       document.getElementById('addCustomerModal').classList.remove('hidden');
     }
@@ -4654,6 +4902,8 @@
     }
 
     function handleModalPriceRecalc() {
+      const guidance = document.getElementById('acPriceGuidanceBox');
+      if (!guidance) return;
       const depId = document.getElementById('acDepartureId').value;
       const dep = (state.departures || []).find(d => d.id === depId);
       if (!dep) return;
@@ -4666,24 +4916,11 @@
 
       const expectedTotal = paxVal * stdPricePerPax;
       const enteredTotal = paidVal + remainingVal;
-      const guidance = document.getElementById('acPriceGuidanceBox');
 
       if (enteredTotal !== expectedTotal) {
         guidance.innerHTML = `
-          <span style="color: var(--rust-owed); font-weight: 700;">⚠️ Price Discrepancy Notice:</span><br/>
-          Standard package price is <strong>NPR ${expectedTotal.toLocaleString()}</strong> (${paxVal} pax &times; NPR ${stdPricePerPax.toLocaleString()}).<br/>
-          Your entered total is <strong>NPR ${enteredTotal.toLocaleString()}</strong> (Paid: NPR ${paidVal.toLocaleString()} + Remaining: NPR ${remainingVal.toLocaleString()}).<br/>
-          <span style="color: var(--ink-secondary);">Remaining price is directly editable. You may proceed if this is an agreed custom fare.</span>
+          <span style="color: var(--rust-owed); font-weight: 700;">Price Note:</span> Standard rate is NPR ${expectedTotal.toLocaleString()}. Remaining to collect: <strong>NPR ${remainingVal.toLocaleString()}</strong>.
         `;
-        guidance.style.backgroundColor = 'var(--rust-owed-subtle)';
-        guidance.style.borderColor = 'var(--rust-owed-border)';
-      } else {
-        guidance.innerHTML = `
-          <span style="color: #2E6930; font-weight: 700;">✓ Standard Rate Verified:</span> 
-          NPR ${expectedTotal.toLocaleString()} (${paxVal} Pax &times; NPR ${stdPricePerPax.toLocaleString()}). Remaining amount to collect: <strong>NPR ${remainingVal.toLocaleString()}</strong>.
-        `;
-        guidance.style.backgroundColor = '#EBF5EC';
-        guidance.style.borderColor = '#C8E6CA';
       }
     }
 
@@ -4710,7 +4947,13 @@
       const agency = document.getElementById('acAgencyName').value.trim() || state.userAgency || 'Direct Counter';
       const paid = Number(document.getElementById('acPaidAmount').value) || 0;
       const remaining = Number(document.getElementById('acRemainingAmount').value) || 0;
-      const note = document.getElementById('acNotes').value.trim();
+      const pickupLocation = (document.getElementById('acPickupLocation')?.value || '').trim();
+      const roomNote = (document.getElementById('acRoomNote')?.value || '').trim();
+
+      let noteParts = [];
+      if (pickupLocation) noteParts.push(`Pickup: ${pickupLocation}`);
+      if (roomNote) noteParts.push(`Rooms: ${roomNote}`);
+      const note = noteParts.join(' • ');
 
       // Capacity Safety Gate
       const seatsLeft = getRemainingSeats(dep);
@@ -4730,6 +4973,8 @@
         agency,
         paid,
         remaining,
+        pickupLocation,
+        roomNote,
         note,
         bookedBy: state.userAgency || (state.role === 'admin' ? 'Lalitpur Holidays' : 'Batuwa Trip'),
         updatedAt: new Date().toISOString(),
@@ -4775,14 +5020,14 @@
               console.warn('Supabase insert customer error, queueing locally:', error);
               newCust.status = 'pending';
               DeposterOfflineDB.savePendingBooking(newCust);
-              renderDeparturesList();
+              renderAllDeparturesViews();
             }
           });
         }
       }
 
       closeAddCustomerModal();
-      renderDeparturesList();
+      renderAllDeparturesViews();
 
       // Auto-suggest: when booked pax equals vehicle capacity, show a prompt "Vehicle is full - mark as Full?"
       if (state.role === 'admin' && (dep.status || 'open') === 'open') {
@@ -4888,7 +5133,7 @@
       showToast('New departure created successfully');
 
       closeNewDepartureModal();
-      renderDeparturesList();
+      renderAllDeparturesViews();
 
       // Sync to Supabase
       if (supabaseClient) {
@@ -4967,7 +5212,7 @@
       showToast('Departure updated successfully');
 
       closeEditDepartureModal();
-      renderDeparturesList();
+      renderAllDeparturesViews();
 
       if (supabaseClient) {
         supabaseClient.from('departures').update({
@@ -5004,7 +5249,7 @@
       showToast('Departure deleted');
 
       closeEditDepartureModal();
-      renderDeparturesList();
+      renderAllDeparturesViews();
 
       if (supabaseClient) {
         supabaseClient.from('departures').delete().eq('id', depId).then(({ error }) => {
@@ -5081,7 +5326,8 @@
       }
     }
 
-    function openAssignDriverModal(depId) {
+    function openAssignDriverModal(depId, event) {
+      if (event) event.stopPropagation();
       if (!enforceRolePermission('assign_driver', 'driver')) return;
       if (!navigator.onLine) {
         showToast('Offline mode: Assigning drivers is disabled while offline.', 'error');
@@ -5105,6 +5351,7 @@
 
       document.getElementById('assignDriverModal').classList.remove('hidden');
     }
+    window.openAssignDriverModal = openAssignDriverModal;
 
     function closeAssignDriverModal() {
       document.getElementById('assignDriverModal').classList.add('hidden');
@@ -5157,7 +5404,7 @@
       showToast(`Driver ${dep.driverName} assigned successfully`);
 
       closeAssignDriverModal();
-      renderDeparturesList();
+      renderAllDeparturesViews();
 
       if (supabaseClient) {
         supabaseClient.from('departures').update({
@@ -5192,7 +5439,7 @@
       showToast('Driver assignment removed');
 
       closeAssignDriverModal();
-      renderDeparturesList();
+      renderAllDeparturesViews();
 
       if (supabaseClient) {
         supabaseClient.from('departures').update({
@@ -5360,66 +5607,189 @@
       return clean;
     }
 
+    function isFinancialSegment(s) {
+      if (!s) return false;
+      const lower = s.toLowerCase();
+      return lower.includes('npr') || lower.includes('paid') || lower.includes('advance') || 
+             lower.includes('rec') || lower.includes('owed') || /\d+\s*k\b/.test(lower) ||
+             /\/\s*\d+/.test(lower);
+    }
+
+    function extractCustomerDispatchDetails(cust) {
+      let location = cust.pickupLocation ? cust.pickupLocation.trim() : '';
+      let roomNote = cust.roomNote ? cust.roomNote.trim() : '';
+      const rawNote = (cust.note || '').trim();
+
+      // If explicit pickupLocation and roomNote are both present
+      if (location && roomNote) {
+        return { location, noteAndRooms: roomNote };
+      }
+
+      // If explicit pickupLocation exists but no roomNote
+      if (location) {
+        if (!rawNote) {
+          return { location, noteAndRooms: 'None' };
+        }
+        const cleanParts = rawNote.split(/[•|]/)
+          .map(p => p.trim())
+          .filter(p => p && !isFinancialSegment(p) && !/^(pickup|location):/i.test(p));
+        return {
+          location,
+          noteAndRooms: cleanParts.length > 0 ? cleanParts.join(' • ') : 'None'
+        };
+      }
+
+      // If explicit roomNote exists but no pickupLocation
+      if (roomNote) {
+        let extractedLoc = '';
+        if (rawNote) {
+          const parts = rawNote.split(/[•|]/).map(p => p.trim()).filter(Boolean);
+          for (let p of parts) {
+            if (/^(pickup|location|point):/i.test(p)) {
+              extractedLoc = p.replace(/^(pickup|location|point):\s*/i, '').trim();
+              break;
+            } else if (!isFinancialSegment(p) && !p.toLowerCase().includes(roomNote.toLowerCase())) {
+              extractedLoc = p;
+              break;
+            }
+          }
+        }
+        return {
+          location: extractedLoc || 'Kathmandu Pickup Point',
+          noteAndRooms: roomNote
+        };
+      }
+
+      // If no explicit pickupLocation or roomNote, extract from rawNote
+      if (!rawNote) {
+        return {
+          location: 'Kathmandu Pickup Point',
+          noteAndRooms: 'None'
+        };
+      }
+
+      // Split by bullet •, |, or comma if comma separates a room
+      let parts = rawNote.split(/[•|]/).map(p => p.trim()).filter(Boolean);
+      if (parts.length === 1 && rawNote.includes(',')) {
+        const commaParts = rawNote.split(',').map(p => p.trim()).filter(Boolean);
+        if (commaParts.some(p => /room|rm/i.test(p))) {
+          parts = commaParts;
+        }
+      }
+
+      let extractedLoc = '';
+      let noteRoomParts = [];
+
+      parts.forEach(part => {
+        // If it's a financial note, skip it
+        if (isFinancialSegment(part)) {
+          return;
+        }
+
+        // Check if part explicitly says "Pickup: ..." or "Location: ..."
+        if (/^(pickup|location|point):/i.test(part)) {
+          extractedLoc = part.replace(/^(pickup|location|point):\s*/i, '').trim();
+          return;
+        }
+
+        // Check if it's a room mention
+        if (/room|rm\b/i.test(part)) {
+          noteRoomParts.push(part);
+          return;
+        }
+
+        // If we haven't found a location yet and this part doesn't look like a room or pkg price
+        if (!extractedLoc && !/pkg\b/i.test(part)) {
+          extractedLoc = part;
+        } else {
+          noteRoomParts.push(part);
+        }
+      });
+
+      return {
+        location: extractedLoc || 'Kathmandu Pickup Point',
+        noteAndRooms: noteRoomParts.length > 0 ? noteRoomParts.join(' • ') : 'None'
+      };
+    }
+
     function buildDispatchMessage(dep) {
       const pkg = getPackage(dep.packageId);
       const customers = dep.customers || [];
       const totalPax = customers.reduce((sum, c) => sum + (Number(c.pax) || 0), 0);
+      const totalRemaining = customers.reduce((sum, c) => sum + (Number(c.remaining) || 0), 0);
 
-      // Extract clean pickup points from customer notes/locations
-      const pickups = [];
-      customers.forEach(c => {
-        if (c.pickupLocation && c.pickupLocation.trim()) {
-          const loc = c.pickupLocation.trim();
-          if (!pickups.includes(loc)) pickups.push(loc);
-        } else if (c.note) {
-          const parts = c.note.split('•');
-          let pickupPart = parts[0].trim();
-          if (pickupPart && !pickupPart.toLowerCase().includes('rec') && !pickupPart.toLowerCase().includes('pkg') && !pickupPart.toLowerCase().includes('rm')) {
-            if (!pickups.includes(pickupPart)) {
-              pickups.push(pickupPart);
-            }
-          }
-        }
-      });
-
-      const pickupStr = pickups.length > 0 ? pickups.join(', ') : 'Kathmandu Pickup Point';
-      const vehicleLabel = dep.vehicleLabel ? ` (${dep.vehicleLabel})` : '';
-      const vehicleStr = dep.vehicleType === 'ev_van' 
-        ? `EV Van (12 seats)${dep.vehiclePlate ? ' [' + dep.vehiclePlate + ']' : ''}` 
-        : (dep.vehicleType === 'land_cruiser'
-            ? `Land Cruiser (9 seats)${dep.vehiclePlate ? ' [' + dep.vehiclePlate + ']' : ''}`
-            : `Scorpio 4x4 (8 seats)${dep.vehiclePlate ? ' [' + dep.vehiclePlate + ']' : ''}`);
+      const travelDateStr = dep.nepaliDate 
+        ? `${formatDateDisplay(dep.date)} (${dep.nepaliDate})` 
+        : formatDateDisplay(dep.date);
 
       const lines = [];
-      lines.push(`Dispatch: ${pkg.name}${vehicleLabel}`);
-      lines.push(`Date: ${formatDateDisplay(dep.date)}${dep.nepaliDate ? ', ' + dep.nepaliDate : ''}`);
-      lines.push(`Vehicle: ${vehicleStr}`);
-      lines.push(`Total passengers: ${totalPax}`);
-      lines.push(`Pickup: ${pickupStr}`);
-      lines.push(`Passengers:`);
 
-      customers.forEach((c, idx) => {
-        const phoneStr = c.phone ? c.phone.trim() : 'Phone not provided';
-        let detail = `${idx + 1}. ${c.name} x ${c.pax} - ${phoneStr}`;
-        if (c.note && c.note.trim()) {
-          // Filter out financial notes if any
-          const cleanNote = c.note.split('•').map(p => p.trim()).filter(p => !p.toLowerCase().includes('npr') && !p.toLowerCase().includes('paid') && !p.toLowerCase().includes('advance') && !p.toLowerCase().includes('rm')).join(' • ');
-          if (cleanNote) {
-            detail += ` (${cleanNote})`;
-          }
+      // Group customers by package (default to departure's package)
+      const packageGroups = {};
+      customers.forEach(c => {
+        let pName = pkg.name;
+        if (c.packageName) {
+          pName = c.packageName;
+        } else if (c.packageId) {
+          pName = getPackage(c.packageId).name;
         }
-        lines.push(detail);
+        if (!packageGroups[pName]) {
+          packageGroups[pName] = [];
+        }
+        packageGroups[pName].push(c);
       });
 
-      // STRICT REQUIREMENT: "Each vehicle's message must list only its own passengers and contain no prices or advances."
-      // Therefore, no prices or advances are included here!
+      const packageNames = Object.keys(packageGroups);
+
+      if (packageNames.length === 0) {
+        lines.push(`*Package Name:* ${pkg.name}`);
+        lines.push(`*Travel Date:* ${travelDateStr}`);
+        lines.push(`*Total Number of People:* 0`);
+        lines.push(`*Total Remaining to Collect on Scorpio:* NPR 0`);
+        lines.push('');
+        lines.push('No passengers booked yet.');
+        return lines.join('\n');
+      }
+
+      packageNames.forEach((pkgName, pIdx) => {
+        const groupCustomers = packageGroups[pkgName];
+        const groupPax = groupCustomers.reduce((sum, c) => sum + (Number(c.pax) || 0), 0);
+        const groupRemaining = groupCustomers.reduce((sum, c) => sum + (Number(c.remaining) || 0), 0);
+
+        if (pIdx > 0) {
+          lines.push('----------------------------------------');
+        }
+
+        lines.push(`*Package Name:* ${pkgName}`);
+        lines.push(`*Travel Date:* ${travelDateStr}`);
+        lines.push(`*Total Number of People:* ${groupPax}`);
+        lines.push(`*Total Remaining to Collect on Scorpio:* NPR ${groupRemaining.toLocaleString('en-IN')}`);
+        lines.push('');
+
+        groupCustomers.forEach((c, idx) => {
+          const phoneStr = c.phone ? c.phone.trim() : 'Phone not provided';
+          const nameStr = c.name ? c.name.trim() : 'Guest';
+          const paxCount = Number(c.pax) || 1;
+          const custRemaining = Number(c.remaining) || 0;
+          const details = extractCustomerDispatchDetails(c);
+
+          lines.push(`*Guest ${idx + 1}:*`);
+          lines.push(`- Passenger Name: ${nameStr}`);
+          lines.push(`- Passenger Number: ${phoneStr}`);
+          lines.push(`- Passenger Location: ${details.location}`);
+          lines.push(`- Total Number of People: ${paxCount}`);
+          lines.push(`- Total Remaining to Collect on Scorpio: NPR ${custRemaining.toLocaleString('en-IN')}${custRemaining === 0 ? ' (Paid in full)' : ''}`);
+          lines.push(`- Note and Rooms: ${details.noteAndRooms}`);
+          lines.push('');
+        });
+      });
 
       const depNotes = (dep.notes || '').trim();
       if (depNotes) {
-        lines.push(`Notes: ${depNotes}`);
+        lines.push(`*Trip Note:* ${depNotes}`);
       }
 
-      return lines.join('\n');
+      return lines.join('\n').trim();
     }
 
     let activeManifestDep = null;
