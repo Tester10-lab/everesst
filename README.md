@@ -68,36 +68,16 @@ The database tables are governed by strict RLS policies:
 
 ---
 
-## 🔑 Demo Test Accounts
+## 🔑 Production Authentication & Accounts
 
-| Account | Email / Username | Password | Database Role | Associated Agency |
-| :--- | :--- | :--- | :--- | :--- |
-| **Admin Dispatcher** | `admin@lalitpurholidays.com` (or `admin`) | `lalitpurholidays` | `admin` | Lalitpur Holidays |
-| **Staff Booking** | `staff@batuwatrip.com` (or `staff`) | `batuwatrip` | `staff` | Batuwa Trip |
+User accounts and role authorizations are secured by Supabase Auth and PostgreSQL `public.profiles`:
 
----
+| Account | Email / Username | Database Role | Associated Agency |
+| :--- | :--- | :--- | :--- |
+| **Admin Dispatcher** | `admin@lalitpurholidays.com` (or `admin`) | `admin` | Lalitpur Holidays |
+| **Staff Booking** | `staff@batuwatrip.com` (or `staff`) | `staff` | Batuwa Trip |
 
-## 🧪 Automated Test Verification
+> [!NOTE]
+> All passwords are encrypted in PostgreSQL via `pgcrypto` (`bf` / bcrypt). Default passwords have been replaced with strong credentials prior to production deployment.
 
-Two automated test suites provide 100% verification coverage:
-1. **Direct Database RLS Test (`test_rls_policies.js`)**:
-   - Calls Supabase REST APIs directly as anon, staff, and admin.
-   - Confirms signed-out reads are blocked (0 rows).
-   - Confirms staff customer `INSERT` succeeds.
-   - Confirms staff direct API calls to `UPDATE` or `DELETE` customers and departures are rejected by RLS.
-   - Confirms admin can update remaining balances and clean up records.
-   ```bash
-   node test_rls_policies.js
-   ```
-
-2. **Full End-to-End Browser Test (`test_e2e_auth.js`)**:
-   - Tests unauthenticated redirection to the login view.
-   - Tests Admin login and visible controls.
-   - Tests Staff Management modal (`#staffModal`).
-   - Tests Sign Out and session termination.
-   - Tests Staff login with Admin intent selection (verifying database role override).
-   - Tests Staff Add Passenger modal.
-   ```bash
-   node test_e2e_auth.js
-   ```
 
