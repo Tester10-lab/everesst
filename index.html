@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Everest Annapurna Deposter — Himalayan Tour Capacity &amp; Dispatch</title>
+  <title>Bookings</title>
   
   <!-- PWA Manifest & Mobile Icons -->
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#B4570F" />
+  <meta name="theme-color" content="#F4EFE6" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="Deposter" />
+  <meta name="apple-mobile-web-app-title" content="Bookings" />
   <link rel="apple-touch-icon" href="icon-192.png" />
   
   <!-- Supabase JS Client & Config -->
@@ -73,7 +73,7 @@
       background-color: var(--bg-paper);
       color: var(--ink-primary);
       font-family: var(--font-body);
-      font-size: 15px;
+      font-size: 16px;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
@@ -409,6 +409,575 @@
         display: none !important;
       }
     }
+
+    /* Date Filter Chips & Range Picker */
+    .date-chips-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px 2px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+    }
+    .date-chip {
+      height: 44px;
+      padding: 0 14px;
+      border-radius: 22px;
+      border: 1px solid var(--rule-paper-strong);
+      background-color: var(--surface-card);
+      color: var(--ink-primary);
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .date-chip:hover {
+      background-color: var(--surface-hover);
+      border-color: var(--accent-orange);
+    }
+    .date-chip.active {
+      background-color: var(--accent-orange);
+      color: #FFFFFF;
+      border-color: var(--accent-orange-hover);
+      box-shadow: 0 2px 8px rgba(180, 87, 15, 0.25);
+    }
+    .date-range-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--surface-subtle);
+      border: 1px solid var(--rule-paper);
+      padding: 10px 14px;
+      border-radius: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Card Direct Actions Bar (Admin Only) */
+    .card-direct-actions-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--rule-paper);
+    }
+    .btn-whatsapp {
+      background-color: #128C7E;
+      color: #FFFFFF;
+      border: 1px solid #075E54;
+      font-weight: 700;
+      min-height: 44px;
+      padding: 0 14px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background-color 0.12s ease;
+      cursor: pointer;
+    }
+    .btn-whatsapp:hover {
+      background-color: #075E54;
+    }
+
+    /* Dropdown menu for Admin Manage */
+    .dropdown-wrap {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-menu {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 6px);
+      background-color: var(--surface-card);
+      border: 1px solid var(--rule-paper-strong);
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(27, 26, 23, 0.14);
+      min-width: 200px;
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      padding: 6px 0;
+    }
+    .dropdown-menu.hidden {
+      display: none !important;
+    }
+    .dropdown-item {
+      padding: 10px 16px;
+      text-align: left;
+      font-size: 13.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      border: none;
+      background: none;
+      color: var(--ink-primary);
+      cursor: pointer;
+      transition: background-color 0.1s ease;
+      min-height: 44px;
+    }
+    .dropdown-item:hover {
+      background-color: var(--surface-hover);
+      color: var(--accent-orange);
+    }
+
+    /* ========================================================================
+       QUIET & PROFESSIONAL REDESIGN STYLES
+       ======================================================================== */
+    .app-header {
+      background-color: var(--bg-paper);
+      border-bottom: 1px solid var(--rule-paper);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 6px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 52px;
+    }
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background-color: var(--accent-orange);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--ink-primary);
+      margin: 0;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #10B981;
+      display: inline-block;
+      flex-shrink: 0;
+      margin-left: 2px;
+      transition: background-color 0.2s ease;
+    }
+    .menu-wrap {
+      position: relative;
+    }
+    .btn-round-menu {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background-color: #FFFFFF;
+      border: 1px solid var(--rule-paper-strong);
+      color: var(--ink-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.12s ease, border-color 0.12s ease;
+    }
+    .btn-round-menu:hover {
+      background-color: var(--surface-hover);
+      border-color: var(--accent-orange);
+    }
+    .user-dropdown-menu {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 6px);
+      background-color: #FFFFFF;
+      border: 1px solid var(--rule-paper-strong);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(27, 26, 23, 0.12);
+      min-width: 220px;
+      z-index: 100;
+      padding: 6px 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .user-dropdown-menu.hidden {
+      display: none !important;
+    }
+    .user-menu-profile {
+      padding: 10px 16px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .user-menu-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ink-primary);
+    }
+    .user-menu-role-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--accent-orange);
+    }
+    .dropdown-divider {
+      height: 1px;
+      background-color: var(--rule-paper);
+      margin: 4px 0;
+    }
+
+    /* Segmented Control */
+    .segmented-control-wrap {
+      width: 100%;
+    }
+    .segmented-control {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background-color: var(--surface-subtle);
+      border: 1px solid var(--rule-paper);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 4px;
+    }
+    .seg-btn {
+      height: 40px;
+      min-height: 40px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--ink-secondary);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.12s ease;
+    }
+    .seg-btn.active {
+      background-color: #FFFFFF;
+      color: var(--ink-primary);
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(27, 26, 23, 0.08);
+      border: 1px solid var(--rule-paper);
+    }
+
+    /* Search & Filters Row */
+    .search-filters-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+    .search-input-wrap {
+      position: relative;
+      flex: 1;
+    }
+    .search-input-wrap .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 13px;
+      pointer-events: none;
+    }
+    .search-input-wrap input {
+      padding-left: 40px;
+      height: 44px;
+      font-size: 15px;
+      border-radius: 8px;
+      background: #FFFFFF;
+    }
+    .btn-filter {
+      height: 44px;
+      padding: 0 14px;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 8px;
+      border: 1px solid var(--rule-paper-strong);
+      background-color: #FFFFFF;
+      color: var(--ink-primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+      transition: background-color 0.12s ease;
+    }
+    .btn-filter:hover {
+      background-color: var(--surface-hover);
+    }
+    .filter-active-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--accent-orange);
+      position: absolute;
+      top: 7px;
+      right: 7px;
+      border: 1.5px solid #FFFFFF;
+    }
+
+    /* Desktop Inline Filters Bar */
+    @media (max-width: 767px) {
+      .mobile-filters-btn {
+        display: inline-flex !important;
+      }
+      .desktop-filters-inline {
+        display: none !important;
+      }
+    }
+    @media (min-width: 768px) {
+      .mobile-filters-btn {
+        display: none !important;
+      }
+      .desktop-filters-inline {
+        display: flex !important;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+      }
+    }
+
+    /* Date Chips Scroll Row */
+    .date-chips-scroll-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 2px 0;
+    }
+    .date-chips-scroll-wrap::-webkit-scrollbar {
+      display: none;
+    }
+    .date-chips-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    .date-chip {
+      height: 38px;
+      min-height: 38px;
+      padding: 0 14px;
+      border-radius: 19px;
+      border: 1px solid var(--rule-paper);
+      background-color: #FFFFFF;
+      color: var(--ink-primary);
+      font-size: 13.5px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.12s ease;
+      user-select: none;
+    }
+    .date-chip:hover {
+      border-color: var(--accent-orange);
+      background-color: var(--surface-hover);
+    }
+    .date-chip.active {
+      background-color: var(--accent-orange);
+      color: #FFFFFF;
+      border-color: var(--accent-orange-hover);
+    }
+
+    /* Bottom Sheet Modal */
+    .bottom-sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(27, 26, 23, 0.45);
+      backdrop-filter: blur(2px);
+      z-index: 150;
+      transition: opacity 0.2s ease;
+    }
+    .bottom-sheet-backdrop.hidden {
+      display: none !important;
+    }
+    .bottom-sheet {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #FFFFFF;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      border-top: 1px solid var(--rule-paper-strong);
+      padding: 20px 20px 24px;
+      z-index: 160;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 -8px 24px rgba(27, 26, 23, 0.12);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transform: translateY(0);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .bottom-sheet.hidden {
+      display: none !important;
+    }
+    @media (min-width: 768px) {
+      .bottom-sheet {
+        left: 50%;
+        top: 50%;
+        bottom: auto;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        max-width: 480px;
+        border-radius: 16px;
+        border: 1px solid var(--rule-paper-strong);
+        box-shadow: 0 16px 40px rgba(27, 26, 23, 0.2);
+      }
+    }
+    .bottom-sheet-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--rule-paper);
+      padding-bottom: 12px;
+    }
+    .bottom-sheet-body {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .filter-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .filter-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .filter-date-inputs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .bottom-sheet-footer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--rule-paper);
+    }
+
+    /* Clean Tour Card */
+    .tour-card {
+      background-color: #FFFFFF;
+      border: 1px solid var(--rule-paper);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color 0.15s ease;
+    }
+    .tour-card:hover {
+      border-color: var(--rule-paper-strong);
+    }
+    .tour-card-header {
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tour-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .tour-card-title {
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink-primary);
+      line-height: 1.3;
+      margin: 0;
+    }
+    .tour-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      font-size: 14px;
+      color: var(--ink-secondary);
+      font-weight: 500;
+    }
+    .tour-card-seats-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 2px;
+    }
+    .status-pill {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .status-pill.seats {
+      background-color: var(--accent-orange-subtle);
+      color: var(--accent-orange);
+      border: 1px solid var(--accent-orange-border);
+    }
+    .status-pill.full {
+      background-color: #57534E;
+      color: #FFFFFF;
+      border: 1px solid #44403C;
+    }
+    .btn-add-passenger {
+      width: 100%;
+      height: 44px;
+      background-color: var(--accent-orange);
+      color: #FFFFFF;
+      border: 1px solid var(--accent-orange-hover);
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: background-color 0.12s ease;
+    }
+    .btn-add-passenger:hover {
+      background-color: var(--accent-orange-hover);
+    }
   </style>
 </head>
 <body>
@@ -440,10 +1009,10 @@
           </svg>
         </div>
         <h1 style="font-size: 24px; font-weight: 800; color: var(--ink-primary); margin: 0; line-height: 1.2;">
-          Everest Annapurna Deposter
+          Bookings
         </h1>
         <p style="font-size: 13.5px; color: var(--ink-secondary); margin-top: 6px; line-height: 1.4;">
-          Himalayan Fleet Capacity &amp; Live Seat Dispatch
+          Himalayan Tour Seat Availability &amp; Fleet Dispatch
         </p>
       </div>
 
@@ -480,7 +1049,7 @@
           <label for="loginEmail" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
             Username or Email Address <span style="color: var(--rust-owed);">*</span>
           </label>
-          <input id="loginEmail" type="text" required placeholder="admin or admin@lalitpurholidays.com" class="form-input" style="height: 48px; font-size: 14.5px;" autocomplete="username" />
+          <input id="loginEmail" type="text" required placeholder="Enter username or email address" class="form-input" style="height: 48px; font-size: 14.5px;" autocomplete="username" />
         </div>
 
         <div>
@@ -522,246 +1091,216 @@
   <!-- ========================================================================
        TOP HEADER & ROLE STATUS BAR
        ======================================================================== -->
-  <header style="background-color: var(--surface-canvas); border-bottom: 1px solid var(--rule-paper); position: sticky; top: 0; z-index: 40;">
-    <div style="max-w: 1200px; max-width: 1200px; margin: 0 auto; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-      
-      <!-- Brand & Title -->
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div style="width: 38px; height: 38px; border-radius: 8px; background-color: var(--accent-orange); color: #FFFFFF; display: flex; align-items: center; justify-content: center; flex-shrink: 0;" aria-hidden="true">
-          <!-- Mountain Ascent Outline SVG -->
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- ========================================================================
+       SLIM HEADER: 1 ROW, LOGO + TITLE + LIVE DOT ON LEFT, MENU BUTTON ON RIGHT
+       ======================================================================== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <!-- Left: Logo + Title + Live/Offline status dot -->
+      <div class="brand-left">
+        <div class="brand-logo" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M2 20h20L15 5l-4 7-3-4-6 12z"></path>
           </svg>
         </div>
-        <div>
-          <h1 style="font-size: 17px; font-weight: 800; line-height: 1.15; color: var(--ink-primary); margin: 0;">
-            Everest Annapurna Deposter
-          </h1>
-          <p style="font-size: 12px; color: var(--ink-secondary); margin: 0;">
-            Himalayan Tour Seat Availability &amp; Dispatching
-          </p>
-        </div>
+        <h1 class="brand-title">Bookings</h1>
+        <span id="cloudStatusDot" class="status-dot" title="Live database connected"></span>
       </div>
 
-      <!-- Center / Right: Live Role Badge, Cloud Status & Auth Controls -->
-      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-        
-        <!-- Auto Cloud Sync Status Badge -->
-        <div id="cloudStatusBadge" class="touch-target" style="height: 38px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--rule-paper-strong); background-color: var(--surface-card); font-size: 12px; font-weight: 600; color: var(--ink-secondary); display: flex; align-items: center; gap: 6px;">
-          <span id="cloudStatusDot" style="width: 7px; height: 7px; border-radius: 50%; background-color: #10B981;"></span>
-          <span id="cloudStatusText">Live</span>
+      <!-- Right: Single Round Menu Button -->
+      <div class="menu-wrap">
+        <button id="userMenuBtn" type="button" onclick="toggleUserMenu(event)" class="btn-round-menu touch-target" aria-label="User Account and Admin Menu" aria-expanded="false" aria-haspopup="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div id="userMenuDropdown" class="user-dropdown-menu hidden" role="menu">
+          <div class="user-menu-profile">
+            <div id="menuUserName" class="user-menu-name">Staff</div>
+            <span id="menuUserRoleBadge" class="user-menu-role-badge">STAFF</span>
+          </div>
+          <div class="dropdown-divider"></div>
+
+          <!-- Admin Only Menu Section -->
+          <div id="menuAdminSection" style="display: none;">
+            <button type="button" onclick="closeUserMenu(); openNewDepartureModal();" class="dropdown-item" role="menuitem">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-orange)" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>New Departure</span>
+            </button>
+            <button type="button" onclick="closeUserMenu(); openManagePackagesModal();" class="dropdown-item" role="menuitem">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+              <span>Packages</span>
+            </button>
+            <button type="button" onclick="closeUserMenu(); openDriversRegistryModal();" class="dropdown-item" role="menuitem">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+              <span>Drivers</span>
+            </button>
+            <button type="button" onclick="closeUserMenu(); openStaffModal();" class="dropdown-item" role="menuitem">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              <span>Staff Accounts</span>
+            </button>
+            <div class="dropdown-divider"></div>
+          </div>
+
+          <!-- Sign Out Button -->
+          <button id="headerSignOutBtn" type="button" onclick="closeUserMenu(); handleSignOut();" class="dropdown-item" role="menuitem" style="color: var(--rust-owed);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            <span>Sign Out</span>
+          </button>
         </div>
-
-        <!-- Verified User Role Badge (from Database profiles) -->
-        <div id="roleBadgeContainer">
-          <!-- Populated by renderRoleUI() -->
-        </div>
-
-        <!-- Admin Quick Actions (Hidden in Staff mode) -->
-        <button id="headerNewDepBtn" onclick="openNewDepartureModal()" class="btn-primary touch-target" style="height: 38px; padding: 0 12px; font-size: 13px;" aria-label="Create New Departure">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          <span>New Departure</span>
-        </button>
-
-        <button id="headerManagePackagesBtn" onclick="openManagePackagesModal()" class="btn-secondary touch-target" style="height: 38px; padding: 0 10px; font-size: 13px;" aria-label="Manage Tour Packages">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-          </svg>
-          <span class="btn-text-responsive">Packages</span>
-        </button>
-
-        <button id="headerStaffManagementBtn" onclick="openStaffModal()" class="btn-secondary touch-target" style="height: 38px; padding: 0 10px; font-size: 13px;" aria-label="Manage Staff Accounts">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-            <circle cx="9" cy="7" r="4"></circle>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-          </svg>
-          <span class="btn-text-responsive">Staff</span>
-        </button>
-
-        <!-- Sign Out Button -->
-        <button id="headerSignOutBtn" onclick="handleSignOut()" class="btn-secondary touch-target" style="height: 38px; padding: 0 12px; font-size: 12.5px; font-weight: 700; color: var(--ink-secondary);" aria-label="Sign Out">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-            <polyline points="16 17 21 12 16 7"></polyline>
-            <line x1="21" y1="12" x2="9" y2="12"></line>
-          </svg>
-          <span class="btn-text-responsive">Sign Out</span>
-        </button>
-
       </div>
-    </div>
-
-    <!-- Active Mode Explanation Banner -->
-    <div id="roleExplanationBanner" style="border-top: 1px solid var(--rule-paper); padding: 6px 16px; font-size: 12px; background-color: var(--surface-subtle); color: var(--ink-secondary);">
-      <!-- Populated dynamically based on role -->
     </div>
   </header>
 
   <!-- ========================================================================
        MAIN CONTENT CONTAINER
        ======================================================================== -->
-  <main style="max-width: 1200px; margin: 0 auto; padding: 20px 16px 40px; display: flex; flex-direction: column; gap: 20px;">
+  <!-- ========================================================================
+       MAIN APP CONTAINER (CENTERED MAX-WIDTH 960PX)
+       ======================================================================== -->
+  <main style="max-width: 960px; margin: 0 auto; padding: 12px 16px 40px; display: flex; flex-direction: column; gap: 10px;">
     
-    <!-- ========================================================================
-         MAIN NAVIGATION TABS: OPEN FLEET VS FULL & CLOSED TOURS (PART 4)
-         ======================================================================== -->
-    <nav class="tab-nav-bar" style="display: flex; gap: 10px; border-bottom: 2px solid var(--rule-paper); padding-bottom: 0;" aria-label="Tour Manifest View Selector">
-      <button id="navTabOpenBtn" onclick="switchMainTab('open')" class="touch-target" style="height: 44px; padding: 0 18px; border-radius: 8px 8px 0 0; font-size: 14px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; transition: all 0.15s ease; border-bottom: 3px solid var(--accent-orange); color: var(--accent-orange); background-color: var(--surface-card); border-top: 1px solid var(--rule-paper); border-left: 1px solid var(--rule-paper); border-right: 1px solid var(--rule-paper);" aria-label="View Open Departures">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-        <span>Open Departures</span>
-        <span id="navTabOpenBadge" class="badge badge-orange" style="font-size: 11px; padding: 2px 7px;">0</span>
-      </button>
-
-      <button id="navTabFullBtn" onclick="switchMainTab('full_closed')" class="touch-target" style="height: 44px; padding: 0 18px; border-radius: 8px 8px 0 0; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; transition: all 0.15s ease; border-bottom: 3px solid transparent; color: var(--ink-secondary); background-color: transparent; border-top: 1px solid transparent; border-left: 1px solid transparent; border-right: 1px solid transparent;" aria-label="View Full & Closed Tours">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-        <span>Full &amp; Closed Tours</span>
-        <span id="navTabFullBadge" class="badge badge-paper" style="font-size: 11px; padding: 2px 7px;">0</span>
-      </button>
-    </nav>
-
-    <!-- SECTION 1: OPEN DEPARTURES VIEW -->
-    <section id="openDeparturesSection" style="display: flex; flex-direction: column; gap: 20px;">
-      
-      <!-- Top Filter & Search Controls -->
-      <div class="paper-card" style="padding: 16px;">
-        <div class="filter-controls-grid">
-          
-          <!-- Search bar -->
-          <div class="filter-search-wrap" style="position: relative;">
-            <label for="searchInput" class="sr-only" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">Search passenger, agency or phone</label>
-            <input id="searchInput" type="text" placeholder="Search passenger, phone or agency..." oninput="handleSearch(this.value)" class="form-input" style="padding-left: 36px;" />
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; left: 12px; top: 14px;" aria-hidden="true">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </div>
-
-          <!-- Filter by Route / Package & Vehicle -->
-          <div class="filter-selects-wrap">
-            <div style="flex: 1;">
-              <label for="filterPackageSelect" class="sr-only">Filter by Route</label>
-              <select id="filterPackageSelect" onchange="handlePackageFilter(this.value)" class="form-input" style="font-weight: 600;">
-                <option value="all">All Himalayan Routes</option>
-              </select>
-            </div>
-
-            <div style="flex: 1;">
-              <label for="filterVehicleSelect" class="sr-only">Filter by Vehicle</label>
-              <select id="filterVehicleSelect" onchange="handleVehicleFilter(this.value)" class="form-input" style="font-weight: 600;">
-                <option value="all">All Vehicles</option>
-                <option value="scorpio">Scorpio 4x4 (8)</option>
-                <option value="ev_van">EV Van (12)</option>
-                <option value="land_cruiser">Land Cruiser (9)</option>
-              </select>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Link to Full and closed tours (N) -->
-      <div id="openToursLinkBanner" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background-color: var(--surface-card); border: 1px solid var(--rule-paper); border-radius: 8px; font-size: 13px;">
-        <span style="color: var(--ink-secondary);">Looking for completed, fully-booked, or dispatched vehicles?</span>
-        <button id="openViewClosedLinkBtn" type="button" onclick="switchMainTab('full_closed')" class="touch-target" style="color: var(--accent-orange); font-weight: 700; height: 36px; padding: 0 10px; display: inline-flex; align-items: center; gap: 4px;">
-          <span>Full &amp; closed tours (<span id="openViewClosedCount">0</span>) &rarr;</span>
+    <!-- 1. Segmented Control: Open (7) vs Full & Closed (5) -->
+    <div class="segmented-control-wrap">
+      <div class="segmented-control" role="tablist" aria-label="Departure Categories">
+        <button id="segBtnOpen" type="button" role="tab" aria-selected="true" onclick="switchMainTab('open')" class="seg-btn active">
+          <span>Open (<span id="segCountOpen">0</span>)</span>
+        </button>
+        <button id="segBtnFull" type="button" role="tab" aria-selected="false" onclick="switchMainTab('full_closed')" class="seg-btn">
+          <span>Full &amp; Closed (<span id="segCountFull">0</span>)</span>
         </button>
       </div>
+    </div>
 
-      <!-- Departures Section Header -->
-      <div style="display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-        <div>
-          <h2 style="font-size: 20px; font-weight: 800; color: var(--ink-primary); margin: 0;">
-            Nepal Departures &amp; Live Seat Manifest
-          </h2>
-          <p style="font-size: 13px; color: var(--ink-secondary); margin-top: 2px;">
-            Tap any card to view passengers or add booking. Filled squares indicate booked seats.
-          </p>
-        </div>
-        <div id="departuresSummaryCounts" style="font-size: 13px; font-weight: 600; color: var(--accent-orange);">
-          <!-- Summary count -->
-        </div>
+    <!-- 2. One Row: Search Box + Filters Button -->
+    <div class="search-filters-row">
+      <div class="search-input-wrap">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input id="searchInput" type="text" placeholder="Search name, phone or route" oninput="handleUnifiedSearch(this.value)" class="form-input search-box" />
+      </div>
+      <button id="filterSheetBtn" type="button" onclick="openFilterSheet()" class="btn-filter touch-target mobile-filters-btn" aria-label="Open Filters">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="4" y1="21" x2="4" y2="14"></line>
+          <line x1="4" y1="10" x2="4" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12" y2="3"></line>
+          <line x1="20" y1="21" x2="20" y2="16"></line>
+          <line x1="20" y1="12" x2="20" y2="3"></line>
+          <line x1="1" y1="14" x2="7" y2="14"></line>
+          <line x1="9" y1="8" x2="15" y2="8"></line>
+          <line x1="17" y1="16" x2="23" y2="16"></line>
+        </svg>
+        <span>Filters</span>
+        <span id="filterActiveDot" class="filter-active-dot" style="display: none;" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <!-- Desktop Only: Inline Filters Row -->
+    <div class="desktop-filters-inline">
+      <select id="desktopFilterPackageSelect" onchange="handlePackageFilterInline(this.value)" class="form-input" style="flex: 1.2; height: 44px; font-size: 14px;">
+        <option value="all">All Himalayan Routes</option>
+      </select>
+
+      <select id="desktopFilterVehicleSelect" onchange="handleVehicleFilterInline(this.value)" class="form-input" style="flex: 1; height: 44px; font-size: 14px;">
+        <option value="all">All Vehicles</option>
+        <option value="scorpio">Scorpio 4x4 (8)</option>
+        <option value="ev_van">EV Van (12)</option>
+        <option value="land_cruiser">Land Cruiser (9)</option>
+      </select>
+
+      <div class="desktop-date-range" style="display: flex; align-items: center; gap: 6px; flex: 1.4;">
+        <input id="desktopDateStartInput" type="date" placeholder="From" onchange="handleDateRangeInline()" class="form-input" style="height: 44px; font-size: 13px;" />
+        <span style="color: var(--ink-muted); font-size: 13px;">to</span>
+        <input id="desktopDateEndInput" type="date" placeholder="To" onchange="handleDateRangeInline()" class="form-input" style="height: 44px; font-size: 13px;" />
       </div>
 
-      <!-- Departures Cards List -->
-      <div id="departuresListContainer" style="display: flex; flex-direction: column; gap: 16px;">
+      <button type="button" onclick="resetFiltersInline()" class="btn-secondary touch-target" style="height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700; white-space: nowrap;">
+        Reset
+      </button>
+    </div>
+
+    <!-- 3. Horizontally Scrollable Row of Date Chips: "All", "22 Oct · Kartik 5 (3)"... -->
+    <div class="date-chips-scroll-wrap">
+      <div id="unifiedDateChipsContainer" class="date-chips-wrap">
+        <!-- Rendered dynamically by renderUnifiedDateChips() -->
+      </div>
+    </div>
+
+    <!-- 4. Tour Cards Immediately Below -->
+    <section id="openDeparturesSection" style="display: flex; flex-direction: column; gap: 12px;">
+      <div id="departuresListContainer" style="display: flex; flex-direction: column; gap: 12px;">
         <!-- Populated by renderDeparturesList() -->
       </div>
     </section>
 
-    <!-- SECTION 2: FULL & CLOSED TOURS VIEW (PART 4) -->
-    <section id="fullDeparturesSection" style="display: none; flex-direction: column; gap: 20px;">
-      
-      <!-- Top Filter & Search Controls for Full Tours -->
-      <div class="paper-card" style="padding: 16px;">
-        <div class="filter-controls-grid">
-          
-          <!-- Search by passenger or phone -->
-          <div class="filter-search-wrap" style="position: relative;">
-            <label for="fullSearchInput" class="sr-only" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">Search passenger, phone or agency</label>
-            <input id="fullSearchInput" type="text" placeholder="Search passenger, phone or driver in closed tours..." oninput="handleFullSearch(this.value)" class="form-input" style="padding-left: 36px;" />
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; left: 12px; top: 14px;" aria-hidden="true">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </div>
-
-          <!-- Filter by Status & Date -->
-          <div class="filter-selects-wrap">
-            <div style="flex: 1;">
-              <label for="fullFilterStatusSelect" class="sr-only">Filter by Status</label>
-              <select id="fullFilterStatusSelect" onchange="handleFullStatusFilter(this.value)" class="form-input" style="font-weight: 600;">
-                <option value="all">All Closed Statuses</option>
-                <option value="full">Full / Closed</option>
-                <option value="dispatched">Dispatched</option>
-              </select>
-            </div>
-
-            <div style="flex: 1;">
-              <label for="fullFilterDateSelect" class="sr-only">Filter by Date</label>
-              <select id="fullFilterDateSelect" onchange="handleFullDateFilter(this.value)" class="form-input" style="font-weight: 600;">
-                <option value="all">All Departure Dates</option>
-              </select>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Back to Open Departures Link -->
-      <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background-color: var(--surface-card); border: 1px solid var(--rule-paper); border-radius: 8px; font-size: 13px;">
-        <span style="color: var(--ink-secondary);">Viewing archived full, closed, and dispatched departures.</span>
-        <button id="fullViewBackToOpenBtn" type="button" onclick="switchMainTab('open')" class="touch-target" style="color: var(--accent-orange); font-weight: 700; height: 36px; padding: 0 10px; display: inline-flex; align-items: center; gap: 4px;">
-          <span>&larr; Back to open departures</span>
-        </button>
-      </div>
-
-      <!-- Full Departures Section Header -->
-      <div style="display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-        <div>
-          <h2 style="font-size: 20px; font-weight: 800; color: var(--ink-primary); margin: 0;">
-            Full &amp; Closed Tours
-          </h2>
-          <p style="font-size: 13px; color: var(--ink-secondary); margin-top: 2px;">
-            Archived departures with status Full, Closed (enough seats) or Dispatched. Newest departure date first.
-          </p>
-        </div>
-        <div id="fullDeparturesSummaryCounts" style="font-size: 13px; font-weight: 600; color: var(--ink-secondary);">
-          <!-- Closed count -->
-        </div>
-      </div>
-
-      <!-- Full Departures Cards List Container -->
-      <div id="fullDeparturesListContainer" style="display: flex; flex-direction: column; gap: 16px;">
+    <section id="fullDeparturesSection" style="display: none; flex-direction: column; gap: 12px;">
+      <div id="fullDeparturesListContainer" style="display: flex; flex-direction: column; gap: 12px;">
         <!-- Populated by renderFullDeparturesList() -->
       </div>
     </section>
 
   </main>
+
+  <!-- ========================================================================
+       BOTTOM SHEET FILTER MODAL (MOBILE)
+       ======================================================================== -->
+  <div id="filterSheetBackdrop" class="bottom-sheet-backdrop hidden" onclick="closeFilterSheet()"></div>
+  <div id="filterBottomSheet" class="bottom-sheet hidden" role="dialog" aria-modal="true" aria-labelledby="filterSheetTitle">
+    <div class="bottom-sheet-header">
+      <h3 id="filterSheetTitle" class="font-heading" style="font-size: 18px; font-weight: 700; margin: 0;">Filters</h3>
+      <button type="button" onclick="closeFilterSheet()" class="touch-target" style="border: none; background: none; color: var(--ink-muted); cursor: pointer;" aria-label="Close Filters">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    
+    <div class="bottom-sheet-body">
+      <div class="filter-field">
+        <label for="filterPackageSelect" class="filter-label">Route</label>
+        <select id="filterPackageSelect" class="form-input" style="height: 44px; font-size: 14px;">
+          <option value="all">All Himalayan Routes</option>
+        </select>
+      </div>
+
+      <div class="filter-field">
+        <label for="filterVehicleSelect" class="filter-label">Vehicle</label>
+        <select id="filterVehicleSelect" class="form-input" style="height: 44px; font-size: 14px;">
+          <option value="all">All Vehicles</option>
+          <option value="scorpio">Scorpio 4x4 (8)</option>
+          <option value="ev_van">EV Van (12)</option>
+          <option value="land_cruiser">Land Cruiser (9)</option>
+        </select>
+      </div>
+
+      <div class="filter-field">
+        <label class="filter-label">Custom Date Range</label>
+        <div class="filter-date-inputs">
+          <div style="flex: 1;">
+            <label for="filterDateStartInput" style="display: block; font-size: 12px; color: var(--ink-secondary); margin-bottom: 4px;">From</label>
+            <input id="filterDateStartInput" type="date" class="form-input" style="height: 44px; font-size: 13px;" />
+          </div>
+          <div style="flex: 1;">
+            <label for="filterDateEndInput" style="display: block; font-size: 12px; color: var(--ink-secondary); margin-bottom: 4px;">To</label>
+            <input id="filterDateEndInput" type="date" class="form-input" style="height: 44px; font-size: 13px;" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-sheet-footer">
+      <button type="button" onclick="resetFilterSheet()" class="btn-secondary touch-target" style="flex: 1; height: 44px; font-weight: 700;">Reset</button>
+      <button type="button" onclick="applyFilterSheet()" class="btn-primary touch-target" style="flex: 1; height: 44px; font-weight: 700;">Apply</button>
+    </div>
+  </div>
 
   <!-- ========================================================================
        MODAL 1: ADD PASSENGER BOOKING (ADMIN & STAFF)
@@ -796,7 +1335,7 @@
           <label for="acCustomerName" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
             Customer / Group Lead Name <span style="color: var(--rust-owed);">*</span>
           </label>
-          <input id="acCustomerName" type="text" required placeholder="e.g. Ujwal Baiju / Anita Gurung" class="form-input" />
+          <input id="acCustomerName" type="text" required placeholder="e.g. Passenger Full Name / Lead" class="form-input" />
         </div>
 
         <!-- Phone Number -->
@@ -804,7 +1343,7 @@
           <label for="acCustomerPhone" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
             Contact Phone Number <span style="color: var(--rust-owed);">*</span>
           </label>
-          <input id="acCustomerPhone" type="tel" required placeholder="e.g. 9841223344 or +977 980..." class="form-input" />
+          <input id="acCustomerPhone" type="tel" required placeholder="e.g. +977 98XXXXXXXX" class="form-input" />
         </div>
 
         <!-- Pax & Agency Row -->
@@ -956,7 +1495,7 @@
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
             <div>
               <label for="ndDriverName" style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px;">Driver Name</label>
-              <input id="ndDriverName" type="text" placeholder="e.g. Pasang Sherpa" class="form-input" />
+              <input id="ndDriverName" type="text" placeholder="e.g. Driver Full Name" class="form-input" />
             </div>
             <div>
               <label for="ndVehiclePlate" style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px;">Vehicle Plate</label>
@@ -1093,29 +1632,35 @@
       </div>
 
       <div style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
-        <div style="font-size: 13px; color: var(--ink-secondary); margin: 0; line-height: 1.4;">
-          Review the dispatch message below. You can edit the text directly before opening WhatsApp. Agency prices, package totals, and advance payments are strictly excluded.
-        </div>
-
-        <!-- Toggle Checkbox: Include amounts to collect -->
-        <div style="background-color: var(--surface-subtle); padding: 12px 14px; border-radius: 8px; border: 1px solid var(--rule-paper);">
-          <label style="display: flex; align-items: center; gap: 10px; font-size: 13.5px; font-weight: 700; color: var(--ink-primary); cursor: pointer; user-select: none;">
-            <input type="checkbox" id="dispatchIncludeAmounts" checked onchange="handleDispatchAmountsToggle()" style="width: 18px; height: 18px; accent-color: var(--accent-orange); cursor: pointer;" />
-            <span>Include amounts to collect on vehicle</span>
-          </label>
+        <div style="background-color: var(--surface-subtle); padding: 10px 14px; border-radius: 8px; border: 1px solid var(--rule-paper); font-size: 12.5px; color: var(--ink-secondary); line-height: 1.4;">
+          Review the dispatch manifest below. You can edit the text directly before sending. Passenger details and pickup notes are included. Agency pricing, packages totals, and advances are strictly excluded.
         </div>
 
         <textarea id="manifestTextarea" rows="13" style="width: 100%; padding: 12px; font-family: monospace; font-size: 12.5px; line-height: 1.45; border-radius: 8px; border: 1px solid var(--rule-paper-strong); background-color: #FFFFFF; color: var(--ink-primary); resize: vertical;"></textarea>
 
-        <div style="display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
-          <button onclick="closeManifestModal()" class="btn-secondary touch-target">
+        <div style="display: flex; gap: 10px; justify-content: flex-end; align-items: center; flex-wrap: wrap; margin-top: 4px;">
+          <button onclick="closeManifestModal()" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px;">
             Cancel
           </button>
-          <button id="manifestCopyBtn" onclick="copyManifestText()" class="btn-secondary touch-target" style="border-color: var(--accent-orange); color: var(--accent-orange);">
-            Copy Message
-          </button>
-          <button id="manifestWhatsAppBtn" onclick="openWhatsAppWeb()" class="btn-primary touch-target" style="background-color: #128C7E; border-color: #075E54; display: inline-flex; align-items: center; gap: 6px;">
+          <button id="manifestCopyBtn" type="button" onclick="copyManifestText()" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; border-color: var(--accent-orange); color: var(--accent-orange); font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span id="manifestCopyBtnText">Copy message</span>
+          </button>
+          <button id="manifestShareBtn" type="button" onclick="shareManifest()" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; border-color: var(--rule-paper-strong); font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            <span>Share</span>
+          </button>
+          <button id="manifestWhatsAppBtn" type="button" onclick="openWhatsAppWeb()" class="btn-primary touch-target" style="min-height: 44px; padding: 0 18px; background-color: #128C7E; border-color: #075E54; display: inline-flex; align-items: center; gap: 8px; font-weight: 700;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
             </svg>
             <span>Open in WhatsApp</span>
@@ -1234,7 +1779,7 @@
             <label for="newStaffEmail" style="display: block; font-size: 12.5px; font-weight: 700; margin-bottom: 4px;">
               Email Address <span style="color: var(--rust-owed);">*</span>
             </label>
-            <input id="newStaffEmail" type="email" required placeholder="e.g. staff2@batuwatrip.com" class="form-input" style="height: 44px;" />
+            <input id="newStaffEmail" type="email" required placeholder="e.g. staff@agency.com" class="form-input" style="height: 44px;" />
           </div>
 
           <div>
@@ -1381,213 +1926,30 @@
     let realtimeChannel = null;
     let loginRoleIntent = 'admin'; // Portal intent selector
 
-    // Standard Tour Package Catalog with Baseline Prices per Pax
-    const DEFAULT_PACKAGES = [
-      { id: 'pkg-1', name: 'Upper Mustang Overland (Jomsom – Lo Manthang)', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 15500 },
-      { id: 'pkg-2', name: 'Ghandruk & Pokhara Tour (Annapurna Gate)', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 3000 },
-      { id: 'pkg-3', name: 'Ama Yangri Trek', defaultVehicle: 'ev_van', capacity: 12, pricePerPax: 5500 },
-      { id: 'pkg-4', name: 'Dhorpatan Tour Package', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 13500 },
-      { id: 'pkg-5', name: 'Rara Lake Tour Package', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 8833 },
-      { id: 'pkg-6', name: 'Muktinath Pilgrimage & Kaligandaki Valley', defaultVehicle: 'ev_van', capacity: 12, pricePerPax: 4500 },
-      { id: 'pkg-7', name: 'Everest Trailhead Jeep (Ktm – Salleri / Phaplu)', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 3500 },
-      { id: 'pkg-8', name: 'Everest Flight Link (Ktm – Ramechhap Manthali)', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 2500 }
-    ];
+    // Default Tour Packages (Dynamic: Synchronized strictly from Supabase packages table)
+    const DEFAULT_PACKAGES = [];
 
-    // Initial Departures Seed Data
+    // Clean Default State (All real fleet, departures, and bookings load strictly from Supabase)
     const DEFAULT_STATE = {
-      role: 'staff', // Derived strictly from user's database profile!
+      role: 'staff', // Derived strictly from user's database profile in Supabase
       userAgency: 'Batuwa Trip',
       currentUser: null,
       filterPackage: 'all',
       filterVehicle: 'all',
+      filterDate: 'all',
+      filterDateStart: '',
+      filterDateEnd: '',
       searchQuery: '',
-      expandedDepartures: { 'dep-mustang-kartik5': true, 'dep-ghandruk-kartik6': true },
-      packages: DEFAULT_PACKAGES,
-      auditTrail: [
-        {
-          id: 'audit-init-1',
-          departureId: 'dep-mustang-kartik5',
-          timestamp: new Date().toISOString(),
-          author: 'Admin (Lalitpur Holidays)',
-          action: 'Initial seed booking: Ujwal Baiju (7 Pax, Remaining: NPR 83,500)'
-        }
-      ],
-      departures: [
-        {
-          id: 'dep-mustang-kartik5',
-          packageId: 'pkg-1',
-          date: '2026-10-22',
-          nepaliDate: 'Kartik 5 gatey',
-          vehicleType: 'scorpio',
-          capacity: 8,
-          pricePerPax: 15500,
-          isPrivate: false,
-          driverName: 'Pasang Sherpa',
-          driverPhone: '9841223344',
-          vehiclePlate: 'BA 2 CHA 4521',
-          customers: [
-            {
-              id: 'c-ujwal-1',
-              name: 'Ujwal Baiju',
-              phone: '+977 984-3399734',
-              pax: 7,
-              agency: 'Lalitpur Holidays',
-              paid: 25000,
-              remaining: 83500,
-              note: 'Kartik 5 departure',
-              bookedBy: 'Lalitpur Holidays',
-              updatedAt: new Date().toISOString()
-            }
-          ]
-        },
-        {
-          id: 'dep-ghandruk-kartik6',
-          packageId: 'pkg-2',
-          date: '2026-10-23',
-          nepaliDate: 'Kartik 6 gatey',
-          vehicleType: 'scorpio',
-          capacity: 8,
-          pricePerPax: 3000,
-          isPrivate: false,
-          driverName: '',
-          driverPhone: '',
-          vehiclePlate: '',
-          customers: [
-            {
-              id: 'c-hema-1',
-              name: 'Hema Bhatta',
-              phone: '9868119376',
-              pax: 3,
-              agency: 'Satdobato Agency',
-              paid: 1500,
-              remaining: 7500,
-              note: 'Satdobato • 1500 rec / 9000 pkg',
-              bookedBy: 'Satdobato Agency',
-              updatedAt: new Date().toISOString()
-            },
-            {
-              id: 'c-rubishna-1',
-              name: 'Rubishna Ranjit & Prajwol Gupt Ranjit',
-              phone: '9841228980 / 9861667312',
-              pax: 2,
-              agency: 'Manjushree Agency',
-              paid: 6000,
-              remaining: 0,
-              note: 'Manjushree Temple • Paid in full',
-              bookedBy: 'Manjushree Agency',
-              updatedAt: new Date().toISOString()
-            }
-          ]
-        },
-        {
-          id: 'dep-amayan-kartik6',
-          packageId: 'pkg-3',
-          date: '2026-10-23',
-          nepaliDate: 'Kartik 6 gatey',
-          vehicleType: 'ev_van',
-          capacity: 12,
-          pricePerPax: 5500,
-          isPrivate: false,
-          driverName: '',
-          driverPhone: '',
-          vehiclePlate: '',
-          customers: [
-            {
-              id: 'c-kumar-1',
-              name: 'Kumar Poudel',
-              phone: '9851089299',
-              pax: 9,
-              agency: 'Samakhusi Travels',
-              paid: 5000,
-              remaining: 44500,
-              note: 'Samakhusi & Dhapasi • 3 Room',
-              bookedBy: 'Samakhusi Travels',
-              updatedAt: new Date().toISOString()
-            }
-          ]
-        },
-        {
-          id: 'dep-mustang-kartik6',
-          packageId: 'pkg-1',
-          date: '2026-10-23',
-          nepaliDate: 'Kartik 6 gatey',
-          vehicleType: 'scorpio',
-          capacity: 8,
-          pricePerPax: 15500,
-          isPrivate: false,
-          driverName: '',
-          driverPhone: '',
-          vehiclePlate: '',
-          customers: [
-            {
-              id: 'c-monika-1',
-              name: 'Monika Tamang',
-              phone: '9860581443',
-              pax: 3,
-              agency: 'Budhanilkantha Agency',
-              paid: 4000,
-              remaining: 11500,
-              note: 'Budhanilkantha & Samakhusi • 4000 rec / 15500 pkg',
-              bookedBy: 'Budhanilkantha Agency',
-              updatedAt: new Date().toISOString()
-            }
-          ]
-        },
-        {
-          id: 'dep-dhorpatan-kartik6',
-          packageId: 'pkg-4',
-          date: '2026-10-23',
-          nepaliDate: 'Kartik 6 gatey',
-          vehicleType: 'scorpio',
-          capacity: 8,
-          pricePerPax: 13500,
-          isPrivate: false,
-          driverName: '',
-          driverPhone: '',
-          vehiclePlate: '',
-          customers: [
-            {
-              id: 'c-bishesh-1',
-              name: 'Bishesh Parajuli',
-              phone: '9865511916 / +977 970-8539671',
-              pax: 1,
-              agency: 'Bhrikutimandap Desk',
-              paid: 4000,
-              remaining: 9500,
-              note: 'Bhrikutimandap • 3N/4D • 4000 rec / 13500 pkg',
-              bookedBy: 'Bhrikutimandap Desk',
-              updatedAt: new Date().toISOString()
-            }
-          ]
-        },
-        {
-          id: 'dep-rara-kartik6',
-          packageId: 'pkg-5',
-          date: '2026-10-23',
-          nepaliDate: 'Kartik 6 gatey',
-          vehicleType: 'scorpio',
-          capacity: 8,
-          pricePerPax: 8833,
-          isPrivate: false,
-          driverName: '',
-          driverPhone: '',
-          vehiclePlate: '',
-          customers: [
-            {
-              id: 'c-sarmila-1',
-              name: 'Sarmila Shrestha',
-              phone: '9803699927',
-              pax: 3,
-              agency: 'Gokarna Travels',
-              paid: 23850,
-              remaining: 2650,
-              note: 'Gokarna (2) & Medicity (1) • 23850 rec / 26500 pkg',
-              bookedBy: 'Gokarna Travels',
-              updatedAt: new Date().toISOString()
-            }
-          ]
-        }
-      ]
+      fullFilterStatus: 'all',
+      fullFilterDate: 'all',
+      fullFilterDateStart: '',
+      fullFilterDateEnd: '',
+      fullFilterPackage: 'all',
+      fullSearchQuery: '',
+      expandedDepartures: {},
+      packages: [],
+      auditTrail: [],
+      departures: []
     };
 
     let state = loadState();
@@ -1597,21 +1959,21 @@
     // ========================================================================
     function loadState() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(OLD_STORAGE_KEY);
+        const raw = localStorage.getItem(STORAGE_KEY);
         if (raw) {
           const parsed = JSON.parse(raw);
-          const loadedDeps = (parsed.departures && parsed.departures.length > 0) ? parsed.departures : DEFAULT_STATE.departures;
+          const loadedDeps = parsed.departures || [];
           return {
             ...DEFAULT_STATE,
             ...parsed,
-            packages: (parsed.packages && parsed.packages.length > 0) ? parsed.packages : DEFAULT_PACKAGES,
+            packages: parsed.packages || [],
             departures: loadedDeps.map(d => ({
               ...d,
               status: d.status || 'open',
               dispatchedAt: d.dispatchedAt || null,
               notes: d.notes || ''
             })),
-            auditTrail: parsed.auditTrail || DEFAULT_STATE.auditTrail
+            auditTrail: parsed.auditTrail || []
           };
         }
       } catch (e) {
@@ -1988,13 +2350,6 @@
       let email = (document.getElementById('loginEmail')?.value || '').trim();
       const password = document.getElementById('loginPassword')?.value || '';
 
-      // Username aliases for convenience
-      if (email.toLowerCase() === 'admin') {
-        email = 'admin@lalitpurholidays.com';
-      } else if (email.toLowerCase() === 'staff') {
-        email = 'staff@batuwatrip.com';
-      }
-
       if (!email || !password) {
         if (alertEl) {
           alertEl.textContent = 'Please enter both username/email and password.';
@@ -2136,7 +2491,7 @@
     }
 
     async function handleSignOut() {
-      if (confirm('Sign out of your Everest Annapurna Deposter account?')) {
+      if (confirm('Sign out of your Bookings account?')) {
         try {
           if (supabaseClient && navigator.onLine) {
             await supabaseClient.auth.signOut();
@@ -2229,6 +2584,28 @@
       if (!y || !m || !d) return dateStr;
       const dt = new Date(y, m - 1, d);
       return dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function formatShortDateDisplay(dateStr, nepaliDate) {
+      if (!dateStr) return '';
+      let engPart = '';
+      const [y, m, d] = dateStr.split('-').map(Number);
+      if (y && m && d) {
+        const dt = new Date(y, m - 1, d);
+        engPart = `${d} ${dt.toLocaleDateString('en-US', { month: 'short' })}`;
+      } else {
+        engPart = dateStr;
+      }
+      
+      if (nepaliDate) {
+        let nep = nepaliDate.replace(/\s*\([^)]*\)/g, '').trim();
+        nep = nep.replace(/,?\s*\d{4}/g, '').trim();
+        nep = nep.replace(/\s*gatey\s*/i, '').trim();
+        if (nep) {
+          return `${engPart} - ${nep}`;
+        }
+      }
+      return engPart;
     }
 
     function escapeHtml(str) {
@@ -2533,82 +2910,353 @@
     // CORE UI RENDERING
     // ========================================================================
     function renderRoleUI() {
-      const badgeContainer = document.getElementById('roleBadgeContainer');
-      const banner = document.getElementById('roleExplanationBanner');
-      const headerNewDepBtn = document.getElementById('headerNewDepBtn');
-      const headerManagePackagesBtn = document.getElementById('headerManagePackagesBtn');
-      const headerStaffBtn = document.getElementById('headerStaffManagementBtn');
-
       const isAdmin = state.role === 'admin';
 
-      // Update Visible Role Badge in Header
-      if (badgeContainer) {
-        if (isAdmin) {
-          badgeContainer.innerHTML = `
-            <div class="badge" style="background-color: var(--accent-orange-subtle); color: var(--accent-orange); border: 1px solid var(--accent-orange-border); font-size: 12px; padding: 6px 12px; font-weight: 700; gap: 6px;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-              </svg>
-              <span>ADMIN &bull; ${escapeHtml(state.userAgency || 'Lalitpur Holidays')}</span>
-            </div>
-          `;
-        } else {
-          badgeContainer.innerHTML = `
-            <div class="badge" style="background-color: var(--surface-card); color: var(--ink-primary); border: 1px solid var(--rule-paper-strong); font-size: 12px; padding: 6px 12px; font-weight: 700; gap: 6px;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-              <span>STAFF &bull; ${escapeHtml(state.userAgency || 'Batuwa Trip')}</span>
-            </div>
-          `;
-        }
+      // Update User Menu Profile
+      const menuName = document.getElementById('menuUserName');
+      const menuRoleBadge = document.getElementById('menuUserRoleBadge');
+      const menuAdminSection = document.getElementById('menuAdminSection');
+
+      if (menuName) {
+        menuName.textContent = state.userAgency ? `${state.userAgency}` : (isAdmin ? 'Admin Dispatcher' : 'Staff Booking');
+      }
+      if (menuRoleBadge) {
+        menuRoleBadge.textContent = isAdmin ? 'ADMIN' : 'STAFF';
+        menuRoleBadge.style.color = isAdmin ? 'var(--accent-orange)' : 'var(--ink-secondary)';
+      }
+      if (menuAdminSection) {
+        menuAdminSection.style.display = isAdmin ? 'block' : 'none';
       }
 
-      // Update Admin Controls Visibility
-      if (headerNewDepBtn) headerNewDepBtn.style.display = isAdmin ? 'inline-flex' : 'none';
-      if (headerManagePackagesBtn) headerManagePackagesBtn.style.display = isAdmin ? 'inline-flex' : 'none';
-      if (headerStaffBtn) headerStaffBtn.style.display = isAdmin ? 'inline-flex' : 'none';
-
-      // Update Role Notice Banner
-      if (banner) {
-        if (isAdmin) {
-          banner.innerHTML = `
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-              <div>
-                <strong>Admin Dispatcher Authority</strong> (${escapeHtml(state.userAgency || 'Lalitpur Holidays')}): Authorized to inline-edit all passenger records, adjust balances, delete bookings, assign drivers, and manage route packages.
-              </div>
-              <span style="font-size: 11px; font-weight: 700; color: var(--accent-orange);">Instant Auto-Save Enabled</span>
-            </div>
-          `;
-        } else {
-          banner.innerHTML = `
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-              <div>
-                <strong>Staff Booking Access</strong> (${escapeHtml(state.userAgency || 'Batuwa Trip & Travel Partners')}): Authorized to view live Himalayan departures and insert passenger bookings into open seats. Existing records and fleet assignments are protected by Row Level Security.
-              </div>
-              <span style="font-size: 11px; font-weight: 700; color: var(--ink-secondary);">Existing Records Protected (Read-Only)</span>
-            </div>
-          `;
-        }
+      // Update Live/Offline Status Dot in Header
+      const statusDot = document.getElementById('headerStatusDot');
+      if (statusDot) {
+        statusDot.style.backgroundColor = navigator.onLine ? '#10B981' : '#9CA3AF';
+        statusDot.setAttribute('title', navigator.onLine ? 'Live / Online' : 'Offline Mode');
       }
+    }
+
+    // ========================================================================
+    // USER ROUND MENU CONTROLS
+    // ========================================================================
+    function toggleUserMenu(event) {
+      if (event) event.stopPropagation();
+      const dropdown = document.getElementById('userMenuDropdown');
+      if (!dropdown) return;
+      dropdown.classList.toggle('hidden');
+    }
+
+    function closeUserMenu() {
+      const dropdown = document.getElementById('userMenuDropdown');
+      if (dropdown) dropdown.classList.add('hidden');
+    }
+
+    document.addEventListener('click', function(e) {
+      const menuWrap = document.querySelector('.menu-wrap');
+      if (menuWrap && !menuWrap.contains(e.target)) {
+        closeUserMenu();
+      }
+    });
+
+    function openDriversRegistryModal() {
+      const firstDep = (state.departures || [])[0];
+      if (firstDep) {
+        openAssignDriverModal(firstDep.id);
+      } else {
+        const modal = document.getElementById('assignDriverModal');
+        if (modal) modal.classList.remove('hidden');
+        populateDriverSelect();
+      }
+    }
+
+    // ========================================================================
+    // UNIFIED SEARCH & FILTERS
+    // ========================================================================
+    function handleUnifiedSearch(val) {
+      state.searchQuery = val || '';
+      state.fullSearchQuery = val || '';
+      if (state.activeMainTab === 'full_closed') {
+        renderFullDeparturesList();
+      } else {
+        renderDeparturesList();
+      }
+    }
+
+    // Bottom sheet filter modal controls
+    function openFilterSheet() {
+      const backdrop = document.getElementById('filterSheetBackdrop');
+      const sheet = document.getElementById('filterBottomSheet');
+      if (backdrop) backdrop.classList.remove('hidden');
+      if (sheet) sheet.classList.remove('hidden');
+
+      const pkgSel = document.getElementById('filterPackageSelect');
+      const vehSel = document.getElementById('filterVehicleSelect');
+      const startInp = document.getElementById('filterDateStartInput');
+      const endInp = document.getElementById('filterDateEndInput');
+
+      if (pkgSel) pkgSel.value = state.filterPackage || 'all';
+      if (vehSel) vehSel.value = state.filterVehicle || 'all';
+      if (startInp) startInp.value = state.filterDateStart || '';
+      if (endInp) endInp.value = state.filterDateEnd || '';
+    }
+
+    function closeFilterSheet() {
+      const backdrop = document.getElementById('filterSheetBackdrop');
+      const sheet = document.getElementById('filterBottomSheet');
+      if (backdrop) backdrop.classList.add('hidden');
+      if (sheet) sheet.classList.add('hidden');
+    }
+
+    function applyFilterSheet() {
+      const pkgSel = document.getElementById('filterPackageSelect');
+      const vehSel = document.getElementById('filterVehicleSelect');
+      const startInp = document.getElementById('filterDateStartInput');
+      const endInp = document.getElementById('filterDateEndInput');
+
+      state.filterPackage = pkgSel ? pkgSel.value : 'all';
+      state.filterVehicle = vehSel ? vehSel.value : 'all';
+      
+      const startVal = startInp ? startInp.value : '';
+      const endVal = endInp ? endInp.value : '';
+      if (startVal || endVal) {
+        state.filterDate = 'custom';
+        state.filterDateStart = startVal;
+        state.filterDateEnd = endVal;
+      } else if (state.filterDate === 'custom') {
+        state.filterDate = 'all';
+        state.filterDateStart = '';
+        state.filterDateEnd = '';
+      }
+
+      const dtPkg = document.getElementById('desktopFilterPackageSelect');
+      const dtVeh = document.getElementById('desktopFilterVehicleSelect');
+      const dtStart = document.getElementById('desktopDateStartInput');
+      const dtEnd = document.getElementById('desktopDateEndInput');
+      if (dtPkg) dtPkg.value = state.filterPackage;
+      if (dtVeh) dtVeh.value = state.filterVehicle;
+      if (dtStart) dtStart.value = state.filterDateStart || '';
+      if (dtEnd) dtEnd.value = state.filterDateEnd || '';
+
+      closeFilterSheet();
+      updateFilterActiveDot();
+      if (state.activeMainTab === 'full_closed') {
+        renderFullDeparturesList();
+      } else {
+        renderDeparturesList();
+      }
+    }
+
+    function resetFilterSheet() {
+      state.filterPackage = 'all';
+      state.filterVehicle = 'all';
+      state.filterDateStart = '';
+      state.filterDateEnd = '';
+      if (state.filterDate === 'custom') {
+        state.filterDate = 'all';
+      }
+
+      const pkgSel = document.getElementById('filterPackageSelect');
+      const vehSel = document.getElementById('filterVehicleSelect');
+      const startInp = document.getElementById('filterDateStartInput');
+      const endInp = document.getElementById('filterDateEndInput');
+      if (pkgSel) pkgSel.value = 'all';
+      if (vehSel) vehSel.value = 'all';
+      if (startInp) startInp.value = '';
+      if (endInp) endInp.value = '';
+
+      const dtPkg = document.getElementById('desktopFilterPackageSelect');
+      const dtVeh = document.getElementById('desktopFilterVehicleSelect');
+      const dtStart = document.getElementById('desktopDateStartInput');
+      const dtEnd = document.getElementById('desktopDateEndInput');
+      if (dtPkg) dtPkg.value = 'all';
+      if (dtVeh) dtVeh.value = 'all';
+      if (dtStart) dtStart.value = '';
+      if (dtEnd) dtEnd.value = '';
+
+      closeFilterSheet();
+      updateFilterActiveDot();
+      if (state.activeMainTab === 'full_closed') {
+        renderFullDeparturesList();
+      } else {
+        renderDeparturesList();
+      }
+    }
+
+    function updateFilterActiveDot() {
+      const dot = document.getElementById('filterActiveDot');
+      if (!dot) return;
+      const isCustomDate = state.filterDate === 'custom' || Boolean(state.filterDateStart) || Boolean(state.filterDateEnd);
+      const isPkgActive = state.filterPackage && state.filterPackage !== 'all';
+      const isVehActive = state.filterVehicle && state.filterVehicle !== 'all';
+      const isActive = isCustomDate || isPkgActive || isVehActive;
+      dot.style.display = isActive ? 'block' : 'none';
+    }
+
+    // Desktop inline filter handlers
+    function handlePackageFilterInline(val) {
+      state.filterPackage = val || 'all';
+      const mobileSel = document.getElementById('filterPackageSelect');
+      if (mobileSel) mobileSel.value = state.filterPackage;
+      updateFilterActiveDot();
+      if (state.activeMainTab === 'full_closed') {
+        renderFullDeparturesList();
+      } else {
+        renderDeparturesList();
+      }
+    }
+
+    function handleVehicleFilterInline(val) {
+      state.filterVehicle = val || 'all';
+      const mobileSel = document.getElementById('filterVehicleSelect');
+      if (mobileSel) mobileSel.value = state.filterVehicle;
+      updateFilterActiveDot();
+      if (state.activeMainTab === 'full_closed') {
+        renderFullDeparturesList();
+      } else {
+        renderDeparturesList();
+      }
+    }
+
+    function handleDateRangeInline() {
+      const dtStart = document.getElementById('desktopDateStartInput')?.value || '';
+      const dtEnd = document.getElementById('desktopDateEndInput')?.value || '';
+      if (dtStart || dtEnd) {
+        state.filterDate = 'custom';
+        state.filterDateStart = dtStart;
+        state.filterDateEnd = dtEnd;
+      } else {
+        state.filterDate = 'all';
+        state.filterDateStart = '';
+        state.filterDateEnd = '';
+      }
+      const mobileStart = document.getElementById('filterDateStartInput');
+      const mobileEnd = document.getElementById('filterDateEndInput');
+      if (mobileStart) mobileStart.value = dtStart;
+      if (mobileEnd) mobileEnd.value = dtEnd;
+      updateFilterActiveDot();
+      if (state.activeMainTab === 'full_closed') {
+        renderFullDeparturesList();
+      } else {
+        renderDeparturesList();
+      }
+    }
+
+    function resetFiltersInline() {
+      resetFilterSheet();
+    }
+
+    function resetFilters() {
+      resetFilterSheet();
+    }
+
+    // ========================================================================
+    // HORIZONTALLY SCROLLABLE DATE CHIPS
+    // ========================================================================
+    function renderUnifiedDateChips() {
+      const container = document.getElementById('unifiedDateChipsContainer');
+      if (!container) return;
+
+      const isFullView = state.activeMainTab === 'full_closed';
+      const currentFilterDate = state.filterDate || 'all';
+
+      const sourceDeps = (state.departures || []).filter(d => {
+        const isClosed = (d.status || 'open') !== 'open';
+        return isFullView ? isClosed : !isClosed;
+      });
+
+      const dateMap = new Map();
+      sourceDeps.forEach(d => {
+        if (!d.date) return;
+        if (!dateMap.has(d.date)) {
+          dateMap.set(d.date, {
+            date: d.date,
+            nepaliDate: d.nepaliDate || d.nepali_date || '',
+            count: 0
+          });
+        }
+        dateMap.get(d.date).count += 1;
+      });
+
+      const sortedDates = Array.from(dateMap.values()).sort((a, b) => 
+        isFullView ? b.date.localeCompare(a.date) : a.date.localeCompare(b.date)
+      );
+
+      let html = '';
+
+      // 1. "All" chip
+      const isAllActive = currentFilterDate === 'all' || !currentFilterDate;
+      html += `
+        <button type="button" 
+                onclick="handleUnifiedDateChipClick('all')" 
+                class="date-chip ${isAllActive ? 'active' : ''}" 
+                aria-pressed="${isAllActive}">
+          <span>All</span>
+          <span class="badge" style="font-size: 11px; padding: 1px 6px; background-color: ${isAllActive ? '#FFFFFF' : 'var(--surface-subtle)'}; color: ${isAllActive ? 'var(--accent-orange)' : 'var(--ink-secondary)'}; border: none;">${sourceDeps.length}</span>
+        </button>
+      `;
+
+      // 2. Short chips: "22 Oct · Kartik 5"
+      sortedDates.forEach(item => {
+        const isActive = currentFilterDate === item.date;
+        const shortLabel = formatShortDateDisplay(item.date, item.nepaliDate);
+
+        html += `
+          <button type="button" 
+                  onclick="handleUnifiedDateChipClick('${item.date}')" 
+                  class="date-chip ${isActive ? 'active' : ''}" 
+                  aria-pressed="${isActive}">
+            <span>${escapeHtml(shortLabel)}</span>
+            <span class="badge" style="font-size: 11px; padding: 1px 6px; background-color: ${isActive ? '#FFFFFF' : 'var(--surface-subtle)'}; color: ${isActive ? 'var(--accent-orange)' : 'var(--ink-secondary)'}; border: none;">${item.count}</span>
+          </button>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function handleUnifiedDateChipClick(dateVal) {
+      state.filterDate = dateVal;
+      state.fullFilterDate = dateVal;
+      if (dateVal !== 'custom') {
+        state.filterDateStart = '';
+        state.filterDateEnd = '';
+        const mobileStart = document.getElementById('filterDateStartInput');
+        const mobileEnd = document.getElementById('filterDateEndInput');
+        const dtStart = document.getElementById('desktopDateStartInput');
+        const dtEnd = document.getElementById('desktopDateEndInput');
+        if (mobileStart) mobileStart.value = '';
+        if (mobileEnd) mobileEnd.value = '';
+        if (dtStart) dtStart.value = '';
+        if (dtEnd) dtEnd.value = '';
+        updateFilterActiveDot();
+      }
+      renderUnifiedDateChips();
+      if (state.activeMainTab === 'full_closed') {
+        renderFullDeparturesList();
+      } else {
+        renderDeparturesList();
+      }
+    }
+
+    function renderDateChips() {
+      renderUnifiedDateChips();
     }
 
     function renderFilterOptions() {
       const pkgSelect = document.getElementById('filterPackageSelect');
-      if (!pkgSelect) return;
+      const dtPkgSelect = document.getElementById('desktopFilterPackageSelect');
       const currentVal = state.filterPackage || 'all';
 
       let html = '<option value="all">All Himalayan Routes</option>';
       (state.packages || []).forEach(p => {
         html += `<option value="${escapeHtml(p.id)}" ${p.id === currentVal ? 'selected' : ''}>${escapeHtml(p.name)}</option>`;
       });
-      pkgSelect.innerHTML = html;
+      if (pkgSelect) pkgSelect.innerHTML = html;
+      if (dtPkgSelect) dtPkgSelect.innerHTML = html;
     }
 
     function renderDeparturesList() {
       const container = document.getElementById('departuresListContainer');
-      const countsEl = document.getElementById('departuresSummaryCounts');
       if (!container) return;
 
       const isAdmin = state.role === 'admin';
@@ -2616,7 +3264,6 @@
       const filterPkg = state.filterPackage || 'all';
       const filterVeh = state.filterVehicle || 'all';
       const isOffline = !navigator.onLine;
-
       let deps = [...(state.departures || [])];
 
       // Part 4: Open departures view shows only OPEN departures
@@ -2630,6 +3277,23 @@
       // Filter by vehicle
       if (filterVeh !== 'all') {
         deps = deps.filter(d => d.vehicleType === filterVeh);
+      }
+
+      // Filter by departure date (single date or custom date range)
+      if (state.filterDate && state.filterDate !== 'all') {
+        if (state.filterDate === 'custom') {
+          const start = state.filterDateStart;
+          const end = state.filterDateEnd;
+          if (start && end) {
+            deps = deps.filter(d => d.date >= start && d.date <= end);
+          } else if (start) {
+            deps = deps.filter(d => d.date >= start);
+          } else if (end) {
+            deps = deps.filter(d => d.date <= end);
+          }
+        } else {
+          deps = deps.filter(d => d.date === state.filterDate);
+        }
       }
 
       // Search query filter (matches customer name, phone, agency, or tour name)
@@ -2648,21 +3312,22 @@
 
       deps.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
 
+      renderUnifiedDateChips();
       updateTabBadges();
 
-      if (countsEl) {
-        const totalSeats = deps.reduce((sum, d) => sum + Number(d.capacity || 8), 0);
-        const bookedSeats = deps.reduce((sum, d) => sum + getBookedPax(d), 0);
-        const openSeats = Math.max(0, totalSeats - bookedSeats);
-        countsEl.textContent = `${deps.length} open departure${deps.length === 1 ? '' : 's'} • ${openSeats} seat${openSeats === 1 ? '' : 's'} available`;
-      }
-
       if (deps.length === 0) {
+        const isDateFiltered = state.filterDate && state.filterDate !== 'all';
         container.innerHTML = `
-          <div class="paper-card" style="padding: 40px 20px; text-align: center; color: var(--ink-secondary);">
-            <p style="font-size: 16px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">No departures match your filter</p>
-            <p style="font-size: 13.5px; margin-bottom: 16px;">Try adjusting your search query or route filter.</p>
-            <button onclick="resetFilters()" class="btn-secondary touch-target">Reset All Filters</button>
+          <div class="paper-card" style="padding: 36px 20px; text-align: center; color: var(--ink-secondary);">
+            <p style="font-size: 16px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
+              ${isDateFiltered ? 'No departures on this date' : 'No departures match your filter'}
+            </p>
+            <p style="font-size: 13.5px; margin-bottom: 16px;">
+              ${isDateFiltered ? 'There are no open departures scheduled for the selected date.' : 'Try adjusting your search query, route, or vehicle filter.'}
+            </p>
+            <button onclick="${isDateFiltered ? "handleUnifiedDateChipClick('all')" : "resetFilters()"}" class="btn-primary touch-target" style="min-height: 44px; padding: 0 16px; font-weight: 700;">
+              ${isDateFiltered ? 'Show All Dates' : 'Reset All Filters'}
+            </button>
           </div>
         `;
         return;
@@ -2671,11 +3336,10 @@
       let html = '';
 
       deps.forEach(dep => {
-        const pkg = getPackage(dep.packageId);
+        const pkg = getPackage(dep.packageId || dep.package_id);
         const bookedPax = getBookedPax(dep);
         const capacity = Number(dep.capacity) || 8;
         const seatsLeft = Math.max(0, capacity - bookedPax);
-        const totalOwedNPR = getTotalRemainingNPR(dep);
         const isExpanded = Boolean(state.expandedDepartures && state.expandedDepartures[dep.id]);
         const depStatus = dep.status || 'open';
         const isClosed = (depStatus === 'full' || depStatus === 'dispatched');
@@ -2684,7 +3348,6 @@
         let seatSquaresHtml = '';
         for (let i = 0; i < capacity; i++) {
           const isBooked = i < bookedPax;
-          // If closed and staff, do not expose empty seat count visually
           const showAsBooked = (isClosed && !isAdmin) ? true : isBooked;
           seatSquaresHtml += `
             <span class="seat-square ${showAsBooked ? 'booked' : 'empty'}" 
@@ -2693,279 +3356,122 @@
           `;
         }
 
-        // Driver details
-        const driverName = (dep.driverName || '').trim();
-        const driverPlate = (dep.vehiclePlate || '').trim();
-        const driverText = driverName 
-          ? `Driver: ${escapeHtml(driverName)} ${driverPlate ? '(' + escapeHtml(driverPlate) + ')' : ''}`
-          : 'Pending Driver Depost';
+        const driver = getDriverForDeparture(dep);
+        const driverName = driver ? driver.name : (dep.driverName || '').trim();
+        const vType = dep.vehicleType || dep.vehicle_type;
+        const vehicleLabel = vType === 'ev_van' ? 'EV Van (12)' : (vType === 'land_cruiser' ? 'Land Cruiser (9)' : 'Scorpio 4x4 (8)');
+        const shortDateLine = formatShortDateDisplay(dep.date, dep.nepaliDate || dep.nepali_date);
 
-        // Vehicle badge text
-        const vehicleLabel = dep.vehicleType === 'ev_van' ? 'EV Van (12)' : (dep.vehicleType === 'land_cruiser' ? 'Land Cruiser (9)' : 'Scorpio 4x4 (8)');
-
-        // Status Badge & Remaining Count logic:
-        // Full: shows "FULL" badge instead of "X seats left". Remaining-seat number is NOT shown to anyone except admin.
-        // Admin sees: "FULL • X seats unsold".
-        // Staff sees: "FULL" (no seat numbers).
-        // Dispatched: shows "DISPATCHED" badge.
-        let statusBadgeHtml = '';
-        let statusSubtextHtml = '';
-
-        if (depStatus === 'full') {
-          if (isAdmin) {
-            statusBadgeHtml = `
-              <div class="badge dep-status-badge" style="background-color: #57534E; color: #FFFFFF; font-size: 13px; padding: 5px 10px; font-weight: 800; border: 1px solid #44403C;">
-                FULL &bull; ${seatsLeft} seat${seatsLeft === 1 ? '' : 's'} unsold
-              </div>
-            `;
-            statusSubtextHtml = `${bookedPax} of ${capacity} booked`;
-          } else {
-            statusBadgeHtml = `
-              <div class="badge dep-status-badge" style="background-color: #57534E; color: #FFFFFF; font-size: 13px; padding: 5px 10px; font-weight: 800; border: 1px solid #44403C;">
-                FULL
-              </div>
-            `;
-            statusSubtextHtml = `Booking Closed`;
-          }
-        } else if (depStatus === 'dispatched') {
-          const timeStr = dep.dispatchedAt ? new Date(dep.dispatchedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-          statusBadgeHtml = `
-            <div class="badge dep-status-badge" style="background-color: #14532D; color: #FFFFFF; font-size: 13px; padding: 5px 10px; font-weight: 800; border: 1px solid #052E16;">
-              DISPATCHED
-            </div>
-          `;
-          if (isAdmin) {
-            statusSubtextHtml = `${timeStr ? 'At ' + timeStr + ' &bull; ' : ''}${seatsLeft} unsold`;
-          } else {
-            statusSubtextHtml = timeStr ? `Dispatched at ${timeStr}` : 'En Route';
-          }
-        } else {
-          // 'open'
-          const isCapacityReached = seatsLeft === 0;
-          statusBadgeHtml = `
-            <div class="badge dep-status-badge ${isCapacityReached ? 'badge-paper' : 'badge-orange'}" style="font-size: 13px; padding: 5px 10px; font-weight: 800;">
-              ${isCapacityReached ? 'Full (0 left)' : `${seatsLeft} seat${seatsLeft === 1 ? '' : 's'} left`}
-            </div>
-          `;
-          statusSubtextHtml = `${bookedPax} of ${capacity} booked`;
-        }
-
-        // Auto-suggest prompt when booked pax equals vehicle capacity but status is still 'open' (admin only)
-        let autoSuggestHtml = '';
-        if (isAdmin && depStatus === 'open' && bookedPax >= capacity) {
-          autoSuggestHtml = `
-            <div style="background-color: var(--accent-orange-subtle); border: 1px solid var(--accent-orange-border); border-radius: 8px; padding: 8px 12px; margin-top: 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;" onclick="event.stopPropagation();">
-              <div style="display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; color: var(--accent-orange);">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                <span>Vehicle is full — mark as Full?</span>
-              </div>
-              <button onclick="handleMarkAsFull('${dep.id}', event)" class="btn-primary touch-target" style="height: 32px; padding: 0 12px; font-size: 12px; ${isOffline ? 'opacity: 0.5; cursor: not-allowed;' : ''}" ${isOffline ? 'disabled title="Disabled offline"' : ''}>
-                Mark as Full
-              </button>
-            </div>
-          `;
-        }
-
-        // Header Admin Quick Actions
-        let headerActionsHtml = '';
-        if (isAdmin) {
-          if (depStatus === 'open') {
-            headerActionsHtml = `
-              <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 6px;" onclick="event.stopPropagation();">
-                <button onclick="handleMarkAsFull('${dep.id}', event)" class="btn-primary touch-target" style="height: 32px; padding: 0 10px; font-size: 12px; ${isOffline ? 'opacity: 0.5; cursor: not-allowed;' : ''}" ${isOffline ? 'disabled title="Disabled offline"' : ''}>
-                  Mark as Full
-                </button>
-                <button onclick="handleCloseEnoughSeats('${dep.id}', event)" class="btn-secondary touch-target" style="height: 32px; padding: 0 8px; font-size: 12px; ${isOffline ? 'opacity: 0.5; cursor: not-allowed;' : ''}" title="Close booking if vehicle is considered enough" ${isOffline ? 'disabled title="Disabled offline"' : ''}>
-                  Enough seats - close booking
-                </button>
-              </div>
-            `;
-          } else if (depStatus === 'full') {
-            headerActionsHtml = `
-              <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 6px;" onclick="event.stopPropagation();">
-                <button onclick="handleSendToDriverClick('${dep.id}', event)" class="btn-primary touch-target" style="height: 32px; padding: 0 10px; font-size: 12px; background-color: #128C7E; border-color: #075E54; ${isOffline ? 'opacity: 0.5; cursor: not-allowed;' : ''}" ${isOffline ? 'disabled title="Disabled offline"' : ''}>
-                  Send to driver
-                </button>
-                <button onclick="handleReopenDeparture('${dep.id}', event)" class="btn-secondary touch-target" style="height: 32px; padding: 0 8px; font-size: 12px; ${isOffline ? 'opacity: 0.5; cursor: not-allowed;' : ''}" ${isOffline ? 'disabled title="Disabled offline"' : ''}>
-                  Reopen
-                </button>
-              </div>
-            `;
-          } else if (depStatus === 'dispatched') {
-            headerActionsHtml = `
-              <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 6px;" onclick="event.stopPropagation();">
-                <button onclick="handleSendToDriverClick('${dep.id}', event)" class="btn-secondary touch-target" style="height: 32px; padding: 0 10px; font-size: 12px; border-color: #128C7E; color: #128C7E; font-weight: 700; ${isOffline ? 'opacity: 0.5; cursor: not-allowed;' : ''}" ${isOffline ? 'disabled title="Disabled offline"' : ''}>
-                  Resend to driver
-                </button>
-                <button onclick="handleReopenDeparture('${dep.id}', event)" class="btn-secondary touch-target" style="height: 32px; padding: 0 8px; font-size: 12px; ${isOffline ? 'opacity: 0.5; cursor: not-allowed;' : ''}" ${isOffline ? 'disabled title="Disabled offline"' : ''}>
-                  Reopen
-                </button>
-              </div>
-            `;
-          }
-        }
+        const statusPillHtml = seatsLeft === 0
+          ? `<span class="status-pill full">FULL</span>`
+          : `<span class="status-pill seats">${seatsLeft} seats left</span>`;
 
         html += `
-          <article class="paper-card" id="departure-card-${dep.id}" style="overflow: hidden; ${isClosed ? 'opacity: 0.92; background-color: #FAF7F2; border: 1px solid var(--rule-paper-strong);' : ''}">
+          <article class="tour-card" id="departure-card-${dep.id}">
             
-            ${isClosed ? `
-              <div style="background-color: var(--surface-subtle); padding: 5px 16px; font-size: 11px; font-weight: 700; color: var(--ink-secondary); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--rule-paper);">
-                <span>CLOSED DEPARTURE &bull; ARCHIVED AT BOTTOM</span>
-                <span style="text-transform: uppercase; font-weight: 800; color: ${depStatus === 'dispatched' ? '#14532D' : 'var(--ink-secondary)'};">Status: ${depStatus}</span>
+            <!-- Card Header (Tapping opens passenger manifest) -->
+            <div class="tour-card-header" onclick="toggleDepartureExpanded('${dep.id}', event)">
+              <div class="tour-card-top">
+                <div style="flex: 1; min-width: 0;">
+                  <h3 class="tour-card-title">
+                    <span>${escapeHtml(pkg.name)}</span>
+                    ${dep.vehicleLabel ? `<span class="badge badge-paper" style="font-weight: 700; margin-left: 6px; font-size: 12px;">${escapeHtml(dep.vehicleLabel)}</span>` : ''}
+                    ${dep.isPrivate ? `<span class="badge" style="background-color: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 800; border: 1px solid #FCD34D; margin-left: 6px;">PRIVATE</span>` : ''}
+                  </h3>
+                  <div class="tour-card-meta" style="margin-top: 4px;">
+                    <span style="font-weight: 600; color: var(--ink-primary);">${escapeHtml(shortDateLine)}</span>
+                    <span style="color: var(--ink-muted);">&bull;</span>
+                    <span>${escapeHtml(vehicleLabel)}</span>
+                    ${driverName ? `<span style="color: var(--ink-muted);">&bull;</span><span>Driver: ${escapeHtml(driverName)}</span>` : ''}
+                    ${isAdmin ? `
+                      <span style="color: var(--ink-muted);">&bull;</span>
+                      <span class="badge badge-owed" style="font-size: 11px; padding: 1px 6px;">Owed: ${formatNPR(getTotalRemainingNPR(dep))}</span>
+                    ` : ''}
+                  </div>
+                </div>
+
+                <!-- Status Pill (Seats left or Full) -->
+                <div style="flex-shrink: 0;">
+                  ${statusPillHtml}
+                </div>
+              </div>
+
+              <!-- Seat Squares Row with Manifest Toggle Indicator -->
+              <div class="tour-card-seats-row">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 12px; font-weight: 700; color: var(--ink-secondary);">Seats:</span>
+                  <div class="seat-grid" aria-label="${bookedPax} of ${capacity} seats booked">
+                    ${seatSquaresHtml}
+                  </div>
+                </div>
+
+                <div style="font-size: 12.5px; font-weight: 700; color: var(--accent-orange); display: inline-flex; align-items: center; gap: 4px;">
+                  <span>${isExpanded ? 'Hide manifest' : 'Manifest (' + (dep.customers || []).length + ')'}</span>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transform: ${isExpanded ? 'rotate(180deg)' : 'rotate(0)'}; transition: transform 0.15s ease;">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Primary Button: Add Passenger (Staff & Admin when tour is open) -->
+            ${depStatus === 'open' ? `
+              <div style="padding-top: 2px;">
+                <button type="button" onclick="openAddCustomerModal('${dep.id}')" class="btn-add-passenger touch-target" ${(seatsLeft === 0 && !isAdmin) ? 'disabled style="opacity: 0.6; cursor: not-allowed;"' : ''}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  <span>Add passenger</span>
+                </button>
               </div>
             ` : ''}
 
-            <!-- Card Header / Summary Trigger -->
-            <div style="padding: 16px 20px; cursor: pointer; user-select: none;" onclick="toggleDepartureExpanded('${dep.id}', event)">
-              <div style="display: flex; flex-direction: column; gap: 12px;">
-                
-                <!-- Line 1: Package Title & Status / Seat Badge -->
-                <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-                  <div style="flex: 1; min-width: 200px;">
-                    <h3 style="font-size: 18px; font-weight: 800; color: var(--ink-primary); line-height: 1.25; margin: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                      <span>${escapeHtml(pkg.name)}</span>
-                      ${dep.vehicleLabel ? `<span class="badge badge-paper" style="font-size: 12px; font-weight: 800; border: 1px solid var(--rule-paper-strong);">${escapeHtml(dep.vehicleLabel)}</span>` : ''}
-                      ${dep.isPrivate ? `<span class="badge" style="background-color: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 800; border: 1px solid #FCD34D;">PRIVATE TOUR</span>` : ''}
-                    </h3>
-
-                    
-                    <!-- Metadata badges -->
-                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px;">
-                      <span class="badge badge-paper">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                          <line x1="16" y1="2" x2="16" y2="6"></line>
-                          <line x1="8" y1="2" x2="8" y2="6"></line>
-                          <line x1="3" y1="10" x2="21" y2="10"></line>
-                        </svg>
-                        <span>${formatDateDisplay(dep.date)}</span>
-                        ${dep.nepaliDate ? `&bull; <strong style="color: var(--accent-orange);">${escapeHtml(dep.nepaliDate)}</strong>` : ''}
-                      </span>
-
-                      <span class="badge badge-paper">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                          <rect x="1" y="3" width="15" height="13"></rect>
-                          <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-                          <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                          <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                        </svg>
-                        <span>${vehicleLabel}</span>
-                      </span>
-
-                      <span class="badge ${driverName ? 'badge-paper' : 'badge-orange'}">
-                        <span>${driverText}</span>
-                      </span>
-
-                      ${dep.isPrivate ? '<span class="badge badge-orange" style="font-weight: 800;">Private Charter</span>' : ''}
-                    </div>
-
-                    ${autoSuggestHtml}
-                  </div>
-
-                  <!-- Seats Left Badge & Admin Quick Actions -->
-                  <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0;">
-                    ${statusBadgeHtml}
-                    <span style="font-size: 11.5px; color: var(--ink-secondary); font-weight: 500;">
-                      ${statusSubtextHtml}
-                    </span>
-                    ${headerActionsHtml}
-                  </div>
-                </div>
-
-                <!-- Line 2: Seat Squares Row & Financial Summary (Admin) -->
-                <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-top: 4px; border-top: 1px dashed var(--rule-paper);">
-                  
-                  <!-- Seat Visualizer Matrix -->
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 12px; font-weight: 700; color: var(--ink-secondary);">Seats:</span>
-                    <div class="seat-grid" aria-label="${bookedPax} of ${capacity} seats booked">
-                      ${seatSquaresHtml}
-                    </div>
-                  </div>
-
-                  <!-- Admin Total Still Owed Indicator in Rust Red -->
-                  <div style="display: flex; align-items: center; gap: 12px;">
-                    ${isAdmin ? `
-                      <div class="badge badge-owed" style="font-size: 12px;">
-                        <span>Owed: ${formatNPR(totalOwedNPR)}</span>
-                      </div>
-                    ` : ''}
-
-                    <!-- Expand/Collapse Chevron Indicator -->
-                    <div style="display: flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 700; color: var(--accent-orange);">
-                      <span>${isExpanded ? 'Hide Bookings' : 'View Bookings (' + (dep.customers || []).length + ')'}</span>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: ${isExpanded ? 'rotate(180deg)' : 'rotate(0)'}; transition: transform 0.15s ease;" aria-hidden="true">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                      </svg>
-                    </div>
-                  </div>
-
-                </div>
-
+            <!-- Admin Visible Controls Bar (Admin only) -->
+            ${isAdmin ? `
+              <div class="card-direct-actions-bar" onclick="event.stopPropagation();">
+                ${depStatus === 'open' ? `
+                  <button onclick="handleMarkAsFull('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700;">
+                    Mark as Full
+                  </button>
+                  <button onclick="handleCloseEnoughSeats('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700;">
+                    Enough seats - close
+                  </button>
+                  <button onclick="setDepartureStatus('${dep.id}', 'dispatched', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700; color: #14532D;">
+                    Dispatch
+                  </button>
+                  <button onclick="handleSendToDriverClick('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700; color: #128C7E; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <span>Send to driver</span>
+                  </button>
+                ` : (depStatus === 'full' ? `
+                  <button onclick="setDepartureStatus('${dep.id}', 'dispatched', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700; color: #14532D;">
+                    Dispatch
+                  </button>
+                  <button onclick="handleSendToDriverClick('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700; color: #128C7E; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <span>Send to driver</span>
+                  </button>
+                  <button onclick="handleReopenDeparture('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700;">
+                    Reopen
+                  </button>
+                ` : `
+                  <button onclick="handleSendToDriverClick('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700; color: #128C7E; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <span>Resend to driver</span>
+                  </button>
+                  <button onclick="handleReopenDeparture('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700;">
+                    Reopen
+                  </button>
+                `)}
               </div>
-            </div>
+            ` : ''}
 
-            <!-- Card Body / Customer Manifest Drawer (Accordion content) -->
+            <!-- Passenger Manifest Accordion (Opened by tapping card) -->
             ${isExpanded ? `
-              <div style="border-top: 1px solid var(--rule-paper); background-color: var(--surface-card); padding: 18px 20px;">
-                
-                <!-- Drawer Top Actions Bar -->
-                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;">
-                  <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                    
-                    <!-- Add Customer button: Hidden for staff and partners when departure is Full/Closed -->
-                    ${(isClosed && !isAdmin) ? '' : `
-                      <button onclick="openAddCustomerModal('${dep.id}')" class="btn-primary touch-target" style="height: 38px; padding: 0 12px; font-size: 13px; ${(isClosed || seatsLeft === 0) ? 'opacity: 0.6; cursor: not-allowed;' : ''}" ${(isClosed && !isAdmin) ? 'disabled title="Departure is Full"' : ''}>
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                          <line x1="12" y1="5" x2="12" y2="19"></line>
-                          <line x1="5" y1="12" x2="19" y2="12"></line>
-                        </svg>
-                        <span>+ Add Passenger ${!navigator.onLine ? '(Offline)' : ''}</span>
-                      </button>
-                    `}
-
-                    <!-- Driver Dispatch button: Admin only when closed/full/dispatched -->
-                    ${isAdmin ? `
-                      <button onclick="handleSendToDriverClick('${dep.id}', event)" class="btn-secondary touch-target" style="height: 38px; padding: 0 10px; font-size: 13px; ${isClosed ? 'border-color: #128C7E; color: #128C7E; font-weight: 700;' : ''} ${isOffline ? 'opacity: 0.5; cursor: not-allowed;' : ''}" ${isOffline ? 'disabled title="Offline mode: Sending to driver is disabled while offline"' : ''}>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                        </svg>
-                        <span>${depStatus === 'dispatched' ? 'Resend to driver' : 'Send to driver'}</span>
-                      </button>
-                    ` : ''}
-                  </div>
-
-                  <!-- Admin Departure Controls -->
-                  ${isAdmin ? `
-                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                      ${depStatus === 'open' ? `
-                        <button onclick="handleMarkAsFull('${dep.id}', event)" class="btn-secondary touch-target" style="height: 38px; padding: 0 10px; font-size: 12.5px; ${isOffline ? 'opacity: 0.45; cursor: not-allowed;' : ''}" ${isOffline ? 'disabled title="Disabled offline"' : ''}>
-                          <span>Mark Full</span>
-                        </button>
-                        <button onclick="handleCloseEnoughSeats('${dep.id}', event)" class="btn-secondary touch-target" style="height: 38px; padding: 0 10px; font-size: 12.5px; ${isOffline ? 'opacity: 0.45; cursor: not-allowed;' : ''}" ${isOffline ? 'disabled title="Disabled offline"' : ''}>
-                          <span>Close Booking</span>
-                        </button>
-                      ` : `
-                        <button onclick="handleReopenDeparture('${dep.id}', event)" class="btn-secondary touch-target" style="height: 38px; padding: 0 10px; font-size: 12.5px; ${isOffline ? 'opacity: 0.45; cursor: not-allowed;' : ''}" ${isOffline ? 'disabled title="Disabled offline"' : ''}>
-                          <span>Reopen</span>
-                        </button>
-                      `}
-                      <button onclick="openAssignDriverModal('${dep.id}')" class="btn-secondary touch-target" style="height: 38px; padding: 0 10px; font-size: 12.5px; ${isOffline ? 'opacity: 0.45; cursor: not-allowed;' : ''}" ${isOffline ? 'disabled title="Offline mode: Driver assignment is disabled while offline"' : ''}>
-                        <span>Driver Depost</span>
-                      </button>
-                      <button onclick="openEditDepartureModal('${dep.id}')" class="btn-secondary touch-target" style="height: 38px; padding: 0 10px; font-size: 12.5px; ${isOffline ? 'opacity: 0.45; cursor: not-allowed;' : ''}" ${isOffline ? 'disabled title="Offline mode: Editing departure is disabled while offline"' : ''}>
-                        <span>Edit</span>
-                      </button>
-                    </div>
-                  ` : ''}
-                </div>
-
-                <!-- Customer Manifest Views (Desktop Table + Mobile 390px Stacked Cards) -->
+              <div style="border-top: 1px solid var(--rule-paper); padding-top: 14px; margin-top: 4px;">
                 ${renderDepartureCustomersView(dep, isAdmin)}
-
-                <!-- Audit Trail Section (Admin only) -->
                 ${isAdmin ? renderDepartureAuditTrail(dep.id) : ''}
-
               </div>
             ` : ''}
 
@@ -2977,126 +3483,106 @@
     }
 
     // ========================================================================
-    // MAIN TAB NAVIGATION & FULL / CLOSED TOURS VIEW (PART 4)
+    // MAIN TAB NAVIGATION (PART 4: OPEN FLEET VS FULL & CLOSED TOURS)
     // ========================================================================
     function switchMainTab(tab) {
-      state.activeTab = tab;
-      const openSection = document.getElementById('openDeparturesSection');
-      const fullSection = document.getElementById('fullDeparturesSection');
-      const openBtn = document.getElementById('navTabOpenBtn');
-      const fullBtn = document.getElementById('navTabFullBtn');
+      state.activeMainTab = (tab === 'open' ? 'open' : 'full_closed');
+      const openSec = document.getElementById('openDeparturesSection');
+      const fullSec = document.getElementById('fullDeparturesSection');
+      const segBtnOpen = document.getElementById('segBtnOpen');
+      const segBtnFull = document.getElementById('segBtnFull');
 
-      if (tab === 'full_closed') {
-        if (openSection) openSection.style.display = 'none';
-        if (fullSection) fullSection.style.display = 'flex';
-        if (openBtn) {
-          openBtn.style.borderBottomColor = 'transparent';
-          openBtn.style.color = 'var(--ink-secondary)';
-          openBtn.style.backgroundColor = 'transparent';
+      if (state.activeMainTab === 'open') {
+        if (openSec) openSec.style.display = 'flex';
+        if (fullSec) fullSec.style.display = 'none';
+        if (segBtnOpen) {
+          segBtnOpen.classList.add('active');
+          segBtnOpen.setAttribute('aria-selected', 'true');
         }
-        if (fullBtn) {
-          fullBtn.style.borderBottomColor = 'var(--accent-orange)';
-          fullBtn.style.color = 'var(--accent-orange)';
-          fullBtn.style.backgroundColor = 'var(--surface-card)';
-        }
-        renderFullDeparturesList();
-      } else {
-        if (openSection) openSection.style.display = 'flex';
-        if (fullSection) fullSection.style.display = 'none';
-        if (openBtn) {
-          openBtn.style.borderBottomColor = 'var(--accent-orange)';
-          openBtn.style.color = 'var(--accent-orange)';
-          openBtn.style.backgroundColor = 'var(--surface-card)';
-        }
-        if (fullBtn) {
-          fullBtn.style.borderBottomColor = 'transparent';
-          fullBtn.style.color = 'var(--ink-secondary)';
-          fullBtn.style.backgroundColor = 'transparent';
+        if (segBtnFull) {
+          segBtnFull.classList.remove('active');
+          segBtnFull.setAttribute('aria-selected', 'false');
         }
         renderDeparturesList();
+      } else {
+        if (openSec) openSec.style.display = 'none';
+        if (fullSec) fullSec.style.display = 'flex';
+        if (segBtnOpen) {
+          segBtnOpen.classList.remove('active');
+          segBtnOpen.setAttribute('aria-selected', 'false');
+        }
+        if (segBtnFull) {
+          segBtnFull.classList.add('active');
+          segBtnFull.setAttribute('aria-selected', 'true');
+        }
+        renderFullDeparturesList();
       }
+      updateTabBadges();
+      renderUnifiedDateChips();
     }
 
     function updateTabBadges() {
-      const openCount = (state.departures || []).filter(d => (d.status || 'open') === 'open').length;
-      const closedCount = (state.departures || []).filter(d => (d.status || 'open') !== 'open').length;
+      const allDeps = state.departures || [];
+      const openCount = allDeps.filter(d => (d.status || 'open') === 'open').length;
+      const closedCount = allDeps.filter(d => (d.status || 'open') !== 'open').length;
+
+      const segCountOpen = document.getElementById('segCountOpen');
+      if (segCountOpen) segCountOpen.textContent = openCount;
+
+      const segCountFull = document.getElementById('segCountFull');
+      if (segCountFull) segCountFull.textContent = closedCount;
+
+      // Legacy elements fallback if present
       const openBadge = document.getElementById('navTabOpenBadge');
-      const fullBadge = document.getElementById('navTabFullBadge');
-      const openViewClosedCount = document.getElementById('openViewClosedCount');
       if (openBadge) openBadge.textContent = openCount;
+      const fullBadge = document.getElementById('navTabFullBadge');
       if (fullBadge) fullBadge.textContent = closedCount;
-      if (openViewClosedCount) openViewClosedCount.textContent = closedCount;
-    }
-
-    function handleFullSearch(val) {
-      state.fullSearchQuery = val || '';
-      renderFullDeparturesList();
-    }
-
-    function handleFullStatusFilter(val) {
-      state.fullFilterStatus = val || 'all';
-      renderFullDeparturesList();
-    }
-
-    function handleFullDateFilter(val) {
-      state.fullFilterDate = val || 'all';
-      renderFullDeparturesList();
-    }
-
-    function resetFullFilters() {
-      state.fullSearchQuery = '';
-      state.fullFilterStatus = 'all';
-      state.fullFilterDate = 'all';
-      const searchInp = document.getElementById('fullSearchInput');
-      const statusSel = document.getElementById('fullFilterStatusSelect');
-      const dateSel = document.getElementById('fullFilterDateSelect');
-      if (searchInp) searchInp.value = '';
-      if (statusSel) statusSel.value = 'all';
-      if (dateSel) dateSel.value = 'all';
-      renderFullDeparturesList();
-    }
-
-    function renderFullDateOptions() {
-      const dateSelect = document.getElementById('fullFilterDateSelect');
-      if (!dateSelect) return;
-      const closedDeps = (state.departures || []).filter(d => (d.status || 'open') !== 'open');
-      const distinctDates = [...new Set(closedDeps.map(d => d.date).filter(Boolean))].sort().reverse();
-      const currentVal = state.fullFilterDate || 'all';
-      let html = '<option value="all">All Departure Dates</option>';
-      distinctDates.forEach(d => {
-        html += `<option value="${escapeHtml(d)}" ${d === currentVal ? 'selected' : ''}>${formatDateDisplay(d)}</option>`;
-      });
-      dateSelect.innerHTML = html;
+      const openClosedCount = document.getElementById('openViewClosedCount');
+      if (openClosedCount) openClosedCount.textContent = closedCount;
     }
 
     function renderFullDeparturesList() {
       const container = document.getElementById('fullDeparturesListContainer');
-      const countsEl = document.getElementById('fullDeparturesSummaryCounts');
       if (!container) return;
 
-      renderFullDateOptions();
+      renderUnifiedDateChips();
       updateTabBadges();
 
       const isAdmin = state.role === 'admin';
-      const search = (state.fullSearchQuery || '').toLowerCase().trim();
-      const statusFilter = state.fullFilterStatus || 'all';
-      const dateFilter = state.fullFilterDate || 'all';
+      const search = (state.fullSearchQuery || state.searchQuery || '').toLowerCase().trim();
       const isOffline = !navigator.onLine;
 
       // Filter only departures that are NOT 'open'
       let deps = (state.departures || []).filter(d => (d.status || 'open') !== 'open');
 
-      // Filter by status (full / dispatched)
-      if (statusFilter !== 'all') {
-        deps = deps.filter(d => (d.status || 'open') === statusFilter);
+      // Filter by vehicle
+      if (state.filterVehicle && state.filterVehicle !== 'all') {
+        deps = deps.filter(d => d.vehicleType === state.filterVehicle);
+      }
+
+      // Filter by package/route
+      if (state.filterPackage && state.filterPackage !== 'all') {
+        deps = deps.filter(d => d.packageId === state.filterPackage);
       }
 
       // Filter by date
-      if (dateFilter !== 'all') {
-        deps = deps.filter(d => d.date === dateFilter);
+      if (state.filterDate && state.filterDate !== 'all') {
+        if (state.filterDate === 'custom') {
+          const start = state.filterDateStart;
+          const end = state.filterDateEnd;
+          if (start && end) {
+            deps = deps.filter(d => d.date >= start && d.date <= end);
+          } else if (start) {
+            deps = deps.filter(d => d.date >= start);
+          } else if (end) {
+            deps = deps.filter(d => d.date <= end);
+          }
+        } else {
+          deps = deps.filter(d => d.date === state.filterDate);
+        }
       }
 
-      // Search query filter (matches passenger name, phone, agency, driver, route)
+      // Search query filter
       if (search) {
         deps = deps.filter(d => {
           const pkg = getPackage(d.packageId);
@@ -3113,17 +3599,19 @@
       // Newest departure date first per requirement!
       deps.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 
-      if (countsEl) {
-        const totalClosed = (state.departures || []).filter(d => (d.status || 'open') !== 'open').length;
-        countsEl.textContent = `${deps.length} of ${totalClosed} closed tour(s) shown`;
-      }
-
       if (deps.length === 0) {
+        const isDateFiltered = state.filterDate && state.filterDate !== 'all';
         container.innerHTML = `
-          <div class="paper-card" style="padding: 40px 20px; text-align: center; color: var(--ink-secondary);">
-            <p style="font-size: 16px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">No full or closed tours</p>
-            <p style="font-size: 13.5px; margin-bottom: 16px;">All current departures are open for passenger bookings, or no departures match your filter.</p>
-            <button onclick="resetFullFilters()" class="btn-secondary touch-target">Reset Closed Filters</button>
+          <div class="paper-card" style="padding: 36px 20px; text-align: center; color: var(--ink-secondary);">
+            <p style="font-size: 16px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
+              ${isDateFiltered ? 'No closed tours on this date' : 'No full or closed tours'}
+            </p>
+            <p style="font-size: 13.5px; margin-bottom: 16px;">
+              ${isDateFiltered ? 'There are no closed or full departures scheduled for the selected date.' : 'All current departures are open for passenger bookings, or no departures match your filter.'}
+            </p>
+            <button onclick="${isDateFiltered ? "handleUnifiedDateChipClick('all')" : "resetFilters()"}" class="btn-primary touch-target" style="min-height: 44px; padding: 0 16px; font-weight: 700;">
+              ${isDateFiltered ? 'Show All Dates' : 'Reset All Filters'}
+            </button>
           </div>
         `;
         return;
@@ -3131,7 +3619,7 @@
 
       let html = '';
       deps.forEach(dep => {
-        const pkg = getPackage(dep.packageId);
+        const pkg = getPackage(dep.packageId || dep.package_id);
         const bookedPax = getBookedPax(dep);
         const capacity = Number(dep.capacity) || 8;
         const seatsLeft = Math.max(0, capacity - bookedPax);
@@ -3140,145 +3628,103 @@
 
         const driver = getDriverForDeparture(dep);
         const driverName = driver ? driver.name : (dep.driverName || '').trim();
-        const driverPhone = driver ? driver.phone : '';
-        const driverPlate = driver ? (driver.vehicle_plate || dep.vehiclePlate) : (dep.vehiclePlate || '');
-        const driverText = driverName 
-          ? `Driver: ${escapeHtml(driverName)} ${driverPhone ? '(' + escapeHtml(driverPhone) + ')' : ''} ${driverPlate ? '[' + escapeHtml(driverPlate) + ']' : ''}`
-          : 'Pending Driver Depost';
+        const vType = dep.vehicleType || dep.vehicle_type;
+        const vehicleLabel = vType === 'ev_van' ? 'EV Van (12)' : (vType === 'land_cruiser' ? 'Land Cruiser (9)' : 'Scorpio 4x4 (8)');
+        const shortDateLine = formatShortDateDisplay(dep.date, dep.nepaliDate || dep.nepali_date);
 
-        const vehicleLabel = dep.vehicleType === 'ev_van' ? 'EV Van (12)' : (dep.vehicleType === 'land_cruiser' ? 'Land Cruiser (9)' : 'Scorpio 4x4 (8)');
+        const statusPillHtml = depStatus === 'dispatched'
+          ? `<span class="status-pill" style="background-color: #14532D; color: #FFFFFF;">DISPATCHED</span>`
+          : `<span class="status-pill full">FULL</span>`;
 
-        let statusBadgeHtml = '';
-        let statusSubtextHtml = '';
-
-        if (depStatus === 'full') {
-          if (isAdmin) {
-            statusBadgeHtml = `
-              <div class="badge dep-status-badge" style="background-color: #57534E; color: #FFFFFF; font-size: 13px; padding: 5px 10px; font-weight: 800; border: 1px solid #44403C;">
-                FULL &bull; ${seatsLeft} seat${seatsLeft === 1 ? '' : 's'} unsold
-              </div>
-            `;
-            statusSubtextHtml = `${bookedPax} of ${capacity} booked`;
-          } else {
-            statusBadgeHtml = `
-              <div class="badge dep-status-badge" style="background-color: #57534E; color: #FFFFFF; font-size: 13px; padding: 5px 10px; font-weight: 800; border: 1px solid #44403C;">
-                FULL
-              </div>
-            `;
-            statusSubtextHtml = `Booking Closed`;
-          }
-        } else if (depStatus === 'dispatched') {
-          const timeStr = dep.dispatchedAt ? new Date(dep.dispatchedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-          statusBadgeHtml = `
-            <div class="badge dep-status-badge" style="background-color: #14532D; color: #FFFFFF; font-size: 13px; padding: 5px 10px; font-weight: 800; border: 1px solid #052E16;">
-              DISPATCHED
-            </div>
-          `;
-          if (isAdmin) {
-            statusSubtextHtml = `${timeStr ? 'At ' + timeStr + ' &bull; ' : ''}${seatsLeft} unsold`;
-          } else {
-            statusSubtextHtml = timeStr ? `Dispatched at ${timeStr}` : 'En Route';
-          }
-        }
-
-        // Admin action buttons on header
-        let headerActionsHtml = '';
-        if (isAdmin) {
-          headerActionsHtml = `
-            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 6px;" onclick="event.stopPropagation();">
-              <button onclick="handleSendToDriverClick('${dep.id}', event)" class="btn-primary touch-target" style="height: 32px; padding: 0 10px; font-size: 12px; background-color: #128C7E; border-color: #075E54; ${isOffline ? 'opacity: 0.5; cursor: not-allowed;' : ''}" ${isOffline ? 'disabled title="Disabled offline"' : ''}>
-                ${depStatus === 'dispatched' ? 'Resend to driver' : 'Send to driver'}
-              </button>
-              ${depStatus !== 'dispatched' ? `
-                <button onclick="setDepartureStatus('${dep.id}', 'dispatched', event)" class="btn-secondary touch-target" style="height: 32px; padding: 0 8px; font-size: 12px; font-weight: 700; color: #14532D; border-color: #14532D; ${isOffline ? 'opacity: 0.5; cursor: not-allowed;' : ''}" ${isOffline ? 'disabled title="Disabled offline"' : ''}>
-                  Mark dispatched
-                </button>
-              ` : ''}
-              <button onclick="handleReopenDeparture('${dep.id}', event)" class="btn-secondary touch-target" style="height: 32px; padding: 0 8px; font-size: 12px; ${isOffline ? 'opacity: 0.5; cursor: not-allowed;' : ''}" ${isOffline ? 'disabled title="Disabled offline"' : ''}>
-                Reopen
-              </button>
-            </div>
+        // Build Seat Matrix Squares
+        let seatSquaresHtml = '';
+        for (let i = 0; i < capacity; i++) {
+          const isBooked = i < bookedPax;
+          const showAsBooked = (!isAdmin) ? true : isBooked;
+          seatSquaresHtml += `
+            <span class="seat-square ${showAsBooked ? 'booked' : 'empty'}" 
+                  title="${!isAdmin ? 'Seat Allocated' : `Seat ${i + 1}: ${isBooked ? 'Booked' : 'Available'}`}" 
+                  aria-hidden="true"></span>
           `;
         }
 
         html += `
-          <article class="paper-card" id="full-card-${dep.id}" style="overflow: hidden; opacity: 0.95; background-color: #FAF7F2; border: 1.5px solid var(--rule-paper-strong);">
+          <article class="tour-card" id="full-card-${dep.id}" style="opacity: 0.95; background-color: #FAF7F2;">
             
-            <div style="background-color: var(--surface-subtle); padding: 6px 16px; font-size: 11px; font-weight: 700; color: var(--ink-secondary); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--rule-paper);">
-              <span>ARCHIVED &bull; ${depStatus.toUpperCase()} TOUR</span>
-              <span style="font-weight: 800; color: ${depStatus === 'dispatched' ? '#14532D' : 'var(--accent-orange)'};">
-                ${depStatus === 'dispatched' ? '✓ Dispatched' : 'Closed / Full'}
-              </span>
-            </div>
-
-            <!-- Card Header -->
-            <div style="padding: 16px 20px; cursor: pointer; user-select: none;" onclick="toggleDepartureExpanded('${dep.id}', event)">
-              <div style="display: flex; flex-direction: column; gap: 12px;">
-                
-                <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-                  <div style="flex: 1; min-width: 200px;">
-                    <h3 style="font-size: 18px; font-weight: 800; color: var(--ink-primary); line-height: 1.25; margin: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                      <span>${escapeHtml(pkg.name)}</span>
-                      ${dep.vehicleLabel ? `<span class="badge badge-paper" style="font-size: 12px; font-weight: 800; border: 1px solid var(--rule-paper-strong);">${escapeHtml(dep.vehicleLabel)}</span>` : ''}
-                      ${dep.isPrivate ? `<span class="badge" style="background-color: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 800; border: 1px solid #FCD34D;">PRIVATE TOUR</span>` : ''}
-                    </h3>
-
-                    <!-- Metadata badges -->
-                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px;">
-                      <span class="badge badge-paper">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                          <line x1="16" y1="2" x2="16" y2="6"></line>
-                          <line x1="8" y1="2" x2="8" y2="6"></line>
-                          <line x1="3" y1="10" x2="21" y2="10"></line>
-                        </svg>
-                        <span>${formatDateDisplay(dep.date)}</span>
-                        ${dep.nepaliDate ? `&bull; <strong style="color: var(--accent-orange);">${escapeHtml(dep.nepaliDate)}</strong>` : ''}
-                      </span>
-
-                      <span class="badge badge-paper">
-                        <span>${vehicleLabel}</span>
-                      </span>
-
-                      <span class="badge ${driverName ? 'badge-paper' : 'badge-orange'}">
-                        <span>${driverText}</span>
-                      </span>
-
-                      <span class="badge badge-orange" style="font-weight: 800;">
-                        ${bookedPax} Passenger${bookedPax === 1 ? '' : 's'}
-                      </span>
-                    </div>
-                  </div>
-
-                  <!-- Status Badge & Action buttons -->
-                  <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0;">
-                    ${statusBadgeHtml}
-                    <span style="font-size: 11.5px; color: var(--ink-secondary); font-weight: 500;">
-                      ${statusSubtextHtml}
-                    </span>
-                    ${headerActionsHtml}
+            <!-- Card Header (Tapping opens passenger manifest) -->
+            <div class="tour-card-header" onclick="toggleDepartureExpanded('${dep.id}', event)">
+              <div class="tour-card-top">
+                <div style="flex: 1; min-width: 0;">
+                  <h3 class="tour-card-title">
+                    <span>${escapeHtml(pkg.name)}</span>
+                    ${dep.vehicleLabel ? `<span class="badge badge-paper" style="font-weight: 700; margin-left: 6px; font-size: 12px;">${escapeHtml(dep.vehicleLabel)}</span>` : ''}
+                    ${dep.isPrivate ? `<span class="badge" style="background-color: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 800; border: 1px solid #FCD34D; margin-left: 6px;">PRIVATE</span>` : ''}
+                  </h3>
+                  <div class="tour-card-meta" style="margin-top: 4px;">
+                    <span style="font-weight: 600; color: var(--ink-primary);">${escapeHtml(shortDateLine)}</span>
+                    <span style="color: var(--ink-muted);">&bull;</span>
+                    <span>${escapeHtml(vehicleLabel)}</span>
+                    ${driverName ? `<span style="color: var(--ink-muted);">&bull;</span><span>Driver: ${escapeHtml(driverName)}</span>` : ''}
+                    ${isAdmin ? `
+                      <span style="color: var(--ink-muted);">&bull;</span>
+                      <span class="badge badge-owed" style="font-size: 11px; padding: 1px 6px;">Owed: ${formatNPR(getTotalRemainingNPR(dep))}</span>
+                    ` : ''}
                   </div>
                 </div>
 
-                <!-- Footer row: Accordion Toggle Indicator -->
-                <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 4px; border-top: 1px dashed var(--rule-paper);">
-                  <span style="font-size: 12px; color: var(--ink-muted);">
-                    ${isAdmin ? `Unsold seats: ${seatsLeft} | Booked: ${bookedPax}/${capacity}` : 'Passenger manifest'}
-                  </span>
-                  <div style="display: flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 700; color: var(--accent-orange);">
-                    <span>${isExpanded ? 'Hide Passengers' : 'View Passengers (' + (dep.customers || []).length + ')'}</span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: ${isExpanded ? 'rotate(180deg)' : 'rotate(0)'}; transition: transform 0.15s ease;" aria-hidden="true">
-                      <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
+                <!-- Status Pill -->
+                <div style="flex-shrink: 0;">
+                  ${statusPillHtml}
+                </div>
+              </div>
+
+              <!-- Seat Squares Row with Manifest Toggle Indicator -->
+              <div class="tour-card-seats-row">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 12px; font-weight: 700; color: var(--ink-secondary);">Seats:</span>
+                  <div class="seat-grid" aria-label="${bookedPax} of ${capacity} seats booked">
+                    ${seatSquaresHtml}
                   </div>
                 </div>
 
+                <div style="font-size: 12.5px; font-weight: 700; color: var(--accent-orange); display: inline-flex; align-items: center; gap: 4px;">
+                  <span>${isExpanded ? 'Hide manifest' : 'Manifest (' + (dep.customers || []).length + ')'}</span>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transform: ${isExpanded ? 'rotate(180deg)' : 'rotate(0)'}; transition: transform 0.15s ease;">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
               </div>
             </div>
 
-            <!-- Customer Manifest Drawer -->
+            <!-- Admin Visible Controls Bar (Admin only) -->
+            ${isAdmin ? `
+              <div class="card-direct-actions-bar" onclick="event.stopPropagation();">
+                ${depStatus === 'dispatched' ? `
+                  <button onclick="handleSendToDriverClick('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700; color: #128C7E; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <span>Resend to driver</span>
+                  </button>
+                  <button onclick="handleReopenDeparture('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700;">
+                    Reopen
+                  </button>
+                ` : `
+                  <button onclick="setDepartureStatus('${dep.id}', 'dispatched', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700; color: #14532D;">
+                    Dispatch
+                  </button>
+                  <button onclick="handleSendToDriverClick('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700; color: #128C7E; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <span>Send to driver</span>
+                  </button>
+                  <button onclick="handleReopenDeparture('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700;">
+                    Reopen
+                  </button>
+                `}
+              </div>
+            ` : ''}
+
+            <!-- Passenger Manifest Accordion (Opened by tapping card) -->
             ${isExpanded ? `
-              <div style="border-top: 1px solid var(--rule-paper); background-color: var(--surface-card); padding: 18px 20px;">
+              <div style="border-top: 1px solid var(--rule-paper); padding-top: 14px; margin-top: 4px;">
                 ${renderDepartureCustomersView(dep, isAdmin)}
                 ${isAdmin ? renderDepartureAuditTrail(dep.id) : ''}
               </div>
@@ -3774,6 +4220,93 @@
           setTimeout(() => badge.classList.remove('visible'), 2200);
         }
       });
+    }
+
+    /**
+     * ADMIN: Inline Package Name Edit with Departure Count & Audit Trail
+     */
+    function handleEditPackageNameInline(pkgId, currentName, event) {
+      if (event) event.stopPropagation();
+      if (!enforceRolePermission('manage_packages', 'package')) return;
+      if (!navigator.onLine) {
+        showToast('Offline mode: Modifying package names is disabled while offline.', 'error');
+        return;
+      }
+
+      const pkg = getPackage(pkgId);
+      if (!pkg) return;
+
+      const depCount = (state.departures || []).filter(d => d.packageId === pkgId).length;
+      const promptMsg = `Edit Tour Package Name:\nCurrently used by ${depCount} departure${depCount === 1 ? '' : 's'}.\n\nEnter new package name:`;
+      const newName = prompt(promptMsg, pkg.name);
+
+      if (newName === null) return; // Cancelled
+      const trimmed = newName.trim();
+      if (!trimmed) {
+        showToast('Package name cannot be empty.', 'error');
+        return;
+      }
+      if (trimmed === pkg.name) return; // Unchanged
+
+      const oldName = pkg.name;
+      pkg.name = trimmed;
+      saveState();
+
+      // Log audit trail
+      logAuditEvent(null, `Admin renamed package "${oldName}" to "${trimmed}" (affects ${depCount} departure(s))`);
+      showToast(`Package renamed to "${trimmed}" (used by ${depCount} departure(s))`);
+
+      if (supabaseClient) {
+        supabaseClient.from('packages').update({ name: trimmed }).eq('id', pkgId).then(({ error }) => {
+          if (error) console.warn('Supabase package rename error:', error);
+        });
+      }
+
+      renderFilterOptions();
+      renderDeparturesList();
+      if (typeof renderFullDeparturesList === 'function') renderFullDeparturesList();
+    }
+
+    /**
+     * ADMIN: Inline Vehicle Label Edit with Autosave Confirmation Pill & Audit Trail
+     */
+    function saveDepartureVehicleLabelInline(depId, newLabel) {
+      if (!enforceRolePermission('update_departure', 'departure')) {
+        renderDeparturesList();
+        return;
+      }
+      if (!navigator.onLine) {
+        showToast('Offline mode: Modifying departures is disabled while offline.', 'error');
+        renderDeparturesList();
+        return;
+      }
+
+      const dep = (state.departures || []).find(d => d.id === depId);
+      if (!dep) return;
+
+      const oldLabel = dep.vehicleLabel || '';
+      const trimmed = (newLabel || '').trim();
+      if (trimmed === oldLabel) return;
+
+      dep.vehicleLabel = trimmed;
+      saveState();
+
+      // Flash "Saved" pill
+      const badge = document.getElementById(`saved-badge-vehtag-${depId}`);
+      if (badge) {
+        badge.classList.add('visible');
+        setTimeout(() => badge.classList.remove('visible'), 2200);
+      }
+
+      // Log audit trail
+      logAuditEvent(depId, `Admin updated vehicle label to "${trimmed}" (was "${oldLabel}")`);
+      showToast(`Vehicle label updated to "${trimmed || 'None'}"`);
+
+      if (supabaseClient) {
+        supabaseClient.from('departures').update({ vehicle_label: trimmed }).eq('id', depId).then(({ error }) => {
+          if (error) console.warn('Supabase vehicle label update error:', error);
+        });
+      }
     }
 
     /**
@@ -4559,15 +5092,7 @@
       const dep = (state.departures || []).find(d => d.id === depId);
       if (!dep) return;
 
-      const driver = getDriverForDeparture(dep);
-      const phone = driver ? driver.phone : '';
-
-      if (!phone || !phone.trim()) {
-        alert('A driver phone number is required to send via WhatsApp. Please assign a driver from the Drivers registry first.');
-        openAssignDriverModal(depId);
-        return;
-      }
-
+      // Senders can send with or without an assigned driver (opens WhatsApp with/without phone).
       openManifestModal(depId);
     }
 
@@ -4576,34 +5101,40 @@
     // ========================================================================
     function formatWhatsAppDriverPhone(rawPhone) {
       if (!rawPhone) return '';
-      let clean = rawPhone.replace(/[^0-9]/g, '');
+      let clean = String(rawPhone).trim().replace(/\D/g, '');
       if (clean.startsWith('00')) clean = clean.substring(2);
-      // Nepal numbers: add 977 if the number starts with 98 or 97 and has 10 digits
-      if (clean.length === 10 && (clean.startsWith('98') || clean.startsWith('97'))) {
-        return '977' + clean;
-      }
+
       if (clean.startsWith('977')) {
-        return clean;
+        let rest = clean.substring(3).replace(/^0+/, '');
+        return '977' + rest;
       }
-      if (clean.length === 10) {
+
+      // Remove leading domestic zeros (e.g. 09841234567 -> 9841234567 or 01-4412345 -> 14412345)
+      clean = clean.replace(/^0+/, '');
+      if (!clean) return '';
+
+      // If domestic Nepal mobile or landline (7-10 digits), prepend 977
+      if (clean.length >= 7 && clean.length <= 10) {
         return '977' + clean;
       }
       return clean;
     }
 
-    function buildDispatchMessage(dep, includeAmounts = true) {
+    function buildDispatchMessage(dep) {
       const pkg = getPackage(dep.packageId);
       const customers = dep.customers || [];
       const totalPax = customers.reduce((sum, c) => sum + (Number(c.pax) || 0), 0);
 
-      // Extract clean pickup points from customer notes
+      // Extract clean pickup points from customer notes/locations
       const pickups = [];
       customers.forEach(c => {
-        if (c.note) {
+        if (c.pickupLocation && c.pickupLocation.trim()) {
+          const loc = c.pickupLocation.trim();
+          if (!pickups.includes(loc)) pickups.push(loc);
+        } else if (c.note) {
           const parts = c.note.split('•');
           let pickupPart = parts[0].trim();
-          // Filter out financial words like rec, pkg
-          if (pickupPart && !pickupPart.toLowerCase().includes('rec') && !pickupPart.toLowerCase().includes('pkg')) {
+          if (pickupPart && !pickupPart.toLowerCase().includes('rec') && !pickupPart.toLowerCase().includes('pkg') && !pickupPart.toLowerCase().includes('rm')) {
             if (!pickups.includes(pickupPart)) {
               pickups.push(pickupPart);
             }
@@ -4629,30 +5160,24 @@
 
       customers.forEach((c, idx) => {
         const phoneStr = c.phone ? c.phone.trim() : 'Phone not provided';
-        lines.push(`${idx + 1}. ${c.name} x ${c.pax} - ${phoneStr}`);
+        let detail = `${idx + 1}. ${c.name} x ${c.pax} - ${phoneStr}`;
+        if (c.note && c.note.trim()) {
+          // Filter out financial notes if any
+          const cleanNote = c.note.split('•').map(p => p.trim()).filter(p => !p.toLowerCase().includes('npr') && !p.toLowerCase().includes('paid') && !p.toLowerCase().includes('advance') && !p.toLowerCase().includes('rm')).join(' • ');
+          if (cleanNote) {
+            detail += ` (${cleanNote})`;
+          }
+        }
+        lines.push(detail);
       });
 
-      if (includeAmounts) {
-        const collectItems = [];
-        customers.forEach(c => {
-          const rem = Number(c.remaining) || 0;
-          if (rem > 0) {
-            collectItems.push(`${c.name}: NPR ${rem.toLocaleString('en-IN')}`);
-          }
-        });
-
-        if (collectItems.length > 0) {
-          lines.push(`Collect on vehicle:`);
-          collectItems.forEach(ci => lines.push(`- ${ci}`));
-        } else {
-          lines.push(`Collect on vehicle: None (Paid in full)`);
-        }
-      } else {
-        lines.push(`Collect on vehicle: [Omitted by dispatch desk]`);
-      }
+      // STRICT REQUIREMENT: "Each vehicle's message must list only its own passengers and contain no prices or advances."
+      // Therefore, no prices or advances are included here!
 
       const depNotes = (dep.notes || '').trim();
-      lines.push(`Notes: ${depNotes || 'None'}`);
+      if (depNotes) {
+        lines.push(`Notes: ${depNotes}`);
+      }
 
       return lines.join('\n');
     }
@@ -4668,30 +5193,18 @@
       const subTitle = document.getElementById('manifestSubtitle');
       if (subTitle) {
         const driver = getDriverForDeparture(dep);
-        const driverName = driver ? driver.name : (dep.driverName || 'Pending Driver');
-        const driverPhone = driver ? driver.phone : 'No phone registered';
+        const driverName = driver ? driver.name : (dep.driverName || 'No driver assigned');
+        const driverPhone = driver && driver.phone ? driver.phone : (dep.driverName ? 'No phone' : 'Choose contact in WhatsApp');
         const vLabel = dep.vehicleLabel ? ` • ${dep.vehicleLabel}` : '';
         subTitle.textContent = `Driver: ${driverName} (${driverPhone})${vLabel} • Route: ${getPackage(dep.packageId).name}`;
       }
 
-      const chk = document.getElementById('dispatchIncludeAmounts');
-      if (chk) chk.checked = true;
-
-      const text = buildDispatchMessage(dep, true);
+      const text = buildDispatchMessage(dep);
       const textarea = document.getElementById('manifestTextarea');
       if (textarea) textarea.value = text;
 
       const modal = document.getElementById('manifestModal');
       if (modal) modal.classList.remove('hidden');
-    }
-
-    function handleDispatchAmountsToggle() {
-      if (!activeManifestDep) return;
-      const chk = document.getElementById('dispatchIncludeAmounts');
-      const include = chk ? chk.checked : true;
-      const text = buildDispatchMessage(activeManifestDep, include);
-      const textarea = document.getElementById('manifestTextarea');
-      if (textarea) textarea.value = text;
     }
 
     function closeManifestModal() {
@@ -4703,44 +5216,107 @@
     function copyManifestText() {
       const textarea = document.getElementById('manifestTextarea');
       if (!textarea) return;
-      textarea.select();
-      navigator.clipboard.writeText(textarea.value).then(() => {
-        showToast('Message copied to clipboard!');
-      }).catch(() => {
-        showToast('Message text selected. Press Ctrl+C to copy.');
-      });
+      const text = textarea.value;
+      const copyBtnText = document.getElementById('manifestCopyBtnText');
+
+      function confirmCopied() {
+        if (copyBtnText) {
+          copyBtnText.textContent = '✓ Copied';
+          setTimeout(() => { copyBtnText.textContent = 'Copy message'; }, 2500);
+        }
+        showToast('Manifest copied to clipboard!');
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          confirmCopied();
+        }).catch(() => {
+          try {
+            textarea.select();
+            document.execCommand('copy');
+            confirmCopied();
+          } catch (e) {
+            showToast('Please press Ctrl+C to copy selected text.', 'error');
+          }
+        });
+      } else {
+        try {
+          textarea.select();
+          document.execCommand('copy');
+          confirmCopied();
+        } catch (e) {
+          showToast('Please press Ctrl+C to copy selected text.', 'error');
+        }
+      }
+    }
+
+    function shareManifest() {
+      const textarea = document.getElementById('manifestTextarea');
+      const text = textarea ? textarea.value : '';
+      if (!text) return;
+
+      if (navigator.share) {
+        navigator.share({
+          title: 'Bookings Dispatch Manifest',
+          text: text
+        }).catch(err => {
+          if (err.name !== 'AbortError') {
+            copyManifestText();
+          }
+        });
+      } else {
+        copyManifestText();
+        showToast('Web Share not supported in this browser; manifest copied to clipboard.');
+      }
     }
 
     function openWhatsAppWeb() {
       if (!activeManifestDep) return;
       if (!navigator.onLine) {
-        showToast('Offline mode: Sending to driver via WhatsApp is disabled while offline.', 'error');
+        showToast('Offline mode: Dispatching via WhatsApp is disabled while offline.', 'error');
         return;
       }
 
       const driver = getDriverForDeparture(activeManifestDep);
-      const phone = driver ? driver.phone : '';
-      if (!phone || !phone.trim()) {
-        alert('A driver phone number is required to send via WhatsApp. Please assign a registered driver from the Drivers registry first.');
-        closeManifestModal();
-        openAssignDriverModal(activeManifestDep.id);
-        return;
-      }
-
-      const waPhone = formatWhatsAppDriverPhone(phone);
-      if (!waPhone) {
-        alert('Driver phone number could not be formatted. Please check the driver phone number in Drivers registry.');
-        closeManifestModal();
-        openAssignDriverModal(activeManifestDep.id);
-        return;
-      }
+      const rawPhone = driver ? driver.phone : '';
+      const waPhone = formatWhatsAppDriverPhone(rawPhone);
 
       const textarea = document.getElementById('manifestTextarea');
       const messageText = textarea ? textarea.value : '';
-      const url = `https://wa.me/${waPhone}?text=${encodeURIComponent(messageText)}`;
+      const encodedMsg = encodeURIComponent(messageText);
 
-      // Open WhatsApp in new window/tab
-      window.open(url, '_blank');
+      // Determine WhatsApp URL:
+      // When driver phone exists: https://wa.me/<number>?text=<encoded message>
+      // When NO driver or no phone: https://wa.me/?text=<encoded message> (user chooses contact or group)
+      let url = '';
+      if (waPhone) {
+        url = `https://wa.me/${waPhone}?text=${encodedMsg}`;
+      } else {
+        url = `https://wa.me/?text=${encodedMsg}`;
+      }
+
+      // Check if message is very long (URL length > 2000 chars)
+      if (url.length > 2000) {
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(messageText);
+          }
+        } catch (e) {}
+        showToast(`Notice: Manifest is ${messageText.length} characters. WhatsApp opened; full manifest was also copied to clipboard if truncated.`, 'info');
+      }
+
+      // DIRECT SYNCHRONOUS WINDOW.OPEN inside click handler to prevent browser popup blocking!
+      try {
+        const opened = window.open(url, '_blank');
+        if (!opened || opened.closed || typeof opened.closed === 'undefined') {
+          showToast('Popup was blocked by your browser. Please allow popups or use Copy message.', 'error');
+          window.location.href = url;
+        }
+      } catch (err) {
+        console.warn('Direct window.open failed:', err);
+        showToast('Could not open WhatsApp directly. Full manifest copied to clipboard.', 'error');
+        copyManifestText();
+      }
 
       const depId = activeManifestDep.id;
       setTimeout(() => {
@@ -4748,7 +5324,7 @@
           setDepartureStatus(depId, 'dispatched');
           closeManifestModal();
         }
-      }, 350);
+      }, 400);
     }
 
 
@@ -5034,312 +5610,7 @@
       renderDeparturesList();
     }
 
-    // ========================================================================
-    // MAIN TAB NAVIGATION (PART 4: OPEN FLEET VS FULL & CLOSED TOURS)
-    // ========================================================================
-    function switchMainTab(tab) {
-      state.activeMainTab = tab;
-      const openSec = document.getElementById('openDeparturesSection');
-      const fullSec = document.getElementById('fullDeparturesSection');
-      const openBtn = document.getElementById('navTabOpenBtn');
-      const fullBtn = document.getElementById('navTabFullBtn');
-
-      if (tab === 'open') {
-        if (openSec) openSec.style.display = 'flex';
-        if (fullSec) fullSec.style.display = 'none';
-
-        if (openBtn) {
-          openBtn.style.borderBottom = '3px solid var(--accent-orange)';
-          openBtn.style.color = 'var(--accent-orange)';
-          openBtn.style.backgroundColor = 'var(--surface-card)';
-          openBtn.style.borderTop = '1px solid var(--rule-paper)';
-          openBtn.style.borderLeft = '1px solid var(--rule-paper)';
-          openBtn.style.borderRight = '1px solid var(--rule-paper)';
-          openBtn.style.fontWeight = '800';
-        }
-        if (fullBtn) {
-          fullBtn.style.borderBottom = '3px solid transparent';
-          fullBtn.style.color = 'var(--ink-secondary)';
-          fullBtn.style.backgroundColor = 'transparent';
-          fullBtn.style.borderTop = '1px solid transparent';
-          fullBtn.style.borderLeft = '1px solid transparent';
-          fullBtn.style.borderRight = '1px solid transparent';
-          fullBtn.style.fontWeight = '700';
-        }
-        renderDeparturesList();
-      } else {
-        if (openSec) openSec.style.display = 'none';
-        if (fullSec) fullSec.style.display = 'flex';
-
-        if (fullBtn) {
-          fullBtn.style.borderBottom = '3px solid var(--accent-orange)';
-          fullBtn.style.color = 'var(--accent-orange)';
-          fullBtn.style.backgroundColor = 'var(--surface-card)';
-          fullBtn.style.borderTop = '1px solid var(--rule-paper)';
-          fullBtn.style.borderLeft = '1px solid var(--rule-paper)';
-          fullBtn.style.borderRight = '1px solid var(--rule-paper)';
-          fullBtn.style.fontWeight = '800';
-        }
-        if (openBtn) {
-          openBtn.style.borderBottom = '3px solid transparent';
-          openBtn.style.color = 'var(--ink-secondary)';
-          openBtn.style.backgroundColor = 'transparent';
-          openBtn.style.borderTop = '1px solid transparent';
-          openBtn.style.borderLeft = '1px solid transparent';
-          openBtn.style.borderRight = '1px solid transparent';
-          openBtn.style.fontWeight = '700';
-        }
-        renderFullDateOptions();
-        renderFullDeparturesList();
-      }
-      updateTabBadges();
-    }
-
-    function updateTabBadges() {
-      const allDeps = state.departures || [];
-      const openCount = allDeps.filter(d => (d.status || 'open') === 'open').length;
-      const closedCount = allDeps.filter(d => (d.status || 'open') !== 'open').length;
-
-      const openBadge = document.getElementById('navTabOpenBadge');
-      if (openBadge) openBadge.textContent = openCount;
-
-      const fullBadge = document.getElementById('navTabFullBadge');
-      if (fullBadge) fullBadge.textContent = closedCount;
-
-      const openClosedCount = document.getElementById('openViewClosedCount');
-      if (openClosedCount) openClosedCount.textContent = closedCount;
-    }
-
-    function renderFullDateOptions() {
-      const dateSelect = document.getElementById('fullFilterDateSelect');
-      if (!dateSelect) return;
-      const currentVal = state.fullFilterDate || 'all';
-
-      const closedDeps = (state.departures || []).filter(d => (d.status || 'open') !== 'open');
-      const uniqueDates = Array.from(new Set(closedDeps.map(d => d.date).filter(Boolean))).sort().reverse();
-
-      let html = '<option value="all">All Departure Dates</option>';
-      uniqueDates.forEach(dt => {
-        html += `<option value="${escapeHtml(dt)}" ${dt === currentVal ? 'selected' : ''}>${escapeHtml(formatDateDisplay(dt))}</option>`;
-      });
-      dateSelect.innerHTML = html;
-    }
-
-    function handleFullSearch(val) {
-      state.fullSearchQuery = val;
-      renderFullDeparturesList();
-    }
-
-    function handleFullStatusFilter(val) {
-      state.fullFilterStatus = val;
-      renderFullDeparturesList();
-    }
-
-    function handleFullDateFilter(val) {
-      state.fullFilterDate = val;
-      renderFullDeparturesList();
-    }
-
-    function renderFullDeparturesList() {
-      const container = document.getElementById('fullDeparturesListContainer');
-      const countsEl = document.getElementById('fullDeparturesSummaryCounts');
-      if (!container) return;
-
-      const isAdmin = state.role === 'admin';
-      const search = (state.fullSearchQuery || '').toLowerCase().trim();
-      const statusFilter = state.fullFilterStatus || 'all';
-      const dateFilter = state.fullFilterDate || 'all';
-      const isOffline = !navigator.onLine;
-
-      let deps = [...(state.departures || [])];
-
-      // Only closed / full / dispatched
-      deps = deps.filter(d => (d.status || 'open') !== 'open');
-
-      // Status sub-filter
-      if (statusFilter !== 'all') {
-        deps = deps.filter(d => (d.status || 'open') === statusFilter);
-      }
-
-      // Date sub-filter
-      if (dateFilter !== 'all') {
-        deps = deps.filter(d => d.date === dateFilter);
-      }
-
-      // Search filter
-      if (search) {
-        deps = deps.filter(d => {
-          const pkg = getPackage(d.packageId);
-          if (pkg.name.toLowerCase().includes(search)) return true;
-          if ((d.driverName || '').toLowerCase().includes(search)) return true;
-          return (d.customers || []).some(c => 
-            (c.name || '').toLowerCase().includes(search) ||
-            (c.phone || '').toLowerCase().includes(search) ||
-            (c.agency || '').toLowerCase().includes(search)
-          );
-        });
-      }
-
-      // Newest departure date first per requirement!
-      deps.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-
-      updateTabBadges();
-
-      if (countsEl) {
-        const totalPax = deps.reduce((sum, d) => sum + getBookedPax(d), 0);
-        countsEl.textContent = `${deps.length} archived departure${deps.length === 1 ? '' : 's'} • ${totalPax} passengers booked`;
-      }
-
-      if (deps.length === 0) {
-        container.innerHTML = `
-          <div class="paper-card" style="padding: 40px 20px; text-align: center; color: var(--ink-secondary);">
-            <p style="font-size: 16px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">No closed or full departures</p>
-            <p style="font-size: 13.5px; margin-bottom: 16px;">All active departures are currently open for booking, or none match your filter.</p>
-            <button onclick="switchMainTab('open')" class="btn-primary touch-target">View Open Departures</button>
-          </div>
-        `;
-        return;
-      }
-
-      let html = '';
-
-      deps.forEach(dep => {
-        const pkg = getPackage(dep.packageId);
-        const bookedPax = getBookedPax(dep);
-        const capacity = Number(dep.capacity) || 8;
-        const seatsLeft = Math.max(0, capacity - bookedPax);
-        const isExpanded = Boolean(state.expandedDepartures && state.expandedDepartures[dep.id]);
-        const depStatus = dep.status || 'full';
-
-        // Driver details
-        const driverName = (dep.driverName || '').trim();
-        const driverPlate = (dep.vehiclePlate || '').trim();
-        const driverText = driverName 
-          ? `Driver: ${escapeHtml(driverName)} ${driverPlate ? '(' + escapeHtml(driverPlate) + ')' : ''}`
-          : 'Pending Driver Depost';
-
-        const vehicleLabel = dep.vehicleType === 'ev_van' ? 'EV Van (12)' : (dep.vehicleType === 'land_cruiser' ? 'Land Cruiser (9)' : 'Scorpio 4x4 (8)');
-
-        // Badges:
-        // Admin sees: "FULL • X seats unsold" or "DISPATCHED • At HH:MM • X unsold"
-        // Staff sees: "FULL" (subtext "Booking Closed") or "DISPATCHED" (subtext "En Route") - NO seat numbers shown to staff!
-        let statusBadgeHtml = '';
-        let statusSubtextHtml = '';
-
-        if (depStatus === 'full') {
-          if (isAdmin) {
-            statusBadgeHtml = `
-              <div class="badge dep-status-badge" style="background-color: #57534E; color: #FFFFFF; font-size: 13px; padding: 5px 10px; font-weight: 800; border: 1px solid #44403C;">
-                FULL &bull; ${seatsLeft} seat${seatsLeft === 1 ? '' : 's'} unsold
-              </div>
-            `;
-            statusSubtextHtml = `${bookedPax} of ${capacity} booked`;
-          } else {
-            statusBadgeHtml = `
-              <div class="badge dep-status-badge" style="background-color: #57534E; color: #FFFFFF; font-size: 13px; padding: 5px 10px; font-weight: 800; border: 1px solid #44403C;">
-                FULL
-              </div>
-            `;
-            statusSubtextHtml = `Booking Closed`;
-          }
-        } else if (depStatus === 'dispatched') {
-          const timeStr = dep.dispatchedAt ? new Date(dep.dispatchedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-          statusBadgeHtml = `
-            <div class="badge dep-status-badge" style="background-color: #14532D; color: #FFFFFF; font-size: 13px; padding: 5px 10px; font-weight: 800; border: 1px solid #052E16;">
-              DISPATCHED
-            </div>
-          `;
-          if (isAdmin) {
-            statusSubtextHtml = `${timeStr ? 'At ' + timeStr + ' &bull; ' : ''}${seatsLeft} unsold`;
-          } else {
-            statusSubtextHtml = timeStr ? `Dispatched at ${timeStr}` : 'En Route';
-          }
-        }
-
-        // Header Admin Actions: Reopen, Send to driver
-        let headerActionsHtml = '';
-        if (isAdmin) {
-          headerActionsHtml = `
-            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 6px;" onclick="event.stopPropagation();">
-              <button onclick="handleReopenDeparture('${dep.id}', event)" class="btn-secondary touch-target" style="height: 32px; padding: 0 10px; font-size: 12px; ${isOffline ? 'opacity: 0.5; cursor: not-allowed;' : ''}" ${isOffline ? 'disabled title="Disabled offline"' : ''}>
-                Reopen
-              </button>
-              <button onclick="handleSendToDriverClick('${dep.id}', event)" class="btn-primary touch-target" style="height: 32px; padding: 0 10px; font-size: 12px; background-color: #128C7E; border-color: #075E54; ${isOffline ? 'opacity: 0.5; cursor: not-allowed;' : ''}" ${isOffline ? 'disabled title="Disabled offline"' : ''}>
-                ${depStatus === 'dispatched' ? 'Resend to driver' : 'Send to driver'}
-              </button>
-            </div>
-          `;
-        }
-
-        html += `
-          <article class="paper-card" id="full-departure-card-${dep.id}" style="overflow: hidden; opacity: 0.95; background-color: #FAF7F2; border: 1px solid var(--rule-paper-strong);">
-            
-            <div style="background-color: var(--surface-subtle); padding: 5px 16px; font-size: 11px; font-weight: 700; color: var(--ink-secondary); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--rule-paper);">
-              <span>CLOSED DEPARTURE</span>
-              <span style="text-transform: uppercase; font-weight: 800; color: ${depStatus === 'dispatched' ? '#14532D' : 'var(--ink-secondary)'};">Status: ${depStatus}</span>
-            </div>
-
-            <!-- Card Header / Summary Trigger -->
-            <div style="padding: 16px 20px; cursor: pointer; user-select: none;" onclick="toggleDepartureExpanded('${dep.id}', event)">
-              <div style="display: flex; flex-direction: column; gap: 12px;">
-                
-                <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-                  <div>
-                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                      <h3 style="font-size: 18px; font-weight: 800; color: var(--ink-primary); margin: 0;">
-                        ${escapeHtml(pkg.name)}
-                      </h3>
-                      <span class="badge badge-paper" style="font-size: 12px; font-weight: 700;">
-                        ${dep.vehicleLabel ? escapeHtml(dep.vehicleLabel) : vehicleLabel}
-                      </span>
-                    </div>
-
-                    <div style="font-size: 13px; color: var(--ink-secondary); margin-top: 4px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                      <span>📅 ${escapeHtml(formatDateDisplay(dep.date))}${dep.nepaliDate ? ' (' + escapeHtml(dep.nepaliDate) + ')' : ''}</span>
-                      <span>&bull;</span>
-                      <span style="font-weight: 600;">${escapeHtml(driverText)}</span>
-                      ${dep.notes ? `<span>&bull;</span><span style="color: var(--accent-orange); font-weight: 600;">Trip note: ${escapeHtml(dep.notes)}</span>` : ''}
-                    </div>
-                  </div>
-
-                  <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end;">
-                    ${statusBadgeHtml}
-                    <span style="font-size: 11px; color: var(--ink-muted); margin-top: 4px; font-weight: 600;">
-                      ${statusSubtextHtml}
-                    </span>
-                    ${headerActionsHtml}
-                  </div>
-                </div>
-
-                <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px dashed var(--rule-paper-strong); padding-top: 10px; font-size: 12px;">
-                  <span style="color: var(--ink-secondary); font-weight: 600;">
-                    ${bookedPax} passenger${bookedPax === 1 ? '' : 's'} registered
-                  </span>
-                  <div style="display: flex; align-items: center; gap: 4px; color: var(--ink-secondary); font-weight: 700;">
-                    <span>${isExpanded ? 'Hide Passengers' : 'View Passenger Manifest'}</span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: ${isExpanded ? 'rotate(180deg)' : 'rotate(0)'}; transition: transform 0.15s ease;" aria-hidden="true">
-                      <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-            <!-- Customer Manifest Drawer -->
-            ${isExpanded ? `
-              <div style="border-top: 1px solid var(--rule-paper); background-color: var(--surface-card); padding: 18px 20px;">
-                ${renderDepartureCustomersView(dep, isAdmin)}
-                ${isAdmin ? renderDepartureAuditTrail(dep.id) : ''}
-              </div>
-            ` : ''}
-
-          </article>
-        `;
-      });
-
-      container.innerHTML = html;
-    }
+    // Export tab navigation to window
     window.switchMainTab = switchMainTab;
     window.renderFullDeparturesList = renderFullDeparturesList;
     window.updateTabBadges = updateTabBadges;
@@ -5443,7 +5714,6 @@
     function renderAll() {
       renderRoleUI();
       renderFilterOptions();
-      renderFullDateOptions();
       renderDeparturesList();
       renderFullDeparturesList();
       updateTabBadges();

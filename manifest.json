@@ -1,12 +1,12 @@
 {
-  "name": "Everest Annapurna Deposter — Himalayan Tour Capacity & Dispatch",
-  "short_name": "Deposter",
-  "description": "Himalayan Fleet Capacity, Rotational Seating & Live Seat Dispatch",
+  "name": "Bookings",
+  "short_name": "Bookings",
+  "description": "Himalayan Tour Seat Availability & Fleet Dispatch",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "theme_color": "#B4570F",
+  "theme_color": "#F4EFE6",
   "background_color": "#F4EFE6",
   "icons": [
     {

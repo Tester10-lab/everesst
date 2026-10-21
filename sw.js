@@ -1,7 +1,7 @@
 // ============================================================================
-// EVEREST ANNAPURNA DEPOSTER — SERVICE WORKER (OFFLINE PWA CACHE)
+// BOOKINGS — SERVICE WORKER (OFFLINE PWA CACHE)
 // ============================================================================
-const CACHE_NAME = 'deposter-shell-v2';
+const CACHE_NAME = 'bookings-v4';
 
 // Support manual skipWaiting trigger from app update bar
 self.addEventListener('message', (event) => {
