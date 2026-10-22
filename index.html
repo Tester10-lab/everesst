@@ -22,7 +22,61 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&display=swap" rel="stylesheet">
   
+  <!-- Instant Zero-Flicker Session Detector (Executes before paint) -->
+  <script>
+    (function() {
+      try {
+        var activeUser = localStorage.getItem('deposter_active_user_id');
+        var storageRaw = localStorage.getItem('everest_annapurna_deposter_paper_v1');
+        var hasUser = false;
+        if (storageRaw) {
+          try {
+            var st = JSON.parse(storageRaw);
+            if (st && (st.currentUser || st.role === 'admin')) {
+              hasUser = true;
+            }
+          } catch(e) {}
+        }
+        var sbToken = false;
+        for (var i = 0; i < localStorage.length; i++) {
+          var k = localStorage.key(i);
+          if (k && k.indexOf('sb-') === 0 && k.indexOf('-auth-token') !== -1) {
+            sbToken = true;
+            break;
+          }
+        }
+        if (activeUser || hasUser || sbToken) {
+          document.documentElement.classList.add('has-session');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
   <style>
+    /* Instant Zero-Flicker View Switcher */
+    .has-session #loginView {
+      display: none !important;
+    }
+    .has-session #dashboardAppView {
+      display: block !important;
+    }
+
+    #loginView {
+      opacity: 1;
+      transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #dashboardAppView {
+      opacity: 1;
+      transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .has-session #dashboardAppView {
+      animation: fadeInApp 0.18s ease-out;
+    }
+    @keyframes fadeInApp {
+      from { opacity: 0.25; transform: scale(0.995); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
     /* ==========================================================================
        WARM PAPER DESIGN SYSTEM TOKENS
        No purple/blue gradients, no neon glass, no generic dark dashboard.
@@ -653,7 +707,7 @@
     }
     .segmented-control {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       background-color: var(--surface-subtle);
       border: 1px solid var(--rule-paper);
       border-radius: 10px;
@@ -668,19 +722,27 @@
       background: transparent;
       color: var(--ink-secondary);
       font-family: var(--font-body);
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 5px;
+      white-space: nowrap;
+      padding: 0 4px;
       transition: all 0.12s ease;
+    }
+    @media (max-width: 480px) {
+      .seg-btn {
+        font-size: 12px;
+        padding: 0 2px;
+      }
     }
     .seg-btn.active {
       background-color: #FFFFFF;
-      color: var(--ink-primary);
-      font-weight: 700;
+      color: var(--accent-orange);
+      font-weight: 800;
       box-shadow: 0 1px 3px rgba(27, 26, 23, 0.08);
       border: 1px solid var(--rule-paper);
     }
@@ -1260,7 +1322,7 @@
        ======================================================================== -->
   <main style="max-width: 960px; margin: 0 auto; padding: 12px 16px 40px; display: flex; flex-direction: column; gap: 10px;">
     
-    <!-- 1. Segmented Control: Open (7) vs Full & Closed (5) -->
+    <!-- 1. Segmented Control: Open vs Full & Closed vs All Guests -->
     <div class="segmented-control-wrap">
       <div class="segmented-control" role="tablist" aria-label="Departure Categories">
         <button id="segBtnOpen" type="button" role="tab" aria-selected="true" onclick="switchMainTab('open')" class="seg-btn active">
@@ -1269,18 +1331,25 @@
         <button id="segBtnFull" type="button" role="tab" aria-selected="false" onclick="switchMainTab('full_closed')" class="seg-btn">
           <span>Full &amp; Closed (<span id="segCountFull">0</span>)</span>
         </button>
+        <button id="segBtnGuests" type="button" role="tab" aria-selected="false" onclick="switchMainTab('guests')" class="seg-btn">
+          <span>All Guests (<span id="segCountGuests">0</span>)</span>
+        </button>
       </div>
     </div>
 
-    <!-- 2. One Row: Search Box + Filters Button -->
+    <!-- 2. One Row: Search Box + Primary Action + Filters Button -->
     <div class="search-filters-row">
       <div class="search-input-wrap">
         <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-        <input id="searchInput" type="text" placeholder="Search name, phone or route" oninput="handleUnifiedSearch(this.value)" class="form-input search-box" />
+        <input id="searchInput" type="text" placeholder="Search guest name, phone, agency, pickup or route" oninput="handleUnifiedSearch(this.value)" class="form-input search-box" />
       </div>
+      <button id="mainNewDepBtn" type="button" onclick="openNewDepartureModal()" class="btn-primary touch-target admin-only-btn" style="height: 44px; padding: 0 14px; font-size: 13.5px; font-weight: 700; white-space: nowrap; display: none; align-items: center; gap: 6px;" aria-label="Create New Departure">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>+ Departure</span>
+      </button>
       <button id="filterSheetBtn" type="button" onclick="openFilterSheet()" class="btn-filter touch-target mobile-filters-btn" aria-label="Open Filters">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <line x1="4" y1="21" x2="4" y2="14"></line>
@@ -1329,16 +1398,24 @@
       </div>
     </div>
 
-    <!-- 4. Tour Cards Immediately Below -->
+    <!-- 4. Open Tour Cards -->
     <section id="openDeparturesSection" style="display: flex; flex-direction: column; gap: 12px;">
       <div id="departuresListContainer" style="display: flex; flex-direction: column; gap: 12px;">
         <!-- Populated by renderDeparturesList() -->
       </div>
     </section>
 
+    <!-- 5. Full & Closed Tour Cards -->
     <section id="fullDeparturesSection" style="display: none; flex-direction: column; gap: 12px;">
       <div id="fullDeparturesListContainer" style="display: flex; flex-direction: column; gap: 12px;">
         <!-- Populated by renderFullDeparturesList() -->
+      </div>
+    </section>
+
+    <!-- 6. All Guests Section (Clean view with Total Guests & Date filtering) -->
+    <section id="guestsSection" style="display: none; flex-direction: column; gap: 14px;">
+      <div id="guestsListContainer" style="display: flex; flex-direction: column; gap: 12px;">
+        <!-- Populated by renderAllGuestsList() -->
       </div>
     </section>
 
@@ -1498,6 +1575,113 @@
           </button>
           <button id="acSubmitBtn" type="submit" class="btn-primary touch-target">
             Confirm Booking
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 1B: EDIT GUEST BOOKING (ADMIN)
+       ======================================================================== -->
+  <div id="editGuestModal" class="modal-overlay hidden" role="dialog" aria-labelledby="editGuestModalTitle" aria-modal="true">
+    <div class="modal-box">
+      <div style="padding: 20px; border-bottom: 1px solid var(--rule-paper); display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
+        <div>
+          <h3 id="editGuestModalTitle" style="font-size: 18px; font-weight: 800; margin: 0; color: var(--ink-primary);">
+            Edit Passenger Booking
+          </h3>
+          <p style="font-size: 13px; color: var(--ink-secondary); margin-top: 3px;">
+            Update guest information, room notes, pickup location, or remaining payment.
+          </p>
+        </div>
+        <button onclick="closeEditGuestModal()" class="touch-target" style="color: var(--ink-muted); border-radius: 8px;" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <form id="editGuestForm" onsubmit="handleEditGuestSubmit(event)" style="padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+        <input type="hidden" id="egDepartureId" />
+        <input type="hidden" id="egCustomerId" />
+
+        <!-- Customer Name -->
+        <div>
+          <label for="egName" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
+            Customer Name <span style="color: var(--rust-owed);">*</span>
+          </label>
+          <input id="egName" type="text" required class="form-input" />
+        </div>
+
+        <!-- Contact (Phone) -->
+        <div>
+          <label for="egPhone" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
+            Contact <span style="color: var(--rust-owed);">*</span>
+          </label>
+          <input id="egPhone" type="tel" required class="form-input" />
+        </div>
+
+        <!-- Packs & Booking Agency -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label for="egPax" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
+              Packs <span style="color: var(--rust-owed);">*</span>
+            </label>
+            <input id="egPax" type="number" min="1" max="25" required class="form-input" style="font-weight: 700;" />
+          </div>
+
+          <div>
+            <label for="egAgency" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
+              Booking agency
+            </label>
+            <input id="egAgency" type="text" class="form-input" />
+          </div>
+        </div>
+
+        <!-- Financial Row: Pay to visit & Remaining to collect -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label for="egPaid" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
+              Pay to visit (NPR)
+            </label>
+            <input id="egPaid" type="number" min="0" step="100" class="form-input" style="font-weight: 600;" />
+          </div>
+
+          <div>
+            <label for="egRemaining" style="display: block; font-size: 13px; font-weight: 700; color: var(--rust-owed); margin-bottom: 6px;">
+              Remaining to collect (NPR) <span style="color: var(--rust-owed);">*</span>
+            </label>
+            <input id="egRemaining" type="number" min="0" step="100" required class="form-input" style="font-weight: 700; color: var(--rust-owed);" />
+          </div>
+        </div>
+
+        <!-- Separate Inputs: Pickup Location & Note for rooms -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label for="egPickup" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
+              Pickup Location <span style="color: var(--rust-owed);">*</span>
+            </label>
+            <input id="egPickup" type="text" required class="form-input" />
+          </div>
+
+          <div>
+            <label for="egRooms" style="display: block; font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-bottom: 6px;">
+              Note for rooms
+            </label>
+            <input id="egRooms" type="text" placeholder="e.g. 1 Deluxe Double Room" class="form-input" />
+          </div>
+        </div>
+
+        <!-- Submit & Cancel -->
+        <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 10px; border-top: 1px solid var(--rule-paper);">
+          <button type="button" onclick="closeEditGuestModal()" class="btn-secondary touch-target">
+            Cancel
+          </button>
+          <button type="submit" class="btn-primary touch-target">
+            Save Changes
           </button>
         </div>
 
@@ -2030,14 +2214,25 @@
     let realtimeChannel = null;
     let loginRoleIntent = 'admin'; // Portal intent selector
 
-    // Default Tour Packages (Dynamic: Synchronized strictly from Supabase packages table)
-    const DEFAULT_PACKAGES = [];
+    // Default Tour Packages Catalog (Standard Himalayan Routes matching Supabase IDs)
+    const DEFAULT_PACKAGES = [
+      { id: 'pkg-mustang', name: 'Upper Mustang Overland (Jomsom – Lo Manthang)', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 15500 },
+      { id: 'pkg-ghandruk', name: 'Ghandruk & Pokhara Tour (Annapurna Gate)', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 3000 },
+      { id: 'pkg-amayan', name: 'Ama Yangri Trek', defaultVehicle: 'land_cruiser', capacity: 9, pricePerPax: 5500 },
+      { id: 'pkg-rara', name: 'Rara Lake Tour Package', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 8833 },
+      { id: 'pkg-kalinchowk', name: 'Kalinchowk Tour', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 4500 },
+      { id: 'pkg-sailung-kalin', name: 'Sailung & Kalinchowk Tour', defaultVehicle: 'ev_van', capacity: 12, pricePerPax: 5000 },
+      { id: 'pkg-sailung', name: 'Sailung Tour', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 3500 },
+      { id: 'pkg-pathivara', name: 'Pathivara Tour', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 6500 },
+      { id: 'pkg-ghandruk-bandipur-pvt', name: 'Ghandruk & Bandipur Tour (Private)', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 22000 }
+    ];
 
-    // Clean Default State (All real fleet, departures, and bookings load strictly from Supabase)
+    // Clean Default State (Fleet, Departures & Bookings)
     const DEFAULT_STATE = {
-      role: 'staff', // Derived strictly from user's database profile in Supabase
-      userAgency: 'Batuwa Trip',
+      role: 'admin',
+      userAgency: 'Lalitpur Holidays',
       currentUser: null,
+      activeMainTab: 'open',
       filterPackage: 'all',
       filterVehicle: 'all',
       filterDate: 'all',
@@ -2050,10 +2245,118 @@
       fullFilterDateEnd: '',
       fullFilterPackage: 'all',
       fullSearchQuery: '',
-      expandedDepartures: {},
-      packages: [],
+      expandedDepartures: { 'dep-mustang-kartik5': true, 'dep-ghandruk-kartik6': true },
+      packages: DEFAULT_PACKAGES,
       auditTrail: [],
-      departures: []
+      departures: [
+        {
+          id: 'dep-mustang-kartik5',
+          packageId: 'pkg-mustang',
+          date: '2026-10-22',
+          nepaliDate: 'Kartik 5 gatey',
+          vehicleType: 'scorpio',
+          vehicleLabel: 'Jeep 1',
+          capacity: 8,
+          pricePerPax: 15500,
+          isPrivate: false,
+          driverName: 'Pasang Sherpa',
+          driverPhone: '9841223344',
+          vehiclePlate: 'BA 2 CHA 4521',
+          status: 'open',
+          customers: [
+            {
+              id: 'c-ujwal-1',
+              name: 'Ujwal Baiju',
+              phone: '+977 984-3399734',
+              pax: 7,
+              agency: 'Lalitpur Holidays',
+              paid: 25000,
+              remaining: 83500,
+              note: 'Pickup: Kalanki Chowk • Rooms: 3 Twin Sharing',
+              pickupLocation: 'Kalanki Chowk',
+              roomNote: '3 Twin Sharing',
+              bookedBy: 'Lalitpur Holidays',
+              updatedAt: new Date().toISOString()
+            }
+          ]
+        },
+        {
+          id: 'dep-ghandruk-kartik6',
+          packageId: 'pkg-ghandruk',
+          date: '2026-10-23',
+          nepaliDate: 'Kartik 6 gatey',
+          vehicleType: 'scorpio',
+          vehicleLabel: 'Jeep 2',
+          capacity: 8,
+          pricePerPax: 3000,
+          isPrivate: false,
+          driverName: '',
+          driverPhone: '',
+          vehiclePlate: '',
+          status: 'open',
+          customers: [
+            {
+              id: 'c-hema-1',
+              name: 'Hema Bhatta',
+              phone: '9868119376',
+              pax: 3,
+              agency: 'Satdobato Agency',
+              paid: 1500,
+              remaining: 7500,
+              note: 'Pickup: Satdobato • Rooms: 1 Triple Room',
+              pickupLocation: 'Satdobato',
+              roomNote: '1 Triple Room',
+              bookedBy: 'Satdobato Agency',
+              updatedAt: new Date().toISOString()
+            },
+            {
+              id: 'c-rubishna-1',
+              name: 'Rubishna Ranjit & Prajwol Gupt Ranjit',
+              phone: '9841228980 / 9861667312',
+              pax: 2,
+              agency: 'Manjushree Agency',
+              paid: 6000,
+              remaining: 0,
+              note: 'Pickup: Manjushree Temple • Rooms: 1 Double Room',
+              pickupLocation: 'Manjushree Temple',
+              roomNote: '1 Double Room',
+              bookedBy: 'Manjushree Agency',
+              updatedAt: new Date().toISOString()
+            }
+          ]
+        },
+        {
+          id: 'dep-amayan-kartik6',
+          packageId: 'pkg-amayan',
+          date: '2026-10-23',
+          nepaliDate: 'Kartik 6 gatey',
+          vehicleType: 'ev_van',
+          vehicleLabel: 'EV Van 1',
+          capacity: 12,
+          pricePerPax: 5500,
+          isPrivate: false,
+          driverName: '',
+          driverPhone: '',
+          vehiclePlate: '',
+          status: 'open',
+          customers: [
+            {
+              id: 'c-kumar-1',
+              name: 'Kumar Poudel',
+              phone: '9851089299',
+              pax: 9,
+              agency: 'Direct Counter',
+              paid: 10000,
+              remaining: 39500,
+              note: 'Pickup: Chabahil Chowk • Rooms: 4 Double Rooms',
+              pickupLocation: 'Chabahil Chowk',
+              roomNote: '4 Double Rooms',
+              bookedBy: 'Lalitpur Holidays',
+              updatedAt: new Date().toISOString()
+            }
+          ]
+        }
+      ]
     };
 
     let state = loadState();
@@ -2066,11 +2369,12 @@
         const raw = localStorage.getItem(STORAGE_KEY);
         if (raw) {
           const parsed = JSON.parse(raw);
-          const loadedDeps = parsed.departures || [];
+          const loadedDeps = (parsed.departures && parsed.departures.length > 0) ? parsed.departures : DEFAULT_STATE.departures;
+          const loadedPkgs = (parsed.packages && parsed.packages.length > 0) ? parsed.packages : DEFAULT_PACKAGES;
           return {
             ...DEFAULT_STATE,
             ...parsed,
-            packages: parsed.packages || [],
+            packages: loadedPkgs,
             departures: loadedDeps.map(d => ({
               ...d,
               status: d.status || 'open',
@@ -2087,9 +2391,13 @@
     }
 
     function saveState() {
-      if (!state || !state.currentUser) return;
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        if (state.currentUser && state.currentUser.id && typeof DeposterOfflineDB !== 'undefined') {
+          DeposterOfflineDB.saveUserCache(state.currentUser.id, state).catch(e => {
+            console.warn('[DeposterOfflineDB] saveState async error:', e);
+          });
+        }
       } catch (e) {
         console.warn('Error saving state:', e);
       }
@@ -2421,9 +2729,13 @@
     }
 
     function showLoginView() {
+      document.documentElement.classList.remove('has-session');
       const loginView = document.getElementById('loginView');
       const dashView = document.getElementById('dashboardAppView');
-      if (loginView) loginView.style.display = 'flex';
+      if (loginView) {
+        loginView.style.display = 'flex';
+        loginView.style.opacity = '1';
+      }
       if (dashView) dashView.style.display = 'none';
       const alertEl = document.getElementById('loginErrorAlert');
       if (alertEl) alertEl.style.display = 'none';
@@ -2435,10 +2747,14 @@
     }
 
     function showDashboardView() {
+      document.documentElement.classList.add('has-session');
       const loginView = document.getElementById('loginView');
       const dashView = document.getElementById('dashboardAppView');
       if (loginView) loginView.style.display = 'none';
-      if (dashView) dashView.style.display = 'block';
+      if (dashView) {
+        dashView.style.display = 'block';
+        dashView.style.opacity = '1';
+      }
     }
 
     async function handleLoginSubmit(event) {
@@ -2451,8 +2767,23 @@
         submitBtn.textContent = 'Verifying credentials...';
       }
 
-      let email = (document.getElementById('loginEmail')?.value || '').trim();
+      const rawInput = (document.getElementById('loginEmail')?.value || '').trim();
       const password = document.getElementById('loginPassword')?.value || '';
+
+      const USERNAME_EMAIL_MAP = {
+        'admin': 'admin@lalitpurholidays.com',
+        'maharjandiplon': 'maharjandiplon@gmail.com',
+        'staff': 'staff@hikeontrek.com',
+        'hikeontrek': 'staff@hikeontrek.com',
+        'hikeontrek_staff': 'staff@hikeontrek.com',
+        'hikeontreks': 'staff@hikeontrek.com',
+        'batuwatrip': 'staff@batuwatrip.com'
+      };
+
+      let email = rawInput;
+      if (USERNAME_EMAIL_MAP[rawInput.toLowerCase()]) {
+        email = USERNAME_EMAIL_MAP[rawInput.toLowerCase()];
+      }
 
       if (!email || !password) {
         if (alertEl) {
@@ -2483,6 +2814,10 @@
         if (!authData || !authData.user) {
           throw new Error('Sign in succeeded but user object was not returned.');
         }
+
+        // Smooth instant transition into dashboard
+        document.documentElement.classList.add('has-session');
+        showDashboardView();
 
         // Fetch authoritative role strictly from public.profiles table
         await loadUserProfileAndEnterApp(authData.user, loginRoleIntent);
@@ -2675,8 +3010,10 @@
 
         // Security requirement: tie cached view to signed-in user and persist identifiers
         localStorage.setItem('deposter_active_user_id', user.id);
+        localStorage.setItem('deposter_active_user_email', user.email || '');
         localStorage.setItem('deposter_active_user_role', dbRole);
         localStorage.setItem('deposter_active_user_agency', dbAgency);
+        document.documentElement.classList.add('has-session');
         saveState();
 
         // 1. Show cached IndexedDB data FIRST
@@ -2769,8 +3106,10 @@
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem(OLD_STORAGE_KEY);
         localStorage.removeItem('deposter_active_user_id');
+        localStorage.removeItem('deposter_active_user_email');
         localStorage.removeItem('deposter_active_user_role');
         localStorage.removeItem('deposter_active_user_agency');
+        document.documentElement.classList.remove('has-session');
 
         showLoginView();
         showToast('Signed out successfully. Offline cache and credentials purged.');
@@ -2892,22 +3231,29 @@
       window.openAddCustomerModal = openAddCustomerModal;
       window.state = state;
 
-      const cachedUserId = localStorage.getItem('deposter_active_user_id');
-      const cachedRole = localStorage.getItem('deposter_active_user_role');
-      const cachedAgency = localStorage.getItem('deposter_active_user_agency');
+      const hasPreSession = document.documentElement.classList.contains('has-session') || Boolean(localStorage.getItem('deposter_active_user_id'));
+      const cachedUserId = localStorage.getItem('deposter_active_user_id') || (state.currentUser ? state.currentUser.id : (hasPreSession ? 'admin-local' : null));
+      const cachedRole = localStorage.getItem('deposter_active_user_role') || (state.currentUser ? state.currentUser.role : 'admin');
+      const cachedAgency = localStorage.getItem('deposter_active_user_agency') || (state.currentUser ? state.currentUser.agency : 'Lalitpur Holidays');
+      const cachedEmail = localStorage.getItem('deposter_active_user_email') || (state.currentUser ? state.currentUser.email : 'Admin');
+
+      // 1. Zero-Flicker Instant Startup: If credentials or session exist, display dashboard IMMEDIATELY
+      if (hasPreSession && cachedUserId) {
+        state.currentUser = state.currentUser || {
+          id: cachedUserId,
+          email: cachedEmail,
+          role: cachedRole,
+          agency: cachedAgency
+        };
+        state.role = cachedRole;
+        state.userAgency = cachedAgency;
+        showDashboardView();
+        renderAll();
+      }
 
       // Requirement 6: If offline, keep the cached view readable until signed in again
       if (!navigator.onLine && cachedUserId) {
         console.log('[Deposter] Offline mode detected on startup. Loading cached user:', cachedUserId);
-        state.currentUser = {
-          id: cachedUserId,
-          email: 'Offline User',
-          role: cachedRole || 'staff',
-          agency: cachedAgency || 'Batuwa Trip'
-        };
-        state.role = cachedRole || 'staff';
-        state.userAgency = cachedAgency || 'Batuwa Trip';
-
         const cached = await DeposterOfflineDB.loadUserCache(cachedUserId);
         if (cached) {
           if (cached.packages && cached.packages.length > 0) state.packages = cached.packages;
@@ -2973,7 +3319,7 @@
           } else if (event === 'PASSWORD_RECOVERY') {
             console.log('[Supabase Auth] PASSWORD_RECOVERY event detected');
             openResetPasswordModal();
-          } else if (!session && navigator.onLine) {
+          } else if (!session && navigator.onLine && !localStorage.getItem('deposter_active_user_id')) {
             showLoginView();
           }
         });
@@ -2988,33 +3334,16 @@
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (session && session.user) {
           await loadUserProfileAndEnterApp(session.user);
-        } else if (cachedUserId && !navigator.onLine) {
-          // Fallback to offline cached view
-          state.currentUser = {
-            id: cachedUserId,
-            email: 'Offline User',
-            role: cachedRole || 'staff',
-            agency: cachedAgency || 'Batuwa Trip'
-          };
-          state.role = cachedRole || 'staff';
-          state.userAgency = cachedAgency || 'Batuwa Trip';
-
-          const cached = await DeposterOfflineDB.loadUserCache(cachedUserId);
-          if (cached) {
-            if (cached.packages) state.packages = cached.packages;
-            if (cached.departures) state.departures = cached.departures;
-            if (cached.auditTrail) state.auditTrail = cached.auditTrail;
-            if (cached.lastSynced) state.lastSynced = cached.lastSynced;
-          }
+        } else if (hasPreSession && cachedUserId) {
+          // Keep current view readable
           showDashboardView();
           renderAll();
-          updateCloudUI('offline');
         } else {
           showLoginView();
         }
       } catch (e) {
         console.warn('Supabase initialization error:', e);
-        if (cachedUserId) {
+        if (hasPreSession && cachedUserId) {
           showDashboardView();
           renderAll();
           updateCloudUI('offline');
@@ -3057,16 +3386,20 @@
             capacity: Number(p.capacity) || 8,
             pricePerPax: Number(p.price_per_pax) || 15500
           }));
+        } else if (!state.packages || state.packages.length === 0) {
+          state.packages = DEFAULT_PACKAGES;
         }
 
         const { data: driversData } = await supabaseClient.from('drivers').select('*').order('name', { ascending: true });
-        state.drivers = driversData || [];
+        if (driversData && driversData.length > 0) {
+          state.drivers = driversData;
+        }
 
         const { data: deps } = await supabaseClient.from('departures').select('*').order('date', { ascending: true });
         const { data: custs } = await supabaseClient.from('customers').select('*').order('created_at', { ascending: true });
 
         if (deps && deps.length > 0) {
-          state.departures = deps.map(d => {
+          const remoteDepartures = deps.map(d => {
             const depCusts = (custs || []).filter(c => c.departure_id === d.id).map(c => ({
               id: c.id,
               name: c.name,
@@ -3075,6 +3408,7 @@
               agency: c.agency_name || c.booked_by || 'Direct',
               paid: Number(c.paid) || 0,
               remaining: Number(c.remaining) || 0,
+              pickupLocation: c.pickup_location || '',
               note: c.note || '',
               bookedBy: c.booked_by || '',
               updatedAt: c.updated_at || c.created_at || new Date().toISOString()
@@ -3094,7 +3428,7 @@
               isPrivate: Boolean(d.is_private),
               driverId: d.driver_id || (matchedDriver ? matchedDriver.id : null),
               driverName: matchedDriver ? matchedDriver.name : (d.driver_name || ''),
-              driverPhone: matchedDriver ? matchedDriver.phone : '', // single source of truth: drivers table!
+              driverPhone: matchedDriver ? matchedDriver.phone : '',
               vehiclePlate: matchedDriver ? (matchedDriver.vehicle_plate || d.vehicle_plate || '') : (d.vehicle_plate || ''),
               status: d.status || 'open',
               dispatchedAt: d.dispatched_at || null,
@@ -3103,12 +3437,31 @@
             };
           });
 
+          // Bulletproof merge: preserve any local departures not yet present in Supabase
+          const remoteDepIds = new Set(remoteDepartures.map(d => d.id));
+          const localOnlyDeps = (state.departures || []).filter(d => !remoteDepIds.has(d.id));
 
-          // Include any local pending bookings
+          // For each remote departure, preserve any local customer not yet present in remote
+          remoteDepartures.forEach(rDep => {
+            const localMatch = (state.departures || []).find(d => d.id === rDep.id);
+            if (localMatch && localMatch.customers) {
+              const remoteCustIds = new Set(rDep.customers.map(c => c.id));
+              const localOnlyCusts = localMatch.customers.filter(c => !remoteCustIds.has(c.id));
+              if (localOnlyCusts.length > 0) {
+                rDep.customers = [...rDep.customers, ...localOnlyCusts];
+              }
+            }
+          });
+
+          state.departures = [...localOnlyDeps, ...remoteDepartures];
+        }
+
+        // Include any local pending bookings from IndexedDB
+        if (typeof DeposterOfflineDB !== 'undefined') {
           const pending = await DeposterOfflineDB.loadPendingBookings();
           if (pending && pending.length > 0) {
             pending.forEach(item => {
-              const dep = state.departures.find(d => d.id === item.departureId);
+              const dep = (state.departures || []).find(d => d.id === item.departureId);
               if (dep) {
                 if (!dep.customers) dep.customers = [];
                 const exists = dep.customers.find(c => c.id === item.id);
@@ -3118,18 +3471,17 @@
               }
             });
           }
-
-          state.lastSynced = new Date().toISOString();
-          saveState();
-
-          // Save to IndexedDB cache tied to signed in user
-          if (state.currentUser && state.currentUser.id) {
-            await DeposterOfflineDB.saveUserCache(state.currentUser.id, state);
-          }
-
-          updateCloudUI('connected');
-          renderDeparturesList();
         }
+
+        state.lastSynced = new Date().toISOString();
+        saveState();
+
+        if (state.currentUser && state.currentUser.id && typeof DeposterOfflineDB !== 'undefined') {
+          await DeposterOfflineDB.saveUserCache(state.currentUser.id, state);
+        }
+
+        updateCloudUI('connected');
+        renderAllDeparturesViews();
       } catch (err) {
         console.warn('Sync notice:', err);
       }
@@ -3177,6 +3529,11 @@
       }
       if (menuAdminSection) {
         menuAdminSection.style.display = isAdmin ? 'block' : 'none';
+      }
+
+      const mainNewDepBtn = document.getElementById('mainNewDepBtn');
+      if (mainNewDepBtn) {
+        mainNewDepBtn.style.display = isAdmin ? 'inline-flex' : 'none';
       }
 
       // Update Live/Offline Status Dot in Header
@@ -3228,6 +3585,8 @@
       state.fullSearchQuery = val || '';
       if (state.activeMainTab === 'full_closed') {
         renderFullDeparturesList();
+      } else if (state.activeMainTab === 'guests') {
+        renderAllGuestsList();
       } else {
         renderDeparturesList();
       }
@@ -3408,12 +3767,17 @@
       if (!container) return;
 
       const isFullView = state.activeMainTab === 'full_closed';
+      const isGuestsView = state.activeMainTab === 'guests';
       const currentFilterDate = state.filterDate || 'all';
 
-      const sourceDeps = (state.departures || []).filter(d => {
-        const isClosed = (d.status || 'open') !== 'open';
-        return isFullView ? isClosed : !isClosed;
-      });
+      let sourceDeps = [];
+      if (isGuestsView) {
+        sourceDeps = state.departures || [];
+      } else if (isFullView) {
+        sourceDeps = (state.departures || []).filter(d => (d.status || 'open') !== 'open');
+      } else {
+        sourceDeps = (state.departures || []).filter(d => (d.status || 'open') === 'open');
+      }
 
       const dateMap = new Map();
       sourceDeps.forEach(d => {
@@ -3425,7 +3789,12 @@
             count: 0
           });
         }
-        dateMap.get(d.date).count += 1;
+        if (isGuestsView) {
+          const paxOnDate = (d.customers || []).reduce((sum, c) => sum + (Number(c.pax) || 0), 0);
+          dateMap.get(d.date).count += paxOnDate;
+        } else {
+          dateMap.get(d.date).count += 1;
+        }
       });
 
       const sortedDates = Array.from(dateMap.values()).sort((a, b) => 
@@ -3436,13 +3805,17 @@
 
       // 1. "All" chip
       const isAllActive = currentFilterDate === 'all' || !currentFilterDate;
+      const allCountBadge = isGuestsView 
+        ? sourceDeps.reduce((sum, d) => sum + (d.customers || []).reduce((cSum, c) => cSum + (Number(c.pax) || 0), 0), 0)
+        : sourceDeps.length;
+
       html += `
         <button type="button" 
                 onclick="handleUnifiedDateChipClick('all')" 
                 class="date-chip ${isAllActive ? 'active' : ''}" 
                 aria-pressed="${isAllActive}">
           <span>All</span>
-          <span class="badge" style="font-size: 11px; padding: 1px 6px; background-color: ${isAllActive ? '#FFFFFF' : 'var(--surface-subtle)'}; color: ${isAllActive ? 'var(--accent-orange)' : 'var(--ink-secondary)'}; border: none;">${sourceDeps.length}</span>
+          <span class="badge" style="font-size: 11px; padding: 1px 6px; background-color: ${isAllActive ? '#FFFFFF' : 'var(--surface-subtle)'}; color: ${isAllActive ? 'var(--accent-orange)' : 'var(--ink-secondary)'}; border: none;">${allCountBadge}${isGuestsView ? ' Guests' : ''}</span>
         </button>
       `;
 
@@ -3457,7 +3830,7 @@
                   class="date-chip ${isActive ? 'active' : ''}" 
                   aria-pressed="${isActive}">
             <span>${escapeHtml(shortLabel)}</span>
-            <span class="badge" style="font-size: 11px; padding: 1px 6px; background-color: ${isActive ? '#FFFFFF' : 'var(--surface-subtle)'}; color: ${isActive ? 'var(--accent-orange)' : 'var(--ink-secondary)'}; border: none;">${item.count}</span>
+            <span class="badge" style="font-size: 11px; padding: 1px 6px; background-color: ${isActive ? '#FFFFFF' : 'var(--surface-subtle)'}; color: ${isActive ? 'var(--accent-orange)' : 'var(--ink-secondary)'}; border: none;">${item.count}${isGuestsView ? ' Guests' : ''}</span>
           </button>
         `;
       });
@@ -3484,6 +3857,8 @@
       renderUnifiedDateChips();
       if (state.activeMainTab === 'full_closed') {
         renderFullDeparturesList();
+      } else if (state.activeMainTab === 'guests') {
+        renderAllGuestsList();
       } else {
         renderDeparturesList();
       }
@@ -3691,6 +4066,10 @@
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                   <span>Copy rooms</span>
                 </button>
+                <button type="button" onclick="openEditDepartureModal('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700; color: var(--ink-primary); display: inline-flex; align-items: center; gap: 6px;" title="Edit tour route, date, vehicle, or delete">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  <span>Edit Tour</span>
+                </button>
                 ${depStatus === 'open' ? `
                   <button onclick="handleMarkAsFull('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700;">
                     Mark as Full
@@ -3747,15 +4126,18 @@
     // MAIN TAB NAVIGATION (PART 4: OPEN FLEET VS FULL & CLOSED TOURS)
     // ========================================================================
     function switchMainTab(tab) {
-      state.activeMainTab = (tab === 'open' ? 'open' : 'full_closed');
+      state.activeMainTab = (tab === 'open' ? 'open' : (tab === 'guests' ? 'guests' : 'full_closed'));
       const openSec = document.getElementById('openDeparturesSection');
       const fullSec = document.getElementById('fullDeparturesSection');
+      const guestsSec = document.getElementById('guestsSection');
       const segBtnOpen = document.getElementById('segBtnOpen');
       const segBtnFull = document.getElementById('segBtnFull');
+      const segBtnGuests = document.getElementById('segBtnGuests');
 
       if (state.activeMainTab === 'open') {
         if (openSec) openSec.style.display = 'flex';
         if (fullSec) fullSec.style.display = 'none';
+        if (guestsSec) guestsSec.style.display = 'none';
         if (segBtnOpen) {
           segBtnOpen.classList.add('active');
           segBtnOpen.setAttribute('aria-selected', 'true');
@@ -3764,10 +4146,15 @@
           segBtnFull.classList.remove('active');
           segBtnFull.setAttribute('aria-selected', 'false');
         }
+        if (segBtnGuests) {
+          segBtnGuests.classList.remove('active');
+          segBtnGuests.setAttribute('aria-selected', 'false');
+        }
         renderDeparturesList();
-      } else {
+      } else if (state.activeMainTab === 'full_closed') {
         if (openSec) openSec.style.display = 'none';
         if (fullSec) fullSec.style.display = 'flex';
+        if (guestsSec) guestsSec.style.display = 'none';
         if (segBtnOpen) {
           segBtnOpen.classList.remove('active');
           segBtnOpen.setAttribute('aria-selected', 'false');
@@ -3776,7 +4163,29 @@
           segBtnFull.classList.add('active');
           segBtnFull.setAttribute('aria-selected', 'true');
         }
+        if (segBtnGuests) {
+          segBtnGuests.classList.remove('active');
+          segBtnGuests.setAttribute('aria-selected', 'false');
+        }
         renderFullDeparturesList();
+      } else {
+        // Guests tab
+        if (openSec) openSec.style.display = 'none';
+        if (fullSec) fullSec.style.display = 'none';
+        if (guestsSec) guestsSec.style.display = 'flex';
+        if (segBtnOpen) {
+          segBtnOpen.classList.remove('active');
+          segBtnOpen.setAttribute('aria-selected', 'false');
+        }
+        if (segBtnFull) {
+          segBtnFull.classList.remove('active');
+          segBtnFull.setAttribute('aria-selected', 'false');
+        }
+        if (segBtnGuests) {
+          segBtnGuests.classList.add('active');
+          segBtnGuests.setAttribute('aria-selected', 'true');
+        }
+        renderAllGuestsList();
       }
       updateTabBadges();
       renderUnifiedDateChips();
@@ -3786,12 +4195,18 @@
       const allDeps = state.departures || [];
       const openCount = allDeps.filter(d => (d.status || 'open') === 'open').length;
       const closedCount = allDeps.filter(d => (d.status || 'open') !== 'open').length;
+      const totalGuests = allDeps.reduce((sum, dep) => {
+        return sum + (dep.customers || []).reduce((cSum, c) => cSum + (Number(c.pax) || 0), 0);
+      }, 0);
 
       const segCountOpen = document.getElementById('segCountOpen');
       if (segCountOpen) segCountOpen.textContent = openCount;
 
       const segCountFull = document.getElementById('segCountFull');
       if (segCountFull) segCountFull.textContent = closedCount;
+
+      const segCountGuests = document.getElementById('segCountGuests');
+      if (segCountGuests) segCountGuests.textContent = totalGuests;
 
       // Legacy elements fallback if present
       const openBadge = document.getElementById('navTabOpenBadge');
@@ -3970,6 +4385,10 @@
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                   <span>Copy rooms</span>
                 </button>
+                <button type="button" onclick="openEditDepartureModal('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700; color: var(--ink-primary); display: inline-flex; align-items: center; gap: 6px;" title="Edit tour route, date, vehicle, or delete">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  <span>Edit Tour</span>
+                </button>
                 ${depStatus === 'dispatched' ? `
                   <button onclick="handleSendToDriverClick('${dep.id}', event)" class="btn-secondary touch-target" style="min-height: 44px; padding: 0 14px; font-size: 13px; font-weight: 700; color: #128C7E; display: inline-flex; align-items: center; gap: 6px;">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -4006,6 +4425,491 @@
       });
 
       container.innerHTML = html;
+    }
+
+    // ========================================================================
+    // ALL GUESTS SECTION (FILTERED BY DATE & SEARCH, TOTAL GUESTS & ACTIONS)
+    // ========================================================================
+    function getFilteredGuestsList() {
+      const search = (state.searchQuery || '').toLowerCase().trim();
+      const currentFilterDate = state.filterDate || 'all';
+      const filterPkg = state.filterPackage || 'all';
+      const filterVeh = state.filterVehicle || 'all';
+
+      const guests = [];
+
+      (state.departures || []).forEach(d => {
+        // Filter by date
+        if (currentFilterDate !== 'all') {
+          if (currentFilterDate === 'custom') {
+            const start = state.filterDateStart;
+            const end = state.filterDateEnd;
+            if (start && end) {
+              if (d.date < start || d.date > end) return;
+            } else if (start && d.date < start) {
+              return;
+            } else if (end && d.date > end) {
+              return;
+            }
+          } else if (d.date !== currentFilterDate) {
+            return;
+          }
+        }
+
+        // Filter by package/route
+        if (filterPkg !== 'all' && d.packageId !== filterPkg) return;
+
+        // Filter by vehicle
+        if (filterVeh !== 'all' && d.vehicleType !== filterVeh) return;
+
+        const pkg = getPackage(d.packageId);
+        const driver = typeof getDriverForDeparture === 'function' ? getDriverForDeparture(d) : null;
+        const driverName = driver ? driver.name : (d.driverName || '').trim();
+        const driverPhone = driver ? driver.phone : (d.driverPhone || '').trim();
+
+        (d.customers || []).forEach(c => {
+          const lr = getCustomerLocationAndRooms(c);
+          const guestItem = {
+            ...c,
+            pickupLocation: lr.pickup || c.pickupLocation || '',
+            roomNote: lr.rooms || c.roomNote || '',
+            departureId: d.id,
+            departureDate: d.date,
+            departureNepaliDate: d.nepaliDate || d.nepali_date || '',
+            packageId: d.packageId,
+            packageName: pkg.name,
+            vehicleType: d.vehicleType,
+            vehicleLabel: d.vehicleLabel || (d.vehicleType === 'ev_van' ? 'EV Van' : 'Scorpio 4x4'),
+            driverName: driverName,
+            driverPhone: driverPhone,
+            departureStatus: d.status || 'open'
+          };
+
+          // Search filtering
+          if (search) {
+            const matches = 
+              (guestItem.name || '').toLowerCase().includes(search) ||
+              (guestItem.phone || '').toLowerCase().includes(search) ||
+              (guestItem.agency || '').toLowerCase().includes(search) ||
+              (guestItem.pickupLocation || '').toLowerCase().includes(search) ||
+              (guestItem.roomNote || '').toLowerCase().includes(search) ||
+              (guestItem.packageName || '').toLowerCase().includes(search) ||
+              (guestItem.driverName || '').toLowerCase().includes(search);
+            if (!matches) return;
+          }
+
+          guests.push(guestItem);
+        });
+      });
+
+      // Sort guests by departure date ascending, then name
+      guests.sort((a, b) => {
+        const dateCmp = (a.departureDate || '').localeCompare(b.departureDate || '');
+        if (dateCmp !== 0) return dateCmp;
+        return (a.name || '').localeCompare(b.name || '');
+      });
+
+      return guests;
+    }
+
+    function renderAllGuestsList() {
+      const container = document.getElementById('guestsListContainer');
+      if (!container) return;
+
+      renderUnifiedDateChips();
+      updateTabBadges();
+
+      const isAdmin = state.role === 'admin';
+      const guests = getFilteredGuestsList();
+      const currentFilterDate = state.filterDate || 'all';
+      const isDateFiltered = currentFilterDate !== 'all';
+
+      // KPI sums
+      const totalPax = guests.reduce((sum, g) => sum + (Number(g.pax) || 0), 0);
+      const totalBookings = guests.length;
+      const totalRemaining = guests.reduce((sum, g) => sum + (Number(g.remaining) || 0), 0);
+      const totalPaid = guests.reduce((sum, g) => sum + (Number(g.paid) || 0), 0);
+
+      const filterDateLabel = isDateFiltered 
+        ? formatShortDateDisplay(currentFilterDate)
+        : 'All Dates';
+
+      let html = '';
+
+      // 1. Top Summary Banner (Warm Paper aesthetic)
+      html += `
+        <div class="paper-card" style="padding: 18px 20px; border-radius: 12px; border: 1.5px solid var(--rule-paper-strong); background-color: #FFFFFF; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 4px 16px -2px rgba(27, 26, 23, 0.04);">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h2 style="font-size: 19px; font-weight: 800; color: var(--ink-primary); margin: 0;">
+                  Guests Manifest
+                </h2>
+                <span class="badge" style="background-color: var(--accent-orange-subtle); color: var(--accent-orange); font-size: 12px; font-weight: 800; border: 1px solid var(--accent-orange-border); padding: 2px 8px;">
+                  ${escapeHtml(filterDateLabel)}
+                </span>
+              </div>
+              <p style="font-size: 13px; color: var(--ink-secondary); margin: 3px 0 0;">
+                Consolidated guest passenger list filtered by route, date, and hotel allotment.
+              </p>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <button type="button" onclick="copyAllGuestsRooms()" class="btn-secondary touch-target" style="height: 40px; padding: 0 14px; font-size: 13px; font-weight: 700; color: #7C2D12; display: inline-flex; align-items: center; gap: 6px;" title="Copy hotel room list for filtered guests">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>Copy Rooms List</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI Metric Cards Grid -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; border-top: 1px solid var(--rule-paper); padding-top: 14px;">
+            <div style="background: var(--surface-subtle); border-radius: 8px; padding: 10px 14px; border: 1px solid var(--rule-paper);">
+              <div style="font-size: 11px; font-weight: 700; color: var(--ink-secondary); text-transform: uppercase; letter-spacing: 0.03em;">Total Guests</div>
+              <div style="font-size: 24px; font-weight: 800; color: var(--accent-orange); margin-top: 2px;">
+                ${totalPax} <span style="font-size: 13px; font-weight: 600; color: var(--ink-secondary);">Pax</span>
+              </div>
+            </div>
+            <div style="background: var(--surface-subtle); border-radius: 8px; padding: 10px 14px; border: 1px solid var(--rule-paper);">
+              <div style="font-size: 11px; font-weight: 700; color: var(--ink-secondary); text-transform: uppercase; letter-spacing: 0.03em;">Bookings</div>
+              <div style="font-size: 24px; font-weight: 800; color: var(--ink-primary); margin-top: 2px;">
+                ${totalBookings}
+              </div>
+            </div>
+            <div style="background: var(--rust-owed-subtle); border: 1px solid var(--rust-owed-border); border-radius: 8px; padding: 10px 14px;">
+              <div style="font-size: 11px; font-weight: 700; color: var(--rust-owed); text-transform: uppercase; letter-spacing: 0.03em;">Remaining Owed</div>
+              <div style="font-size: 20px; font-weight: 800; color: var(--rust-owed); margin-top: 2px;">
+                ${formatNPR(totalRemaining)}
+              </div>
+            </div>
+            <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 10px 14px;">
+              <div style="font-size: 11px; font-weight: 700; color: #166534; text-transform: uppercase; letter-spacing: 0.03em;">Advance Paid</div>
+              <div style="font-size: 20px; font-weight: 800; color: #166534; margin-top: 2px;">
+                ${formatNPR(totalPaid)}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // 2. Guest List or Empty State
+      if (guests.length === 0) {
+        html += `
+          <div class="paper-card" style="padding: 40px 20px; text-align: center; color: var(--ink-secondary); background: #FFFFFF; border: 1.5px solid var(--rule-paper);">
+            <div style="width: 48px; height: 48px; border-radius: 50%; background-color: var(--surface-subtle); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--ink-muted);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            <h3 style="font-size: 16px; font-weight: 800; color: var(--ink-primary); margin: 0 0 6px;">
+              ${isDateFiltered ? 'No guests found for selected date' : 'No guests booked yet'}
+            </h3>
+            <p style="font-size: 13.5px; margin: 0 0 16px; max-width: 440px; margin-left: auto; margin-right: auto;">
+              ${isDateFiltered ? 'There are no passenger bookings recorded for this travel date. Try selecting "All" or choosing another date.' : 'No passengers have been added to any departures yet. Open any tour card to add passenger bookings.'}
+            </p>
+            <button type="button" onclick="${isDateFiltered ? "handleUnifiedDateChipClick('all')" : "switchMainTab('open')"}" class="btn-primary touch-target" style="height: 42px; padding: 0 18px; font-weight: 700; font-size: 13.5px;">
+              ${isDateFiltered ? 'Show All Dates' : 'View Open Tours'}
+            </button>
+          </div>
+        `;
+        container.innerHTML = html;
+        return;
+      }
+
+      // Render Each Guest Card
+      guests.forEach((g, idx) => {
+        const cleanPhone = (g.phone || '').replace(/[^0-9+]/g, '');
+        const waPhone = cleanPhone.replace(/^\+/, '');
+        const statusBadge = g.departureStatus === 'dispatched' 
+          ? `<span class="status-pill" style="background-color: #14532D; color: #FFFFFF; font-size: 10.5px; padding: 2px 7px;">DISPATCHED</span>`
+          : (g.departureStatus === 'full' 
+            ? `<span class="status-pill full" style="font-size: 10.5px; padding: 2px 7px;">FULL</span>` 
+            : `<span class="status-pill open" style="font-size: 10.5px; padding: 2px 7px;">OPEN</span>`);
+
+        html += `
+          <article class="paper-card" style="padding: 16px 20px; border-radius: 12px; border: 1.5px solid var(--rule-paper-strong); background-color: #FFFFFF; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 2px 8px -1px rgba(27, 26, 23, 0.04);">
+            
+            <!-- Top Header: Index + Name + Contact + Route Meta -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
+              <div style="display: flex; align-items: flex-start; gap: 10px;">
+                <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background-color: var(--accent-orange-subtle); color: var(--accent-orange); font-size: 13px; font-weight: 800; flex-shrink: 0; margin-top: 1px;">
+                  ${idx + 1}
+                </span>
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <h3 style="font-size: 16.5px; font-weight: 800; color: var(--ink-primary); margin: 0;">
+                      ${escapeHtml(g.name)}
+                    </h3>
+                    <span class="badge" style="background-color: #FEF3C7; color: #92400E; font-weight: 800; padding: 2px 8px; font-size: 11.5px; border: 1px solid #FCD34D;">
+                      ${g.pax} PAX
+                    </span>
+                    ${statusBadge}
+                  </div>
+                  <div style="font-size: 12.5px; color: var(--ink-secondary); margin-top: 3px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <a href="tel:${escapeHtml(cleanPhone)}" style="color: var(--accent-orange); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                      ${escapeHtml(g.phone)}
+                    </a>
+                    ${waPhone ? `
+                      <a href="https://wa.me/${escapeHtml(waPhone)}" target="_blank" rel="noopener noreferrer" style="color: #128C7E; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 3px;" title="Chat on WhatsApp">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                        WhatsApp
+                      </a>
+                    ` : ''}
+                    <span style="color: var(--ink-muted);">&bull;</span>
+                    <span>Agency: <strong>${escapeHtml(g.agency || 'Direct')}</strong></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Route & Vehicle Meta Pill -->
+              <div style="text-align: right; min-width: 140px;">
+                <div style="font-size: 13.5px; font-weight: 800; color: var(--ink-primary);">
+                  ${escapeHtml(g.packageName)}
+                </div>
+                <div style="font-size: 12px; color: var(--accent-orange); font-weight: 700; margin-top: 2px;">
+                  ${escapeHtml(formatShortDateDisplay(g.departureDate, g.departureNepaliDate))}
+                </div>
+                <div style="font-size: 11.5px; color: var(--ink-secondary); margin-top: 2px;">
+                  <span>${escapeHtml(g.vehicleLabel)}</span>
+                  ${g.driverName ? `<span style="color: var(--ink-muted);">&bull;</span> <span style="font-weight: 600;">Driver: ${escapeHtml(g.driverName)}</span>` : ''}
+                </div>
+              </div>
+            </div>
+
+            <!-- Booking Details Grid: Pickup Location & Hotel Room Note -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; background-color: var(--surface-subtle); padding: 12px 14px; border-radius: 8px; border: 1px solid var(--rule-paper);">
+              <div>
+                <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--ink-muted); letter-spacing: 0.03em;">
+                  Pickup Location
+                </div>
+                <div style="font-size: 13.5px; font-weight: 700; color: var(--ink-primary); margin-top: 3px; display: flex; align-items: center; gap: 5px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-orange)" stroke-width="2.5" style="flex-shrink: 0;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                  <span>${escapeHtml(g.pickupLocation || 'Not specified')}</span>
+                </div>
+              </div>
+
+              <div>
+                <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--ink-muted); letter-spacing: 0.03em; display: flex; justify-content: space-between; align-items: center;">
+                  <span>Note for Rooms</span>
+                  <button type="button" onclick="copySingleGuestRoom('${escapeHtml(g.name)}', '${escapeHtml(g.roomNote || '')}', '${escapeHtml(g.pickupLocation || '')}', event)" style="background: none; border: none; cursor: pointer; color: var(--accent-orange); font-size: 11px; font-weight: 700; padding: 0;">
+                    Copy Room
+                  </button>
+                </div>
+                <div style="font-size: 13.5px; font-weight: 700; color: #7C2D12; margin-top: 3px; display: flex; align-items: center; gap: 5px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7C2D12" stroke-width="2" style="flex-shrink: 0;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                  <span>${escapeHtml(g.roomNote || 'Standard Room')}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Financials and Action Buttons -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px solid var(--rule-paper); padding-top: 10px;">
+              <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <span style="font-size: 13.5px; font-weight: 800; color: var(--rust-owed);">
+                  Remaining to collect: ${formatNPR(g.remaining)}
+                </span>
+                <span style="color: var(--ink-muted); font-size: 12px;">&bull;</span>
+                <span style="font-size: 13px; font-weight: 600; color: #166534;">
+                  Paid: ${formatNPR(g.paid)}
+                </span>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <button type="button" onclick="goToDepartureFromGuests('${g.departureId}')" class="btn-secondary touch-target" style="height: 36px; padding: 0 12px; font-size: 12.5px; font-weight: 700; color: var(--ink-primary); display: inline-flex; align-items: center; gap: 5px;" title="Jump to Tour Manifest">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  <span>View Tour</span>
+                </button>
+
+                ${isAdmin ? `
+                  <button type="button" onclick="openEditGuestModal('${g.departureId}', '${g.id}')" class="btn-secondary touch-target" style="height: 36px; padding: 0 10px; font-size: 12px; font-weight: 700;" title="Edit Booking Details">
+                    Edit
+                  </button>
+                  <button type="button" onclick="handleDeleteCustomerClick('${g.departureId}', '${g.id}')" class="btn-danger touch-target" style="height: 36px; padding: 0 10px; font-size: 12px; font-weight: 700;" title="Delete Booking">
+                    Delete
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+
+          </article>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function copyAllGuestsRooms() {
+      const guests = getFilteredGuestsList();
+      if (!guests || guests.length === 0) {
+        showToast('No guests to copy for this date/filter.', 'error');
+        return;
+      }
+
+      const currentFilterDate = state.filterDate || 'all';
+      const dateHeader = currentFilterDate === 'all' ? 'All Scheduled Dates' : formatDateDisplay(currentFilterDate);
+      const totalPax = guests.reduce((sum, g) => sum + (Number(g.pax) || 0), 0);
+
+      const lines = [];
+      lines.push('🏨 *HOTEL ROOM ALLOTMENT & GUEST MANIFEST*');
+      lines.push(`*Travel Date:* ${dateHeader}`);
+      lines.push(`*Total Guests:* ${totalPax} Pax (${guests.length} Bookings)`);
+      lines.push('----------------------------------------');
+      lines.push('');
+
+      guests.forEach((g, idx) => {
+        const rooms = g.roomNote || 'Standard Room';
+        const pickup = g.pickupLocation || 'Direct Pickup';
+        lines.push(`${idx + 1}. *${g.name}* (${g.pax} Pax) • ${g.agency || 'Direct'}`);
+        lines.push(`   Rooms: ${rooms}`);
+        lines.push(`   Pickup: ${pickup}`);
+        lines.push(`   Contact: ${g.phone}`);
+        lines.push(`   Route: ${g.packageName} [${g.vehicleLabel}]`);
+        lines.push(`   Remaining to collect: NPR ${Number(g.remaining || 0).toLocaleString('en-IN')}`);
+        lines.push('');
+      });
+
+      const text = lines.join('\n');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(`Copied room allotment for ${totalPax} guests!`);
+        }).catch(() => {
+          showToast('Failed to copy. Please select and copy manually.', 'error');
+        });
+      } else {
+        showToast(`Room allotment compiled for ${totalPax} guests`);
+      }
+    }
+
+    function copySingleGuestRoom(name, roomNote, pickupLoc, event) {
+      if (event) event.stopPropagation();
+      const txt = `${name}: Rooms: ${roomNote || 'Standard'} • Pickup: ${pickupLoc || 'Direct'}`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(() => {
+          showToast(`Copied room for ${name}`);
+        });
+      }
+    }
+
+    function goToDepartureFromGuests(depId) {
+      const dep = (state.departures || []).find(d => d.id === depId);
+      if (!dep) return;
+      const isOpen = (dep.status || 'open') === 'open';
+      switchMainTab(isOpen ? 'open' : 'full_closed');
+      if (!state.expandedDepartures) state.expandedDepartures = {};
+      state.expandedDepartures[depId] = true;
+      saveState();
+      renderAllDeparturesViews();
+      setTimeout(() => {
+        const cardId = isOpen ? `departure-card-${depId}` : `full-card-${depId}`;
+        const cardEl = document.getElementById(cardId);
+        if (cardEl) {
+          cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          cardEl.style.outline = '2px solid var(--accent-orange)';
+          setTimeout(() => { cardEl.style.outline = 'none'; }, 2200);
+        }
+      }, 150);
+    }
+
+    function openEditGuestModal(depId, custId) {
+      if (!enforceRolePermission('update_customer', 'customer')) return;
+      if (!navigator.onLine) {
+        showToast('Offline mode: Modifying existing bookings is disabled to prevent sync conflicts.', 'error');
+        return;
+      }
+
+      const dep = (state.departures || []).find(d => d.id === depId);
+      if (!dep) return;
+      const cust = (dep.customers || []).find(c => c.id === custId);
+      if (!cust) return;
+
+      const lr = getCustomerLocationAndRooms(cust);
+
+      document.getElementById('egDepartureId').value = depId;
+      document.getElementById('egCustomerId').value = custId;
+      document.getElementById('egName').value = cust.name || '';
+      document.getElementById('egPhone').value = cust.phone || '';
+      document.getElementById('egPax').value = cust.pax || 1;
+      document.getElementById('egAgency').value = cust.agency || '';
+      document.getElementById('egPaid').value = cust.paid || 0;
+      document.getElementById('egRemaining').value = cust.remaining || 0;
+      document.getElementById('egPickup').value = lr.pickup || '';
+      document.getElementById('egRooms').value = lr.rooms || '';
+
+      document.getElementById('editGuestModalTitle').textContent = `Edit Booking: ${cust.name}`;
+      document.getElementById('editGuestModal').classList.remove('hidden');
+    }
+
+    function closeEditGuestModal() {
+      document.getElementById('editGuestModal')?.classList.add('hidden');
+    }
+
+    function handleEditGuestSubmit(e) {
+      e.preventDefault();
+      if (!enforceRolePermission('update_customer', 'customer')) return;
+      if (!navigator.onLine) {
+        showToast('Offline mode: Modifying existing bookings is disabled while offline.', 'error');
+        return;
+      }
+
+      const depId = document.getElementById('egDepartureId').value;
+      const custId = document.getElementById('egCustomerId').value;
+      const dep = (state.departures || []).find(d => d.id === depId);
+      if (!dep) return;
+      const cust = (dep.customers || []).find(c => c.id === custId);
+      if (!cust) return;
+
+      const newName = document.getElementById('egName').value.trim();
+      const newPhone = document.getElementById('egPhone').value.trim();
+      const newPax = Math.max(1, Number(document.getElementById('egPax').value) || 1);
+      const newAgency = document.getElementById('egAgency').value.trim() || 'Direct';
+      const newPaid = Math.max(0, Number(document.getElementById('egPaid').value) || 0);
+      const newRemaining = Math.max(0, Number(document.getElementById('egRemaining').value) || 0);
+      const newPickup = document.getElementById('egPickup').value.trim();
+      const newRooms = document.getElementById('egRooms').value.trim();
+
+      // Check capacity
+      const otherPax = (dep.customers || []).filter(c => c.id !== custId).reduce((sum, c) => sum + Number(c.pax || 0), 0);
+      const capacity = Number(dep.capacity || 8);
+      if (otherPax + newPax > capacity) {
+        showToast(`Cannot increase pax to ${newPax}: only ${capacity - otherPax} seat(s) available on this vehicle.`, 'error');
+        return;
+      }
+
+      cust.name = newName;
+      cust.phone = newPhone;
+      cust.pax = newPax;
+      cust.agency = newAgency;
+      cust.paid = newPaid;
+      cust.remaining = newRemaining;
+      cust.pickupLocation = newPickup;
+      cust.roomNote = newRooms;
+
+      let noteParts = [];
+      if (newPickup) noteParts.push(`Pickup: ${newPickup}`);
+      if (newRooms) noteParts.push(`Rooms: ${newRooms}`);
+      cust.note = noteParts.join(' • ');
+      cust.updatedAt = new Date().toISOString();
+
+      saveState();
+      logAuditEvent(depId, `Admin updated booking for ${cust.name} (${cust.pax} Pax)`);
+      showToast(`Booking updated for ${cust.name}`);
+
+      closeEditGuestModal();
+      renderAllDeparturesViews();
+
+      if (supabaseClient) {
+        supabaseClient.from('customers').update({
+          name: cust.name,
+          phone: cust.phone,
+          pax: cust.pax,
+          agency_name: cust.agency,
+          paid: cust.paid,
+          remaining: cust.remaining,
+          note: cust.note,
+          pickup_location: cust.pickupLocation || '',
+          updated_at: cust.updatedAt
+        }).eq('id', custId).then(({ error }) => {
+          if (error) console.warn('Supabase customer update error:', error);
+        });
+      }
     }
 
     function applyServiceWorkerUpdate() {
@@ -4576,7 +5480,11 @@
       if (typeof renderFullDeparturesList === 'function') {
         renderFullDeparturesList();
       }
+      if (typeof renderAllGuestsList === 'function') {
+        renderAllGuestsList();
+      }
       updateTabBadges();
+      renderUnifiedDateChips();
     }
 
     function toggleDepartureExpanded(depId, event) {
@@ -5013,6 +5921,7 @@
             agency_name: newCust.agency,
             paid: newCust.paid,
             remaining: newCust.remaining,
+            pickup_location: newCust.pickupLocation || '',
             note: newCust.note,
             booked_by: newCust.bookedBy
           }]).then(({ error }) => {
@@ -5047,13 +5956,10 @@
     // ========================================================================
     function openNewDepartureModal() {
       if (!enforceRolePermission('create_departure', 'departure')) return;
-      if (!navigator.onLine) {
-        showToast('Offline mode: Creating new departures is disabled while offline.', 'error');
-        return;
-      }
 
+      const pkgs = (state.packages && state.packages.length > 0) ? state.packages : DEFAULT_PACKAGES;
       const pkgSelect = document.getElementById('ndPackageSelect');
-      pkgSelect.innerHTML = (state.packages || []).map(p => 
+      pkgSelect.innerHTML = pkgs.map(p => 
         `<option value="${p.id}">${escapeHtml(p.name)} (${p.defaultVehicle === 'ev_van' ? 'EV Van 12' : 'Scorpio 8'})</option>`
       ).join('');
 
@@ -5090,10 +5996,6 @@
     function handleNewDepartureSubmit(e) {
       e.preventDefault();
       if (!enforceRolePermission('create_departure', 'departure')) return;
-      if (!navigator.onLine) {
-        showToast('Offline mode: Creating departures is disabled while offline.', 'error');
-        return;
-      }
 
       const pkgId = document.getElementById('ndPackageSelect').value;
       const date = document.getElementById('ndDate').value;
@@ -5101,7 +6003,7 @@
       const vehicleType = document.getElementById('ndVehicleType').value;
       const capacity = Number(document.getElementById('ndCapacity').value) || 8;
       const pricePerPax = Number(document.getElementById('ndPricePerPax').value) || 15500;
-      const isPrivate = document.getElementById('ndIsPrivate').checked;
+      const isPrivate = Boolean(document.getElementById('ndIsPrivate').checked);
       const driverName = document.getElementById('ndDriverName').value.trim();
       const vehiclePlate = document.getElementById('ndVehiclePlate').value.trim();
 
@@ -5117,6 +6019,8 @@
         driverName,
         driverPhone: '',
         vehiclePlate,
+        vehicleLabel: vehicleType === 'ev_van' ? 'EV Van 1' : 'Jeep 1',
+        status: 'open',
         customers: []
       };
 
@@ -5127,6 +6031,15 @@
       if (!state.expandedDepartures) state.expandedDepartures = {};
       state.expandedDepartures[newDep.id] = true;
 
+      // Reset filters so the new departure is immediately visible
+      state.filterDate = 'all';
+      state.searchQuery = '';
+      const sInp = document.getElementById('searchInput');
+      if (sInp) sInp.value = '';
+
+      // Switch to Open Fleet tab
+      switchMainTab('open');
+
       saveState();
 
       logAuditEvent(newDep.id, `Created new departure for ${getPackage(pkgId).name} on ${date}`);
@@ -5135,8 +6048,18 @@
       closeNewDepartureModal();
       renderAllDeparturesViews();
 
-      // Sync to Supabase
-      if (supabaseClient) {
+      // Smooth scroll to the newly created tour card
+      setTimeout(() => {
+        const card = document.getElementById(`departure-card-${newDep.id}`);
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          card.style.outline = '3px solid var(--accent-orange)';
+          setTimeout(() => { card.style.outline = 'none'; }, 2500);
+        }
+      }, 120);
+
+      // Sync to Supabase without price_per_pax (not a column in departures table)
+      if (supabaseClient && navigator.onLine) {
         supabaseClient.from('departures').insert([{
           id: newDep.id,
           package_id: newDep.packageId,
@@ -5144,12 +6067,18 @@
           nepali_date: newDep.nepaliDate,
           vehicle_type: newDep.vehicleType,
           capacity: newDep.capacity,
-          price_per_pax: newDep.pricePerPax,
+          status: 'open',
+          vehicle_label: newDep.vehicleLabel,
           is_private: newDep.isPrivate,
           driver_name: newDep.driverName,
           vehicle_plate: newDep.vehiclePlate
         }]).then(({ error }) => {
-          if (error) console.warn('Supabase insert departure error:', error);
+          if (error) {
+            console.error('Supabase insert departure error:', error);
+            showToast('Notice: Saved locally, cloud sync pending: ' + (error.message || 'Check connection'), 'error');
+          } else {
+            console.log('[Supabase] Departure saved to cloud:', newDep.id);
+          }
         });
       }
     }
@@ -5157,18 +6086,16 @@
     // ========================================================================
     // EDIT DEPARTURE (ADMIN ONLY)
     // ========================================================================
-    function openEditDepartureModal(depId) {
+    function openEditDepartureModal(depId, event) {
+      if (event) event.stopPropagation();
       if (!enforceRolePermission('edit_departure', 'departure')) return;
-      if (!navigator.onLine) {
-        showToast('Offline mode: Editing departures is disabled while offline.', 'error');
-        return;
-      }
 
       const dep = (state.departures || []).find(d => d.id === depId);
       if (!dep) return;
 
+      const pkgs = (state.packages && state.packages.length > 0) ? state.packages : DEFAULT_PACKAGES;
       const pkgSelect = document.getElementById('edPackageSelect');
-      pkgSelect.innerHTML = (state.packages || []).map(p => 
+      pkgSelect.innerHTML = pkgs.map(p => 
         `<option value="${p.id}" ${p.id === dep.packageId ? 'selected' : ''}>${escapeHtml(p.name)}</option>`
       ).join('');
 
@@ -5190,10 +6117,6 @@
     function handleEditDepartureSubmit(e) {
       e.preventDefault();
       if (!enforceRolePermission('edit_departure', 'departure')) return;
-      if (!navigator.onLine) {
-        showToast('Offline mode: Updating departure is disabled while offline.', 'error');
-        return;
-      }
 
       const depId = document.getElementById('edDepartureId').value;
       const dep = (state.departures || []).find(d => d.id === depId);
@@ -5214,14 +6137,13 @@
       closeEditDepartureModal();
       renderAllDeparturesViews();
 
-      if (supabaseClient) {
+      if (supabaseClient && navigator.onLine) {
         supabaseClient.from('departures').update({
           package_id: dep.packageId,
           date: dep.date,
           nepali_date: dep.nepaliDate,
           vehicle_type: dep.vehicleType,
           capacity: dep.capacity,
-          price_per_pax: dep.pricePerPax,
           is_private: dep.isPrivate
         }).eq('id', depId).then(({ error }) => {
           if (error) console.warn('Supabase update departure error:', error);
@@ -6326,7 +7248,11 @@
       renderFilterOptions();
       renderDeparturesList();
       renderFullDeparturesList();
+      if (typeof renderAllGuestsList === 'function') {
+        renderAllGuestsList();
+      }
       updateTabBadges();
+      renderUnifiedDateChips();
     }
 
     // Keyboard Escape to close modals
@@ -6341,6 +7267,9 @@
         closeEditDepartureModal();
         closeForgotPasswordModal();
         closeResetPasswordModal();
+        if (typeof closeEditGuestModal === 'function') {
+          closeEditGuestModal();
+        }
       }
     });
 
