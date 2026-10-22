@@ -2203,10 +2203,8 @@
        ======================================================================== -->
   <script>
     // Storage Keys
-    const STORAGE_KEY = 'everest_annapurna_deposter_paper_v1';
-    const OLD_STORAGE_KEY = 'lalitpur_holidays_dispatch_v1';
-
-    // Automatic Supabase Cloud Configuration from config.js (Public Anon Key ONLY)
+    const STORAGE_KEY = 'everest_annapurna_deposter_paper_v2';
+    const OLD_STORAGE_KEY = 'everest_annapurna_deposter_paper_v1';
     const SUPABASE_URL = (window.DEPOSTER_CONFIG && window.DEPOSTER_CONFIG.SUPABASE_URL) || 'https://mxvawuawegujcehjypcm.supabase.co';
     const SUPABASE_ANON_KEY = (window.DEPOSTER_CONFIG && window.DEPOSTER_CONFIG.SUPABASE_ANON_KEY) || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14dmF3dWF3ZWd1amNlaGp5cGNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MjI0MTEsImV4cCI6MjEwNzk5ODQxMX0.i1Du68gVsd3TaNla0MHmCRk040D0ccvJML4uaVsclmk';
 
@@ -2217,14 +2215,114 @@
     // Default Tour Packages Catalog (Standard Himalayan Routes matching Supabase IDs)
     const DEFAULT_PACKAGES = [
       { id: 'pkg-mustang', name: 'Upper Mustang Overland (Jomsom – Lo Manthang)', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 15500 },
-      { id: 'pkg-ghandruk', name: 'Ghandruk & Pokhara Tour (Annapurna Gate)', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 3000 },
+      { id: 'pkg-ghandruk', name: 'Ghandruk & Pokhara Tour (Annapurna Gate)', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 9000 },
       { id: 'pkg-amayan', name: 'Ama Yangri Trek', defaultVehicle: 'land_cruiser', capacity: 9, pricePerPax: 5500 },
-      { id: 'pkg-rara', name: 'Rara Lake Tour Package', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 8833 },
+      { id: 'pkg-rara', name: 'Rara Lake Tour Package', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 26500 },
       { id: 'pkg-kalinchowk', name: 'Kalinchowk Tour', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 4500 },
       { id: 'pkg-sailung-kalin', name: 'Sailung & Kalinchowk Tour', defaultVehicle: 'ev_van', capacity: 12, pricePerPax: 5000 },
       { id: 'pkg-sailung', name: 'Sailung Tour', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 3500 },
-      { id: 'pkg-pathivara', name: 'Pathivara Tour', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 6500 },
-      { id: 'pkg-ghandruk-bandipur-pvt', name: 'Ghandruk & Bandipur Tour (Private)', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 22000 }
+      { id: 'pkg-pathivara', name: 'Pathivara Tour', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 15500 },
+      { id: 'pkg-ghandruk-bandipur-pvt', name: 'Ghandruk & Bandipur Tour (Private)', defaultVehicle: 'scorpio', capacity: 8, pricePerPax: 63000 }
+    ];
+
+    // Default Registered Drivers
+    const DEFAULT_DRIVERS = [
+      {
+        id: "drv-raj-kumar",
+        name: "Raj Kumar",
+        phone: "9841085978",
+        vehicle_plate: "BA 2 CHA 4108"
+      },
+      {
+        id: "drv-dinesh-ev",
+        name: "Dinesh (EV Van)",
+        phone: "9849099712",
+        vehicle_plate: "BA 1 JHA 9099"
+      },
+      {
+        id: "drv-surendra-bhujel",
+        name: "Surendra Bhujel",
+        phone: "9849927981",
+        vehicle_plate: "BA 3 CHA 9927"
+      },
+      {
+        id: "drv-pradip-tiwari",
+        name: "Pradip Tiwari",
+        phone: "9766470008",
+        vehicle_plate: "BA 2 CHA 6647"
+      },
+      {
+        id: "drv-rajesh-giri",
+        name: "Rajesh Giri",
+        phone: "9851282653",
+        vehicle_plate: "BA 1 CHA 5128"
+      },
+      {
+        id: "drv-manish-shrestha",
+        name: "Manish Shrestha",
+        phone: "9849565015",
+        vehicle_plate: "BA 2 CHA 9565"
+      },
+      {
+        id: "drv-suzan-giri",
+        name: "Suzan Giri",
+        phone: "9843370525",
+        vehicle_plate: "BA 3 CHA 3370"
+      },
+      {
+        id: "drv-sabin-ranjit",
+        name: "Sabin Ranjit",
+        phone: "9851195159",
+        vehicle_plate: "BA 2 CHA 1195"
+      },
+      {
+        id: "drv-new-driver-1",
+        name: "New Driver 1",
+        phone: "9841786607",
+        vehicle_plate: "BA 1 JHA 1786"
+      },
+      {
+        id: "drv-madan-lama",
+        name: "Madan Lama",
+        phone: "9862496225",
+        vehicle_plate: "BA 2 CHA 6249"
+      },
+      {
+        id: "drv-sanjay-dai",
+        name: "Sanjay Dai",
+        phone: "9551200335",
+        vehicle_plate: "BA 3 CHA 5120"
+      },
+      {
+        id: "drv-binod-dai",
+        name: "Binod Dai",
+        phone: "9843070710",
+        vehicle_plate: "BA 2 CHA 4307"
+      },
+      {
+        id: "drv-satyaman-tamang",
+        name: "Satyaman Tamang",
+        phone: "9845995181",
+        vehicle_plate: "BA 2 CHA 5995"
+      },
+      {
+        id: "drv-ramesh-mama",
+        name: "Ramesh Mama",
+        phone: "9841133262",
+        vehicle_plate: "BA 1 CHA 1133"
+      },
+      {
+        id: "drv-krishna-dai",
+        name: "Krishna Dai",
+        phone: "9841268728",
+        vehicle_plate: "BA 2 CHA 1268"
+      },
+      {
+        id: "drv-anish-dai",
+        name: "Anish Dai",
+        phone: "9843663108",
+        vehicle_plate: "BA 3 CHA 3663"
+      }
     ];
 
     // Clean Default State (Fleet, Departures & Bookings)
@@ -2245,114 +2343,706 @@
       fullFilterDateEnd: '',
       fullFilterPackage: 'all',
       fullSearchQuery: '',
-      expandedDepartures: { 'dep-mustang-kartik5': true, 'dep-ghandruk-kartik6': true },
+      expandedDepartures: { 'dep-kalinchowk-k5-j1': true, 'dep-mustang-k5-j1': true },
+      drivers: DEFAULT_DRIVERS,
       packages: DEFAULT_PACKAGES,
       auditTrail: [],
       departures: [
         {
-          id: 'dep-mustang-kartik5',
-          packageId: 'pkg-mustang',
-          date: '2026-10-22',
-          nepaliDate: 'Kartik 5 gatey',
-          vehicleType: 'scorpio',
-          vehicleLabel: 'Jeep 1',
+          id: "dep-kalinchowk-k5-j1",
+          packageId: "pkg-kalinchowk",
+          date: "2026-10-22",
+          nepaliDate: "Kartik 5 gatey",
+          vehicleType: "scorpio",
+          vehicleLabel: "Scorpio 1",
+          capacity: 8,
+          pricePerPax: 4500,
+          isPrivate: false,
+          driverId: "drv-raj-kumar",
+          driverName: "Raj Kumar",
+          driverPhone: "9841085978",
+          vehiclePlate: "BA 2 CHA 4108",
+          status: "open",
+          dispatchedAt: null,
+          notes: "25000 Rs collect on Scorpio.",
+          customers: [
+            {
+              id: "c-k5-kalin-sudhakar",
+              name: "Sudhakar Aryal / Anita Regmi",
+              phone: "9841883443 / 9846424114",
+              pax: 5,
+              agency: "Hike on Trek",
+              paid: 0,
+              remaining: 25000,
+              note: "Pickup: Baniyatar Dhaneshwor \u2022 Rooms: 2 rooms normal sharing \u2022 25000 Rs collect on Scorpio.",
+              pickupLocation: "Baniyatar Dhaneshwor",
+              roomNote: "2 rooms normal sharing",
+              bookedBy: "Hike on Trek",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            }
+          ]
+        },
+        {
+          id: "dep-sailung-kalin-k5-v1",
+          packageId: "pkg-sailung-kalin",
+          date: "2026-10-22",
+          nepaliDate: "Kartik 5 gatey",
+          vehicleType: "ev_van",
+          vehicleLabel: "EV Van 1",
+          capacity: 12,
+          pricePerPax: 5000,
+          isPrivate: false,
+          driverId: "drv-dinesh-ev",
+          driverName: "Dinesh (EV Van)",
+          driverPhone: "9849099712",
+          vehiclePlate: "BA 1 JHA 9099",
+          status: "open",
+          dispatchedAt: null,
+          notes: "38500 Rs collect on EV van",
+          customers: [
+            {
+              id: "c-k5-sailungkalin-sharda",
+              name: "Sharda Rai",
+              phone: "9705158288",
+              pax: 9,
+              agency: "Hike on Trek",
+              paid: 6500,
+              remaining: 38500,
+              note: "Pickup: Raniban bus park + tangal \u2022 Rooms: 3 couple rooms and 1 sharing room \u2022 38500 Rs collect on EV van",
+              pickupLocation: "Raniban bus park + tangal",
+              roomNote: "3 couple rooms and 1 sharing room",
+              bookedBy: "Hike on Trek",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            }
+          ]
+        },
+        {
+          id: "dep-pathivara-k5-j1",
+          packageId: "pkg-pathivara",
+          date: "2026-10-22",
+          nepaliDate: "Kartik 5 gatey",
+          vehicleType: "scorpio",
+          vehicleLabel: "Scorpio 1",
           capacity: 8,
           pricePerPax: 15500,
           isPrivate: false,
-          driverName: 'Pasang Sherpa',
-          driverPhone: '9841223344',
-          vehiclePlate: 'BA 2 CHA 4521',
-          status: 'open',
+          driverId: "drv-surendra-bhujel",
+          driverName: "Surendra Bhujel",
+          driverPhone: "9849927981",
+          vehiclePlate: "BA 3 CHA 9927",
+          status: "full",
+          dispatchedAt: null,
+          notes: "114000 Rs collect on Scorpio.",
           customers: [
             {
-              id: 'c-ujwal-1',
-              name: 'Ujwal Baiju',
-              phone: '+977 984-3399734',
+              id: "c-k5-pathivara-ganga",
+              name: "Ganga Magar",
+              phone: "9866253962",
               pax: 7,
-              agency: 'Lalitpur Holidays',
+              agency: "Hike on Trek",
+              paid: 0,
+              remaining: 114000,
+              note: "Pickup: Dillibazar, Ktm \u2022 Rooms: 2 room private normal sharing \u2022 114000 Rs collect on Scorpio.",
+              pickupLocation: "Dillibazar, Ktm",
+              roomNote: "2 room private normal sharing",
+              bookedBy: "Hike on Trek",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            }
+          ]
+        },
+        {
+          id: "dep-mustang-k5-j1",
+          packageId: "pkg-mustang",
+          date: "2026-10-22",
+          nepaliDate: "Kartik 5 gatey",
+          vehicleType: "scorpio",
+          vehicleLabel: "Scorpio 1",
+          capacity: 8,
+          pricePerPax: 18000,
+          isPrivate: false,
+          driverId: "drv-pradip-tiwari",
+          driverName: "Pradip Tiwari",
+          driverPhone: "9766470008",
+          vehiclePlate: "BA 2 CHA 6647",
+          status: "full",
+          dispatchedAt: null,
+          notes: "SENIOR CITIZEN TRAVEL PROFESSIONAL DRIVER (CLIENT), 143000 Rs collect on Scorpio.",
+          customers: [
+            {
+              id: "c-k5-mustang-deepak",
+              name: "Deepak Kumar Sah",
+              phone: "9806033715",
+              pax: 7,
+              agency: "Hike on Trek",
+              paid: 0,
+              remaining: 143000,
+              note: "Pickup: Tokha Panchetar \u2022 Rooms: 2 couple room and 3 sharing room \u2022 Senior Citizen Group \u2022 143000 Rs collect on Scorpio.",
+              pickupLocation: "Tokha Panchetar",
+              roomNote: "2 couple room and 3 sharing room",
+              bookedBy: "Hike on Trek",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            }
+          ]
+        },
+        {
+          id: "dep-ghandruk-bandipur-k5-pvt",
+          packageId: "pkg-ghandruk-bandipur-pvt",
+          date: "2026-10-22",
+          nepaliDate: "Kartik 5 gatey",
+          vehicleType: "scorpio",
+          vehicleLabel: "Private Scorpio",
+          capacity: 8,
+          pricePerPax: 63000,
+          isPrivate: true,
+          driverId: "drv-rajesh-giri",
+          driverName: "Rajesh Giri",
+          driverPhone: "9851282653",
+          vehiclePlate: "BA 1 CHA 5128",
+          status: "full",
+          dispatchedAt: null,
+          notes: "63,000/- Rs Collect On Scorpio",
+          customers: [
+            {
+              id: "c-k5-ghandrukpvt-shreya",
+              name: "Shreya Sah",
+              phone: "9819995152 / 9804794166",
+              pax: 4,
+              agency: "Hike on Trek",
+              paid: 0,
+              remaining: 63000,
+              note: "Pickup: Akshyata boutique, Bagdol \u2022 Rooms: 1 ROOM \u2022 63,000/- Rs Collect On Scorpio",
+              pickupLocation: "Akshyata boutique, Bagdol",
+              roomNote: "1 ROOM",
+              bookedBy: "Hike on Trek",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            }
+          ]
+        },
+        {
+          id: "dep-mustang-k5-j2",
+          packageId: "pkg-mustang",
+          date: "2026-10-22",
+          nepaliDate: "Kartik 5 gatey",
+          vehicleType: "scorpio",
+          vehicleLabel: "Scorpio 2",
+          capacity: 8,
+          pricePerPax: 15500,
+          isPrivate: false,
+          driverId: "drv-manish-shrestha",
+          driverName: "Manish Shrestha",
+          driverPhone: "9849565015",
+          vehiclePlate: "BA 2 CHA 9565",
+          status: "full",
+          dispatchedAt: null,
+          notes: "",
+          customers: [
+            {
+              id: "c-k5-mustang-ujwal",
+              name: "Ujwal Baiju",
+              phone: "+977 984-3399734",
+              pax: 8,
+              agency: "Lalitpur Holidays",
               paid: 25000,
               remaining: 83500,
-              note: 'Pickup: Kalanki Chowk • Rooms: 3 Twin Sharing',
-              pickupLocation: 'Kalanki Chowk',
-              roomNote: '3 Twin Sharing',
-              bookedBy: 'Lalitpur Holidays',
-              updatedAt: new Date().toISOString()
+              note: "Pickup: Kalanki Chowk \u2022 Rooms: 2 Room",
+              pickupLocation: "Kalanki Chowk",
+              roomNote: "2 Room",
+              bookedBy: "Lalitpur Holidays",
+              updatedAt: "2026-10-22T23:00:00.000Z"
             }
           ]
         },
         {
-          id: 'dep-ghandruk-kartik6',
-          packageId: 'pkg-ghandruk',
-          date: '2026-10-23',
-          nepaliDate: 'Kartik 6 gatey',
-          vehicleType: 'scorpio',
-          vehicleLabel: 'Jeep 2',
+          id: "dep-mustang-k5-j3",
+          packageId: "pkg-mustang",
+          date: "2026-10-22",
+          nepaliDate: "Kartik 5 gatey",
+          vehicleType: "scorpio",
+          vehicleLabel: "Scorpio 3",
           capacity: 8,
-          pricePerPax: 3000,
+          pricePerPax: 15500,
           isPrivate: false,
-          driverName: '',
-          driverPhone: '',
-          vehiclePlate: '',
-          status: 'open',
+          driverId: "drv-suzan-giri",
+          driverName: "Suzan Giri",
+          driverPhone: "9843370525",
+          vehiclePlate: "BA 3 CHA 3370",
+          status: "open",
+          dispatchedAt: null,
+          notes: "",
           customers: [
             {
-              id: 'c-hema-1',
-              name: 'Hema Bhatta',
-              phone: '9868119376',
-              pax: 3,
-              agency: 'Satdobato Agency',
-              paid: 1500,
-              remaining: 7500,
-              note: 'Pickup: Satdobato • Rooms: 1 Triple Room',
-              pickupLocation: 'Satdobato',
-              roomNote: '1 Triple Room',
-              bookedBy: 'Satdobato Agency',
-              updatedAt: new Date().toISOString()
+              id: "c-k5-mustang-sabina",
+              name: "Sabina Wagle, Sabita Bhatta, Sharada Joshi, Debaki Paudel",
+              phone: "986-1711467, 984-6865923, 984-0456973, 9851179924",
+              pax: 4,
+              agency: "Lalitpur Holidays",
+              paid: 0,
+              remaining: 42500,
+              note: "Pickup: Gongabu Babyland school, sano bharyang \u2022 Rooms: one room",
+              pickupLocation: "Gongabu Babyland school, sano bharyang",
+              roomNote: "one room",
+              bookedBy: "Lalitpur Holidays",
+              updatedAt: "2026-10-22T23:00:00.000Z"
             },
             {
-              id: 'c-rubishna-1',
-              name: 'Rubishna Ranjit & Prajwol Gupt Ranjit',
-              phone: '9841228980 / 9861667312',
-              pax: 2,
-              agency: 'Manjushree Agency',
-              paid: 6000,
-              remaining: 0,
-              note: 'Pickup: Manjushree Temple • Rooms: 1 Double Room',
-              pickupLocation: 'Manjushree Temple',
-              roomNote: '1 Double Room',
-              bookedBy: 'Manjushree Agency',
-              updatedAt: new Date().toISOString()
+              id: "c-k5-mustang-punam",
+              name: "Punam Chaudhary, Abhishek Dev, Anushka Dev",
+              phone: "985-1115154",
+              pax: 3,
+              agency: "Lalitpur Holidays",
+              paid: 0,
+              remaining: 41500,
+              note: "Pickup: Narefat saathi mart near \u2022 Rooms: 1room",
+              pickupLocation: "Narefat saathi mart near",
+              roomNote: "1room",
+              bookedBy: "Lalitpur Holidays",
+              updatedAt: "2026-10-22T23:00:00.000Z"
             }
           ]
         },
         {
-          id: 'dep-amayan-kartik6',
-          packageId: 'pkg-amayan',
-          date: '2026-10-23',
-          nepaliDate: 'Kartik 6 gatey',
-          vehicleType: 'ev_van',
-          vehicleLabel: 'EV Van 1',
-          capacity: 12,
-          pricePerPax: 5500,
+          id: "dep-mustang-k5-j4",
+          packageId: "pkg-mustang",
+          date: "2026-10-22",
+          nepaliDate: "Kartik 5 gatey",
+          vehicleType: "scorpio",
+          vehicleLabel: "Scorpio 4",
+          capacity: 8,
+          pricePerPax: 15500,
           isPrivate: false,
-          driverName: '',
-          driverPhone: '',
-          vehiclePlate: '',
-          status: 'open',
+          driverId: "drv-sabin-ranjit",
+          driverName: "Sabin Ranjit",
+          driverPhone: "9851195159",
+          vehiclePlate: "BA 2 CHA 1195",
+          status: "open",
+          dispatchedAt: null,
+          notes: "",
           customers: [
             {
-              id: 'c-kumar-1',
-              name: 'Kumar Poudel',
-              phone: '9851089299',
-              pax: 9,
-              agency: 'Direct Counter',
-              paid: 10000,
-              remaining: 39500,
-              note: 'Pickup: Chabahil Chowk • Rooms: 4 Double Rooms',
-              pickupLocation: 'Chabahil Chowk',
-              roomNote: '4 Double Rooms',
-              bookedBy: 'Lalitpur Holidays',
-              updatedAt: new Date().toISOString()
+              id: "c-k5-mustang-rajendra",
+              name: "Rajendra Magar, Sapana Ghale, Laxmi Ghale, Suji Ghale, Beeraj Shrestha",
+              phone: "9841938159, 9841909315",
+              pax: 6,
+              agency: "Lalitpur Holidays",
+              paid: 0,
+              remaining: 88000,
+              note: "Pickup: Ramkot(near gurung dada resort), Kaushaltar Bhaktapur \u2022 Rooms: Standard Room",
+              pickupLocation: "Ramkot(near gurung dada resort), Kaushaltar Bhaktapur",
+              roomNote: "Standard Room",
+              bookedBy: "Lalitpur Holidays",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            }
+          ]
+        },
+        {
+          id: "dep-amayan-k6-lc1",
+          packageId: "pkg-amayan",
+          date: "2026-10-23",
+          nepaliDate: "Kartik 6 gatey",
+          vehicleType: "land_cruiser",
+          vehicleLabel: "Land Cruiser 1",
+          capacity: 9,
+          pricePerPax: 5500,
+          isPrivate: false,
+          driverId: "drv-new-driver-1",
+          driverName: "New Driver 1",
+          driverPhone: "9841786607",
+          vehiclePlate: "BA 1 JHA 1786",
+          status: "open",
+          dispatchedAt: null,
+          notes: "Land Cruiser 4x4",
+          customers: [
+            {
+              id: "c-k6-amayan-kumar",
+              name: "Kumar Poudel",
+              phone: "9851089299",
+              pax: 5,
+              agency: "Lalitpur Holidays",
+              paid: 0,
+              remaining: 44500,
+              note: "Pickup: Samakhusi & Dhapasi \u2022 Rooms: 3 Room",
+              pickupLocation: "Samakhusi & Dhapasi",
+              roomNote: "3 Room",
+              bookedBy: "Lalitpur Holidays",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            },
+            {
+              id: "c-k6-amayan-jyoti",
+              name: "Jyoti Maharjan",
+              phone: "Direct",
+              pax: 2,
+              agency: "Direct Counter",
+              paid: 0,
+              remaining: 11000,
+              note: "Pickup: Direct Counter \u2022 Rooms: sharing room",
+              pickupLocation: "Direct Counter",
+              roomNote: "sharing room",
+              bookedBy: "Direct Counter",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            },
+            {
+              id: "c-k6-amayan-ukaliorali",
+              name: "UkaliOrali Guest",
+              phone: "9765201507",
+              pax: 1,
+              agency: "Direct Counter",
+              paid: 0,
+              remaining: 5500,
+              note: "Pickup: Direct Counter \u2022 Rooms: sharing room",
+              pickupLocation: "Direct Counter",
+              roomNote: "sharing room",
+              bookedBy: "Direct Counter",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            }
+          ]
+        },
+        {
+          id: "dep-ghandruk-k6-j1",
+          packageId: "pkg-ghandruk",
+          date: "2026-10-23",
+          nepaliDate: "Kartik 6 gatey",
+          vehicleType: "scorpio",
+          vehicleLabel: "Scorpio 1",
+          capacity: 8,
+          pricePerPax: 9000,
+          isPrivate: false,
+          driverId: "drv-madan-lama",
+          driverName: "Madan Lama",
+          driverPhone: "9862496225",
+          vehiclePlate: "BA 2 CHA 6249",
+          status: "full",
+          dispatchedAt: null,
+          notes: "",
+          customers: [
+            {
+              id: "c-k6-ghandruk-hema",
+              name: "Hema Bhatta",
+              phone: "9868119376",
+              pax: 3,
+              agency: "Lalitpur Holidays",
+              paid: 1500,
+              remaining: 25500,
+              note: "Pickup: Satdobato \u2022 Rooms: 1 Triple Room",
+              pickupLocation: "Satdobato",
+              roomNote: "1 Triple Room",
+              bookedBy: "Lalitpur Holidays",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            },
+            {
+              id: "c-k6-ghandruk-rubishna",
+              name: "Rubishna Ranjit and Prajwol Gupt Ranjit",
+              phone: "9841228980 / 9861667312",
+              pax: 2,
+              agency: "Lalitpur Holidays",
+              paid: 5500,
+              remaining: 12500,
+              note: "Pickup: Manjushree Temple \u2022 Rooms: 1 Double Room",
+              pickupLocation: "Manjushree Temple",
+              roomNote: "1 Double Room",
+              bookedBy: "Lalitpur Holidays",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            },
+            {
+              id: "c-k6-ghandruk-sandip",
+              name: "Sandip Pant, Sunil Rijal",
+              phone: "9851099958, 9851035527",
+              pax: 2,
+              agency: "Batuwa Trip",
+              paid: 1000,
+              remaining: 17000,
+              note: "Pickup: Direct Counter \u2022 Rooms: Separate room \u2022 Rm 17000",
+              pickupLocation: "Direct Counter",
+              roomNote: "Separate room",
+              bookedBy: "Batuwa Trip",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            },
+            {
+              id: "c-k6-ghandruk-bishesh",
+              name: "Bishesh Parajuli",
+              phone: "9865511916",
+              pax: 1,
+              agency: "Lalitpur Holidays",
+              paid: 4000,
+              remaining: 5000,
+              note: "Pickup: Bhrikutimandap \u2022 Rooms: Room sharing basis",
+              pickupLocation: "Bhrikutimandap",
+              roomNote: "Room sharing basis",
+              bookedBy: "Lalitpur Holidays",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            }
+          ]
+        },
+        {
+          id: "dep-rara-k6-j1",
+          packageId: "pkg-rara",
+          date: "2026-10-23",
+          nepaliDate: "Kartik 6 gatey",
+          vehicleType: "scorpio",
+          vehicleLabel: "Scorpio 1",
+          capacity: 8,
+          pricePerPax: 26500,
+          isPrivate: false,
+          driverId: "drv-sanjay-dai",
+          driverName: "Sanjay Dai",
+          driverPhone: "9551200335",
+          vehiclePlate: "BA 3 CHA 5120",
+          status: "open",
+          dispatchedAt: null,
+          notes: "",
+          customers: [
+            {
+              id: "c-k6-rara-sarmila",
+              name: "Sarmila Shrestha",
+              phone: "9803699927",
+              pax: 3,
+              agency: "Lalitpur Holidays",
+              paid: 23850,
+              remaining: 55650,
+              note: "Pickup: Gokarna maiti Nepal- 2 jana, 1 jana lalitpur near medicity hospital \u2022 Rooms: 1 room",
+              pickupLocation: "Gokarna maiti Nepal- 2 jana, 1 jana lalitpur near medicity hospital",
+              roomNote: "1 room",
+              bookedBy: "Lalitpur Holidays",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            },
+            {
+              id: "c-k6-rara-guest",
+              name: "Guest Group",
+              phone: "Direct",
+              pax: 4,
+              agency: "Direct Counter",
+              paid: 0,
+              remaining: 106000,
+              note: "Pickup: Direct Counter \u2022 Rooms: 1 room",
+              pickupLocation: "Direct Counter",
+              roomNote: "1 room",
+              bookedBy: "Direct Counter",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            }
+          ]
+        },
+        {
+          id: "dep-sailung-kalin-k6-j1",
+          packageId: "pkg-sailung-kalin",
+          date: "2026-10-23",
+          nepaliDate: "Kartik 6 gatey",
+          vehicleType: "scorpio",
+          vehicleLabel: "Scorpio 1",
+          capacity: 8,
+          pricePerPax: 5000,
+          isPrivate: false,
+          driverId: "drv-binod-dai",
+          driverName: "Binod Dai",
+          driverPhone: "9843070710",
+          vehiclePlate: "BA 2 CHA 4307",
+          status: "open",
+          dispatchedAt: null,
+          notes: "Scorpio jeep",
+          customers: [
+            {
+              id: "c-k6-sailungkalin-guest",
+              name: "Guest Group",
+              phone: "9707490906",
+              pax: 2,
+              agency: "Lalitpur Holidays",
+              paid: 1000,
+              remaining: 9000,
+              note: "Pickup: Dallu pool \u2022 Rooms: Standard Room",
+              pickupLocation: "Dallu pool",
+              roomNote: "Standard Room",
+              bookedBy: "Lalitpur Holidays",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            }
+          ]
+        },
+        {
+          id: "dep-mustang-k6-j1",
+          packageId: "pkg-mustang",
+          date: "2026-10-23",
+          nepaliDate: "Kartik 6 gatey",
+          vehicleType: "scorpio",
+          vehicleLabel: "Scorpio 1",
+          capacity: 8,
+          pricePerPax: 15500,
+          isPrivate: false,
+          driverId: "drv-satyaman-tamang",
+          driverName: "Satyaman Tamang",
+          driverPhone: "9845995181",
+          vehiclePlate: "BA 2 CHA 5995",
+          status: "full",
+          dispatchedAt: null,
+          notes: "",
+          customers: [
+            {
+              id: "c-k6-mustang-monika",
+              name: "Monika Tamang",
+              phone: "9860581443",
+              pax: 2,
+              agency: "Lalitpur Holidays",
+              paid: 4000,
+              remaining: 27000,
+              note: "Pickup: Budhanilkantha and samakhusi \u2022 Rooms: 1 room",
+              pickupLocation: "Budhanilkantha and samakhusi",
+              roomNote: "1 room",
+              bookedBy: "Lalitpur Holidays",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            },
+            {
+              id: "c-k6-mustang-sailena",
+              name: "Sailena Thapa",
+              phone: "9841840495",
+              pax: 2,
+              agency: "Batuwa Trip",
+              paid: 0,
+              remaining: 31000,
+              note: "Pickup: Direct Counter \u2022 Rooms: couple room, Seperate 2sharing room \u2022 Rm 31k",
+              pickupLocation: "Direct Counter",
+              roomNote: "couple room, Seperate 2sharing room",
+              bookedBy: "Batuwa Trip",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            },
+            {
+              id: "c-k6-mustang-barsha",
+              name: "Barsha Pokharel",
+              phone: "9822573164",
+              pax: 1,
+              agency: "Lalitpur Holidays",
+              paid: 2000,
+              remaining: 17500,
+              note: "Pickup: shantinagar gate \u2022 Rooms: 1 room",
+              pickupLocation: "shantinagar gate",
+              roomNote: "1 room",
+              bookedBy: "Lalitpur Holidays",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            },
+            {
+              id: "c-k6-mustang-chandeshwori",
+              name: "Chandeshwori Guest",
+              phone: "Direct",
+              pax: 3,
+              agency: "Chandeshwori Holidays",
+              paid: 0,
+              remaining: 46500,
+              note: "Pickup: Direct Counter \u2022 Rooms: 1 room",
+              pickupLocation: "Direct Counter",
+              roomNote: "1 room",
+              bookedBy: "Chandeshwori Holidays",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            }
+          ]
+        },
+        {
+          id: "dep-ghandruk-k6-pvt",
+          packageId: "pkg-ghandruk",
+          date: "2026-10-23",
+          nepaliDate: "Kartik 6 gatey",
+          vehicleType: "scorpio",
+          vehicleLabel: "Private Scorpio",
+          capacity: 8,
+          pricePerPax: 72000,
+          isPrivate: true,
+          driverId: "drv-ramesh-mama",
+          driverName: "Ramesh Mama",
+          driverPhone: "9841133262",
+          vehiclePlate: "BA 1 CHA 1133",
+          status: "full",
+          dispatchedAt: null,
+          notes: "Private Tour Booking",
+          customers: [
+            {
+              id: "c-k6-ghandruk-gita",
+              name: "Gita Gurung",
+              phone: "9841748108",
+              pax: 8,
+              agency: "Lalitpur Holidays",
+              paid: 5000,
+              remaining: 67000,
+              note: "Pickup: gokarna & balaju \u2022 Rooms: 2 room \u2022 Private Tour",
+              pickupLocation: "gokarna & balaju",
+              roomNote: "2 room",
+              bookedBy: "Lalitpur Holidays",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            }
+          ]
+        },
+        {
+          id: "dep-ghandruk-k6-j2",
+          packageId: "pkg-ghandruk",
+          date: "2026-10-23",
+          nepaliDate: "Kartik 6 gatey",
+          vehicleType: "scorpio",
+          vehicleLabel: "Scorpio 2",
+          capacity: 8,
+          pricePerPax: 9000,
+          isPrivate: false,
+          driverId: "drv-krishna-dai",
+          driverName: "Krishna Dai",
+          driverPhone: "9841268728",
+          vehiclePlate: "BA 2 CHA 1268",
+          status: "open",
+          dispatchedAt: null,
+          notes: "",
+          customers: [
+            {
+              id: "c-k6-ghandruk-dinesh",
+              name: "Dinesh Maharjan",
+              phone: "9860307354",
+              pax: 5,
+              agency: "Lalitpur Holidays",
+              paid: 5000,
+              remaining: 40000,
+              note: "Pickup: 3 jana bungmati buspark 2 jana chai nakhu chowk \u2022 Rooms: 1 room",
+              pickupLocation: "3 jana bungmati buspark 2 jana chai nakhu chowk",
+              roomNote: "1 room",
+              bookedBy: "Lalitpur Holidays",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            },
+            {
+              id: "c-k6-ghandruk-subash",
+              name: "Subash Tamang, Rajani Tamang",
+              phone: "9740847309",
+              pax: 2,
+              agency: "Lalitpur Holidays",
+              paid: 2000,
+              remaining: 19000,
+              note: "Pickup: Dechef Resort, Pahelo Pul \u2022 Rooms: 1 room",
+              pickupLocation: "Dechef Resort, Pahelo Pul",
+              roomNote: "1 room",
+              bookedBy: "Lalitpur Holidays",
+              updatedAt: "2026-10-22T23:00:00.000Z"
+            }
+          ]
+        },
+        {
+          id: "dep-sailung-k6-j1",
+          packageId: "pkg-sailung",
+          date: "2026-10-23",
+          nepaliDate: "Kartik 6 gatey",
+          vehicleType: "scorpio",
+          vehicleLabel: "Scorpio 1",
+          capacity: 8,
+          pricePerPax: 3500,
+          isPrivate: false,
+          driverId: "drv-anish-dai",
+          driverName: "Anish Dai",
+          driverPhone: "9843663108",
+          vehiclePlate: "BA 3 CHA 3663",
+          status: "open",
+          dispatchedAt: null,
+          notes: "",
+          customers: [
+            {
+              id: "c-k6-sailung-jayendra",
+              name: "Jayendra Kunwar",
+              phone: "9843663108",
+              pax: 5,
+              agency: "Direct Counter",
+              paid: 2000,
+              remaining: 21500,
+              note: "Pickup: pepsicola \u2022 Rooms: 2 room",
+              pickupLocation: "pepsicola",
+              roomNote: "2 room",
+              bookedBy: "Direct Counter",
+              updatedAt: "2026-10-22T23:00:00.000Z"
             }
           ]
         }
@@ -2371,7 +3061,11 @@
           const parsed = JSON.parse(raw);
           const loadedDeps = (parsed.departures && parsed.departures.length > 0) ? parsed.departures : DEFAULT_STATE.departures;
           const loadedPkgs = (parsed.packages && parsed.packages.length > 0) ? parsed.packages : DEFAULT_PACKAGES;
+          const loadedDrivers = (parsed.drivers && parsed.drivers.length > 0) ? parsed.drivers : DEFAULT_DRIVERS;
           return {
+            ...DEFAULT_STATE,
+            ...parsed,
+            drivers: loadedDrivers,
             ...DEFAULT_STATE,
             ...parsed,
             packages: loadedPkgs,
@@ -3400,19 +4094,23 @@
 
         if (deps && deps.length > 0) {
           const remoteDepartures = deps.map(d => {
-            const depCusts = (custs || []).filter(c => c.departure_id === d.id).map(c => ({
-              id: c.id,
-              name: c.name,
-              phone: c.phone,
-              pax: Number(c.pax) || 1,
-              agency: c.agency_name || c.booked_by || 'Direct',
-              paid: Number(c.paid) || 0,
-              remaining: Number(c.remaining) || 0,
-              pickupLocation: c.pickup_location || '',
-              note: c.note || '',
-              bookedBy: c.booked_by || '',
-              updatedAt: c.updated_at || c.created_at || new Date().toISOString()
-            }));
+            const depCusts = (custs || []).filter(c => c.departure_id === d.id).map(c => {
+              const locRooms = getCustomerLocationAndRooms({ note: c.note, pickupLocation: c.pickup_location, roomNote: c.room_note });
+              return {
+                id: c.id,
+                name: c.name,
+                phone: c.phone,
+                pax: Number(c.pax) || 1,
+                agency: c.agency_name || c.booked_by || 'Direct',
+                paid: Number(c.paid) || 0,
+                remaining: Number(c.remaining) || 0,
+                pickupLocation: c.pickup_location || locRooms.pickup || '',
+                roomNote: c.room_note || locRooms.rooms || '',
+                note: c.note || '',
+                bookedBy: c.booked_by || '',
+                updatedAt: c.updated_at || c.created_at || new Date().toISOString()
+              };
+            });
 
             const matchedDriver = (state.drivers || []).find(drv => drv.id === d.driver_id || (drv.name && drv.name.toLowerCase() === (d.driver_name || '').toLowerCase()));
 
@@ -3427,9 +4125,9 @@
               pricePerPax: Number(d.price_per_pax) || 15500,
               isPrivate: Boolean(d.is_private),
               driverId: d.driver_id || (matchedDriver ? matchedDriver.id : null),
-              driverName: matchedDriver ? matchedDriver.name : (d.driver_name || ''),
-              driverPhone: matchedDriver ? matchedDriver.phone : '',
-              vehiclePlate: matchedDriver ? (matchedDriver.vehicle_plate || d.vehicle_plate || '') : (d.vehicle_plate || ''),
+              driverName: (matchedDriver && matchedDriver.name) ? matchedDriver.name : (d.driver_name || ''),
+              driverPhone: (matchedDriver && matchedDriver.phone) ? matchedDriver.phone : (d.driver_phone || ''),
+              vehiclePlate: (matchedDriver && matchedDriver.vehicle_plate) ? matchedDriver.vehicle_plate : (d.vehicle_plate || ''),
               status: d.status || 'open',
               dispatchedAt: d.dispatched_at || null,
               notes: d.notes || '',
